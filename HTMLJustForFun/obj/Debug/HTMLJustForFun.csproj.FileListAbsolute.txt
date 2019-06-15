@@ -1,0 +1,11 @@
+C:\Users\Administrator\source\repos\HTMLJustForFun\bin\Debug\HTMLJustForFun.exe.config
+C:\Users\Administrator\source\repos\HTMLJustForFun\bin\Debug\HTMLJustForFun.exe
+C:\Users\Administrator\source\repos\HTMLJustForFun\bin\Debug\HTMLJustForFun.pdb
+C:\Users\Administrator\source\repos\HTMLJustForFun\bin\Debug\HtmlAgilityPack.dll
+C:\Users\Administrator\source\repos\HTMLJustForFun\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\Administrator\source\repos\HTMLJustForFun\bin\Debug\HtmlAgilityPack.xml
+C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.csproj.CopyComplete
+C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.exe
+C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.pdb
