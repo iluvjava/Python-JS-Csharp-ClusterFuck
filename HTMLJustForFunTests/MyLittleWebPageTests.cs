@@ -71,10 +71,23 @@ namespace WebRequest.Tests
                 print("Request Header: " + nl + r.RequestMessage.Headers.ToString());
                 print("Reponse Header: \n" + nl + r.Headers.ToString());
             }
-            
-
-
         }
+
+        /// <summary>
+        /// Try to redirect to the download button. 
+        /// </summary>
+        [TestMethod()]
+        public void RedirectTest()
+        {
+            DeviantArtPage da = DeviantArtPage.GetInstance(url1);
+            da.LoadPage();
+            string dllink = da.GetDownloadLink();
+            MyLittleRequest mlr = new MyLittleRequest(dllink);
+            mlr.cookie_jar = da.cookie_pot.GetCookies(new Uri(da.base_url));
+            string result = mlr.MakeGetRequestAsync().Result.Content.ReadAsStringAsync().Result;
+            print(result);
+        }
+
 
         public static void print(object o)
         {

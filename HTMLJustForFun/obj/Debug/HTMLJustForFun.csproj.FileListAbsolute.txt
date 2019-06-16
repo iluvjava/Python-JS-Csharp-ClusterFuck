@@ -9,3 +9,16 @@ C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.cspr
 C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.csproj.CopyComplete
 C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.exe
 C:\Users\Administrator\source\repos\HTMLJustForFun\obj\Debug\HTMLJustForFun.pdb
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.csprojAssemblyReference.cache
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.exe
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.pdb
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HTMLJustForFun.exe.config
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HTMLJustForFun.exe
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HTMLJustForFun.pdb
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\CsQuery.dll
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HtmlAgilityPack.dll
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\CsQuery.xml
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HtmlAgilityPack.xml
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.csproj.CopyComplete

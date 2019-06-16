@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using CsQuery;
+using System.Net.Http.Headers;
 
 namespace WebRequest
 {
@@ -16,7 +18,7 @@ namespace WebRequest
     {
         // URL upon first request. 
         public string base_uri;
-        public IDictionary<string, string> cookie_jar;
+        public CookieCollection cookie_jar;
 
         /// <summary>
         /// 
@@ -44,27 +46,50 @@ namespace WebRequest
         /// </returns>
         public async Task<HttpResponseMessage> MakeGetRequestAsync
         (
-            string Uri_Params = ""
+            IDictionary<string, string> Uri_Params =null
         )
         {
-            Uri uri = new Uri(this.base_uri + Uri_Params);
+            var p = Uri_Params == null? "" :new FormUrlEncodedContent(Uri_Params).ToString();
+            Uri uri = new Uri(this.base_uri + p);
             HttpClientHandler handler = new HttpClientHandler();
+            handler.AllowAutoRedirect = true;
             CookieContainer c = new CookieContainer();
+
             //prepare cookie
-            if(this.cookie_jar!=null)
-            foreach (KeyValuePair<string, string> kvp in this.cookie_jar)
+            if (this.cookie_jar != null)
             {
-                c.Add(uri, new Cookie(kvp.Key, kvp.Value));
+                // foreach (KeyValuePair<string, string> kvp in this.cookie_jar)
+                // {
+                //     c.Add(uri, new Cookie(kvp.Key, kvp.Value));
+                // }
+                handler.CookieContainer.Add(this.cookie_jar);
             }
-            handler.CookieContainer = c;
             //prepare http client
             using (HttpClient client = new HttpClient(handler))
             {
+                //client headers
+                //----------------------------------------------------
+                PrepareHeader(client.DefaultRequestHeaders);
                 HttpResponseMessage response = await client.GetAsync(uri);
                 return response;
             }
         }
 
+
+        /// <summary>
+        /// An internal method, used for preparing http headers for get and post request. 
+        /// </summary>
+        protected void PrepareHeader(HttpRequestHeaders header)
+        {
+            header.Add(
+                "user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36"
+                );
+            header.Add(
+                "accept",
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
+                );
+        }
         /// <summary>
         /// A method that makes a mpost request to the base url in the class. 
         /// </summary>
@@ -91,6 +116,8 @@ namespace WebRequest
                 return response;
             }
         }
+
+
     }
 
     /// <summary>
@@ -98,14 +125,18 @@ namespace WebRequest
     /// </summary>
     public class MyLittleWebPage
     {
-        string base_url;
-        public HtmlWeb web;
-        public HtmlDocument doc;
-        //Saving cookies for the broswer session.
-        CookieContainer cookie_pot = new CookieContainer();
+        public string base_url;
+        protected string sate = "not yet loaded";
+        public HtmlWeb web { get; protected set; }
+        public HtmlDocument doc { get; protected set; }
+        //Session
+        public CookieContainer cookie_pot {get; protected set;}
+        protected IDictionary<string, string> customized_header;
+        protected Uri refer_url;
+        protected string user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36";
 
-        HttpWebRequest post_request;
-        HttpWebResponse post_reponse;
+        protected HttpWebRequest request;
+        protected HttpWebResponse post_reponse;
 
         public MyLittleWebPage(String baseurl)
         {
@@ -113,16 +144,34 @@ namespace WebRequest
         }
 
 
+
         /// <summary>
         /// Load the page.
         /// </summary>
         public void LoadPage()
         {
-            web = new HtmlWeb();
-            web.UseCookies = true;
-            web.PostResponse = new HtmlWeb.PostResponseHandler(PostResponseFiddling);
-            doc = web.Load(base_url);
+            try
+            {
+                web = new HtmlWeb();
+                web.UseCookies = true;
+                web.CaptureRedirect = true;
+                web.PreRequest = new HtmlWeb.PreRequestHandler(PreRequestFiddling);
+                web.PostResponse = new HtmlWeb.PostResponseHandler(PostResponseFiddling);
+                doc = web.Load(base_url);
+                sate = "loaded";
+            }
+            catch(System.Net.WebException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.Response);
+                Console.WriteLine(e.Status);
+                Console.WriteLine(e.Data);
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(request == null?"null":request.Headers.ToString());
+            }
         }
+
+
 
 
         /// <summary>
@@ -133,36 +182,68 @@ namespace WebRequest
         void PostResponseFiddling(HttpWebRequest request,HttpWebResponse response)
         {
             cookie_pot = request.CookieContainer;
-            post_request = request;
+            this.request = request;
             post_reponse = response;
         }
-        
+
+
+        /// <summary>
+        /// Prepare prerequest cookies. Prepare refered url. 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        bool PreRequestFiddling(HttpWebRequest request)
+        {
+            request.Headers.Clear();
+            if(this.cookie_pot != null)request.CookieContainer = cookie_pot;
+            if(this.refer_url != null)request.Headers.Add("referer", refer_url.AbsoluteUri);
+            if(this.user_agent != null) request.UserAgent = this.user_agent;
+            request.KeepAlive = false;
+            request.Accept = 
+                "text / html,application / xhtml + xml,application / xml; q = 0.9,image / webp,image / apng,*/*;q=0.8,application/signed-exchange;v=b3";
+            request.Headers.Add("Upgrade-Insecure_requests", "1");
+            this.request = request;
+            
+            return true;
+        }
+
+
         override
         public string ToString()
         {
-            var collection = cookie_pot.GetCookies(web.ResponseUri);
-            var l = Environment.NewLine;
-            var res = "";
-            res += "Status code: " + web.StatusCode;
-            res += l;
-            res += "Response Uri: "+web.ResponseUri;
-            res += l;
-            res += post_reponse.Headers.ToString();
-            res += l;
-            res += "Cookies: "+l;
-            foreach (Cookie c in collection)
+            if (sate != "not yet loaded")
             {
-                res += c.Name + " = " + c.Value + "l";
+                
+                var l = Environment.NewLine;
+                var res = "";
+                res += "Status code: " + this.post_reponse.Headers.Get("status");
+                res += l;
+                res += "Response Uri: " + web.ResponseUri;
+                res += l;
+                res += "Request Header: ---"+ l + request.Headers.ToString();
+                res += l;
+                res += "Response Header: ---" + l + post_reponse.Headers.ToString();
+                res += l;
+                res += "Cookies: " + l;
+                if (cookie_pot != null)
+                {
+                    var collection = cookie_pot.GetCookies(web.ResponseUri);
+                    foreach (Cookie c in collection)
+                    {
+                        res += c.Name + " = " + c.Value + "l";
+                    }
+                }
+                //res += doc.Text;
+                return res;
             }
-            res += doc.Text;
-            return res;
+            return "Page Link: " + base_url;
         }
     }
 
     /// <summary>
     /// A speicial mylittle webpage, it opens on deviant art page only. 
     /// </summary>
-    public class DeviantArtPage :MyLittleWebPage
+    public class DeviantArtPage : MyLittleWebPage
     {
         internal DeviantArtPage(string url):base(url)
         {
@@ -179,9 +260,49 @@ namespace WebRequest
         /// </returns>
         public static DeviantArtPage GetInstance(string dapagelink)
         {
-
-            return null;
+            Regex rx = new Regex(@"^https://www\.deviantart.*$");
+            var mc = rx.Match(dapagelink);
+            bool success = mc.Success;
+            return success?new DeviantArtPage(dapagelink):null;
         }
+
+        /// <summary>
+        /// Transfer to a new page, session is preserved. 
+        /// </summary>
+        /// <param name="url">
+        /// 
+        /// </param>
+        /// <returns></returns>
+        public MyLittleWebPage Transfer(string url)
+        {
+            Regex rx = new Regex(@"^http://www.deviantart.*$");
+            var mc = rx.Match(url);
+            bool success = mc.Success;
+            if (success)
+            {
+                DeviantArtPage newda = new DeviantArtPage(url);
+                newda.refer_url = base.web.ResponseUri;
+                newda.cookie_pot = this.cookie_pot;
+                return newda;
+            }
+            return new MyLittleWebPage(url) ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>
+        /// Null is returned if the download link is not there. 
+        /// The dl link is absolute.
+        /// </returns>
+        public string GetDownloadLink()
+        {
+            CQ c = CQ.Create(doc.Text);
+            var l = c["a.dev-page-download[href]"];
+            return l.Attr("href");
+        }
+
+
     }
 
 
