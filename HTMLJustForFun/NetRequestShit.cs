@@ -7,79 +7,62 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CsQuery;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization;
 
 namespace WebRequest
 {
-    
+
+
+
+
     /// <summary>
-    /// Creates a class for making api calls.
+    /// This is a class that can make get and post request, it's very useful. 
     /// </summary>
-    public class MyLittleRequest
+    /// <remarks>
+    /// Makes headers, prepare cookies and make get and post request. 
+    /// 
+    /// </remarks>
+    public class MyLittleRequest : IDisposable
     {
         // URL upon first request. 
         public string base_uri;
-        public CookieCollection cookie_jar;
+        public CookieCollection cookie_jar { get; set; }
+        public HttpClient client {get; protected set;}
+        public HttpClientHandler client_handler { get; protected set;}
+        public IDictionary<string, string> customed_headers;
+
 
         /// <summary>
-        /// 
+        /// Use a baseful to construct an instance. 
         /// </summary>
-        /// <param name="url">
-        /// The extra parameters that should be appeneded 
-        /// at the end of the url.
+        /// <param name="baseurl">
+        /// URL with http/s protocol, it will reject if it's not start 
+        /// with http / https
         /// </param>
-        public MyLittleRequest(string uri)
+        public MyLittleRequest(string baseurl)
         {
-            this.base_uri = uri;
-        }
-
-        /// <summary>
-        /// Give params appeneded to url, it will make a get request. 
-        /// </summary>
-        /// <remarks>
-        ///     Method Tested Casually
-        /// </remarks>
-        /// <param name="Url_Params">
-        /// String, representing the part at the end of the URL. 
-        /// </param>
-        /// <returns>
-        /// A Http ResponseMessage for you to process. 
-        /// </returns>
-        public async Task<HttpResponseMessage> MakeGetRequestAsync
-        (
-            IDictionary<string, string> Uri_Params =null
-        )
-        {
-            var p = Uri_Params == null? "" :new FormUrlEncodedContent(Uri_Params).ToString();
-            Uri uri = new Uri(this.base_uri + p);
-            HttpClientHandler handler = new HttpClientHandler();
-            handler.AllowAutoRedirect = true;
-            CookieContainer c = new CookieContainer();
-
-            //prepare cookie
-            if (this.cookie_jar != null)
+            //Varify Base Url.
+            Regex rx = new Regex(@"^https?://.*$");
+            Match m = rx.Match(baseurl);
+            if (!m.Success)
             {
-                // foreach (KeyValuePair<string, string> kvp in this.cookie_jar)
-                // {
-                //     c.Add(uri, new Cookie(kvp.Key, kvp.Value));
-                // }
-                handler.CookieContainer.Add(this.cookie_jar);
+                throw new IncorrectHTTPURL();
             }
-            //prepare http client
-            using (HttpClient client = new HttpClient(handler))
-            {
-                //client headers
-                //----------------------------------------------------
-                PrepareHeader(client.DefaultRequestHeaders);
-                HttpResponseMessage response = await client.GetAsync(uri);
-                return response;
-            }
+            base_uri = baseurl;
+            client_handler = new HttpClientHandler();
+            client_handler.AllowAutoRedirect = true;
+            client_handler.UseCookies = true;
+            
+            
+            client = new HttpClient(client_handler);
+            PrepareHeaders(client.DefaultRequestHeaders);
         }
 
 
         /// <summary>
-        /// An internal method, used for preparing http headers for get and post request. 
+        /// Prepare the headers for the http client. 
         /// </summary>
-        protected void PrepareHeader(HttpRequestHeaders header)
+        protected void PrepareHeaders(HttpRequestHeaders header)
         {
             header.Add(
                 "user-agent",
@@ -89,37 +72,199 @@ namespace WebRequest
                 "accept",
                 "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
                 );
+            //Check Customed Headers. 
+            if (customed_headers != null)
+            {
+                foreach (KeyValuePair<string, string> kvp in customed_headers)
+                {
+                    header.Add(kvp.Key, kvp.Value);
+                }
+                
+            }
         }
+
+
+        public async Task<HttpResponseMessage> MakeGetRequestAsync
+        (
+            IDictionary<string, string> Uri_Params = null
+        )
+        {
+            var p = Uri_Params == null ? "" : new FormUrlEncodedContent(Uri_Params).ToString();
+            Uri uri = new Uri(this.base_uri + p);
+            CookieCollection c = cookie_jar != null ? cookie_jar : new CookieCollection();
+            //prepare cookie
+            client_handler.CookieContainer.Add(c);
+            HttpResponseMessage response = await client.GetAsync(uri);
+            return response;
+        }
+
+
         /// <summary>
-        /// A method that makes a mpost request to the base url in the class. 
+        /// Make a post request to a certain URL. 
         /// </summary>
-        /// <remarks>
-        /// Method Casually Tested. 
-        /// </remarks>
         /// <param name="formdata">
-        /// A Dictionary representing the formdata you want to upload for the requst. 
+        /// The formdata for for post. 
         /// </param>
-        /// <returns></returns>
+        /// <returns>
+        /// The raw http response. 
+        /// </returns>
         public async Task<HttpResponseMessage> MakePostRequestAsync
-        (IDictionary<string, string> formdata)
+        (IDictionary<string, string> formdata = null)
         {
             if (formdata == null)
             {
                 formdata = new Dictionary<string, string>();
                 formdata[""] = "";
             }
-            string url = this.base_uri;
-            using (HttpClient client = new HttpClient())
+
+            string url = base_uri;
+            FormUrlEncodedContent content = new FormUrlEncodedContent(formdata);
+            HttpResponseMessage response = await client.PostAsync(url, content);
+            return response;
+        }
+
+        override
+        public string ToString()
+        {
+            var res = "-----MyLittleRequest-----";
+            return res;
+        }
+
+        public void Dispose()
+        {
+            this.client.Dispose();
+        }
+    }
+
+    [Serializable]
+    internal class IncorrectHTTPURL : Exception
+    {
+        public IncorrectHTTPURL()
+        {
+        }
+
+        public IncorrectHTTPURL(string message) : base(message)
+        {
+        }
+
+        public IncorrectHTTPURL(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected IncorrectHTTPURL(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
+
+    public class WebPage
+    {
+        public string base_url;
+       
+        protected string state = "not loaded yet";
+
+        public CQ doc_css { get; protected set; }
+        // the request is going to be made when page loads. 
+        public MyLittleRequest mlr_thispage { get; protected set;} 
+        public CookieContainer cookie_pot { get; protected set; }
+
+        protected HttpRequestHeaders request_headers;
+        protected HttpResponseHeaders response_headers;
+        public string content_raw_string;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseurl"></param>
+        /// <param name="cookies"></param>
+        public WebPage(string baseurl)
+        {
+            Regex rx = new Regex(@"^https?://.*$");
+            Match m = rx.Match(baseurl);
+            if (!m.Success)
             {
-                FormUrlEncodedContent content = new FormUrlEncodedContent(formdata);
-                HttpResponseMessage response = await client.PostAsync(url, content);
-                return response;
+                throw new IncorrectHTTPURL();
             }
+
+            base_url = baseurl;
+            cookie_pot = new CookieContainer();
+            mlr_thispage = new MyLittleRequest(base_url);
+        }
+
+        /// <summary>
+        /// Make a GET request to the base url. 
+        /// </summary>
+        /// <returns>
+        /// Tre or false to indication operations successful or not. 
+        /// </returns>
+        public void LoadPage()
+        {
+            MyLittleRequest mlr = mlr_thispage;
+
+            mlr.cookie_jar = cookie_pot.GetCookies(new Uri(base_url));
+            HttpResponseMessage res = mlr.MakeGetRequestAsync().Result;
+            state = "loaded";
+            string content_str = res.Content.ReadAsStringAsync().Result;
+            content_raw_string = content_str;
+            doc_css = new CQ(content_str);
+            response_headers = res.Headers;
+            this.request_headers = mlr.client.DefaultRequestHeaders;
+
+            //store the bloody cookies;
+            this.cookie_pot.Add
+            (
+                mlr.client_handler.CookieContainer.GetCookies(new Uri(this.base_url))
+            );
+
+            //refresh base url
+            
         }
 
 
+        /// <summary>
+        /// Return an unloaded page that transfer from this page. 
+        /// 
+        /// </summary>
+        /// <param name="url">
+        /// String, url that got transfer to, 
+        /// Absolute URL please. 
+        /// </param>
+        /// <returns>
+        /// An new unloaded instance of the Webpage object. 
+        /// </returns>
+        public WebPage Transfer(string url)
+        {
+            var newpage = new WebPage(url);
+            // Cookies Transfer
+            newpage.cookie_pot.Add
+                (
+                    new Uri(url) , 
+                    this.cookie_pot.GetCookies(new Uri(this.base_url))
+                );
+            return newpage;
+        }
+
+        override
+        public string ToString()
+        {
+            var nl = Environment.NewLine;
+            var res = $"---------->Web Page: \"{base_url}\" ";
+            if (this.state == "not loaded yet")
+            {
+                res += "is not loaded yet";
+                return res;
+            }
+            res += "Is loaded"+nl;
+            res += $"Request Header: {nl}" + this.request_headers.ToString() + nl;
+            res += "Request Cookies Len: " + this.mlr_thispage.client_handler.CookieContainer.Count + nl;
+            res += $"Response Header: {nl}"+ this.response_headers.ToString() + nl;
+            res += "Cookies Gotten: " + this.cookie_pot.GetCookieHeader(new Uri(this.base_url)).ToString() + nl;
+            res += "String Content Lenght: " + this.content_raw_string.Length;
+            return res;
+        }
+
     }
 
+    [Obsolete]
     /// <summary>
     /// Saving session and relative info for a webpage. 
     /// </summary>
@@ -243,14 +388,14 @@ namespace WebRequest
     /// <summary>
     /// A speicial mylittle webpage, it opens on deviant art page only. 
     /// </summary>
-    public class DeviantArtPage : MyLittleWebPage
+    public class DeviantArtPage : WebPage
     {
         internal DeviantArtPage(string url):base(url)
         {
         }
 
         /// <summary>
-        /// 
+        /// Create an instance of this specific page. 
         /// </summary>
         /// <param name="dapagelink">
         /// A da link
@@ -266,27 +411,6 @@ namespace WebRequest
             return success?new DeviantArtPage(dapagelink):null;
         }
 
-        /// <summary>
-        /// Transfer to a new page, session is preserved. 
-        /// </summary>
-        /// <param name="url">
-        /// 
-        /// </param>
-        /// <returns></returns>
-        public MyLittleWebPage Transfer(string url)
-        {
-            Regex rx = new Regex(@"^http://www.deviantart.*$");
-            var mc = rx.Match(url);
-            bool success = mc.Success;
-            if (success)
-            {
-                DeviantArtPage newda = new DeviantArtPage(url);
-                newda.refer_url = base.web.ResponseUri;
-                newda.cookie_pot = this.cookie_pot;
-                return newda;
-            }
-            return new MyLittleWebPage(url) ;
-        }
 
         /// <summary>
         /// 
@@ -297,13 +421,120 @@ namespace WebRequest
         /// </returns>
         public string GetDownloadLink()
         {
-            CQ c = CQ.Create(doc.Text);
-            var l = c["a.dev-page-download[href]"];
+            var l = this.doc_css["a.dev-page-download[href]"];
             return l.Attr("href");
         }
 
 
     }
 
+    [Obsolete]
+    /// <summary>
+    /// Creates a class for making api calls.
+    /// </summary>
+    public class MyLittleRequest1
+    {
+        // URL upon first request. 
+        public string base_uri;
+        public CookieCollection cookie_jar;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url">
+        /// The extra parameters that should be appeneded 
+        /// at the end of the url.
+        /// </param>
+        public MyLittleRequest1(string uri)
+        {
+            this.base_uri = uri;
+        }
+
+        /// <summary>
+        /// Give params appeneded to url, it will make a get request. 
+        /// </summary>
+        /// <remarks>
+        ///     Method Tested Casually
+        /// </remarks>
+        /// <param name="Url_Params">
+        /// String, representing the part at the end of the URL. 
+        /// </param>
+        /// <returns>
+        /// A Http ResponseMessage for you to process. 
+        /// </returns>
+        public async Task<HttpResponseMessage> MakeGetRequestAsync
+        (
+            IDictionary<string, string> Uri_Params = null
+        )
+        {
+            var p = Uri_Params == null ? "" : new FormUrlEncodedContent(Uri_Params).ToString();
+            Uri uri = new Uri(this.base_uri + p);
+            HttpClientHandler handler = new HttpClientHandler();
+            handler.AllowAutoRedirect = true;
+            CookieContainer c = new CookieContainer();
+
+            //prepare cookie
+            if (this.cookie_jar != null)
+            {
+                // foreach (KeyValuePair<string, string> kvp in this.cookie_jar)
+                // {
+                //     c.Add(uri, new Cookie(kvp.Key, kvp.Value));
+                // }
+                handler.CookieContainer.Add(this.cookie_jar);
+            }
+
+            //prepare http client
+            using (HttpClient client = new HttpClient(handler))
+            {
+                //client headers
+                PrepareHeader(client.DefaultRequestHeaders);
+                HttpResponseMessage response = await client.GetAsync(uri);
+                return response;
+            }
+        }
+
+
+        /// <summary>
+        /// An internal method, used for preparing http headers for get and post request. 
+        /// </summary>
+        protected void PrepareHeader(HttpRequestHeaders header)
+        {
+            header.Add(
+                "user-agent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36"
+                );
+            header.Add(
+                "accept",
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
+                );
+        }
+
+        /// <summary>
+        /// A method that makes a mpost request to the base url in the class. 
+        /// </summary>
+        /// <remarks>
+        /// Method Casually Tested. 
+        /// </remarks>
+        /// <param name="formdata">
+        /// A Dictionary representing the formdata you want to upload for the requst. 
+        /// </param>
+        /// <returns></returns>
+        public async Task<HttpResponseMessage> MakePostRequestAsync
+        (IDictionary<string, string> formdata)
+        {
+            if (formdata == null)
+            {
+                formdata = new Dictionary<string, string>();
+                formdata[""] = "";
+            }
+
+            string url = this.base_uri;
+            using (HttpClient client = new HttpClient())
+            {
+                FormUrlEncodedContent content = new FormUrlEncodedContent(formdata);
+                HttpResponseMessage response = await client.PostAsync(url, content);
+                return response;
+            }
+        }
+    }
 }

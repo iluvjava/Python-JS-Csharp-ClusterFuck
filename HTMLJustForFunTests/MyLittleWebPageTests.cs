@@ -25,23 +25,23 @@ namespace WebRequest.Tests
         [TestMethod()]
         public void LoadPageTest()
         {
-            string url = "https://www.deviantart.com/";
-            //MyLittleWebPage mlw = new MyLittleWebPage(url);
-            //mlw.LoadPage();
-            //Console.WriteLine(mlw.ToString());
-
-            url = "https://www.deviantart.com/heddopen/art/Princess-test-II-779031701";
-            DeviantArtPage da = DeviantArtPage.GetInstance(url);
-            da.LoadPage();
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(da.ToString());
-            Console.WriteLine(da.GetDownloadLink());
-            string dl = da.GetDownloadLink();
-            Console.WriteLine("dl link:"+dl);
-            MyLittleWebPage mlw = da.Transfer(dl);
-            mlw.LoadPage();
-
-            Console.WriteLine(mlw.ToString());
+            // string url = "https://www.deviantart.com/";
+            // //MyLittleWebPage mlw = new MyLittleWebPage(url);
+            // //mlw.LoadPage();
+            // //Console.WriteLine(mlw.ToString());
+            // 
+            // url = "https://www.deviantart.com/heddopen/art/Princess-test-II-779031701";
+            // DeviantArtPage da = DeviantArtPage.GetInstance(url);
+            // da.LoadPage();
+            // Console.WriteLine("----------------------------");
+            // Console.WriteLine(da.ToString());
+            // Console.WriteLine(da.GetDownloadLink());
+            // string dl = da.GetDownloadLink();
+            // Console.WriteLine("dl link:"+dl);
+            // MyLittleWebPage mlw = da.Transfer(dl);
+            // mlw.LoadPage();
+            // 
+            // Console.WriteLine(mlw.ToString());
         }
 
 
@@ -82,12 +82,34 @@ namespace WebRequest.Tests
             DeviantArtPage da = DeviantArtPage.GetInstance(url1);
             da.LoadPage();
             string dllink = da.GetDownloadLink();
+            print("Download Link: "+nl);
+            print(dllink);
+
             MyLittleRequest mlr = new MyLittleRequest(dllink);
             mlr.cookie_jar = da.cookie_pot.GetCookies(new Uri(da.base_url));
+
             string result = mlr.MakeGetRequestAsync().Result.Content.ReadAsStringAsync().Result;
             print(result);
         }
 
+
+        [TestMethod()]
+        public void DeviantArtClassTest()
+        {
+            print("Trying to make connection to: "+ url1);
+            DeviantArtPage dapage = DeviantArtPage.GetInstance(url1);
+            dapage.LoadPage();
+            print(dapage);
+            var dllink = dapage.GetDownloadLink();
+            print($"This is DL link: {dllink}");
+            print("Trying to download: ");
+            var newpage = dapage.Transfer(dllink);
+            newpage.LoadPage();
+            var response = newpage.content_raw_string;
+            print(newpage);
+            print("Base Address" +nl+newpage.mlr_thispage.client.BaseAddress);
+            print("Raw String representing png: " + response.Substring(0, 2000));
+        }
 
         public static void print(object o)
         {
