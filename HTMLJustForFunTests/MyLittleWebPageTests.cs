@@ -131,6 +131,17 @@ namespace WebRequest.Tests
             }
         }
 
+        [TestMethod()]
+        public void InvestigateHttpClient()
+        {
+            var client_handler = new HttpClientHandler();
+            client_handler.AllowAutoRedirect = true;
+            client_handler.UseCookies = true;
+            var properties = client_handler.Properties;
+            print("Investigaring if httpclient saves the cookies accroding to reponse header from the server. ");
+
+        }
+
         public static void print(object o)
         {
             Console.WriteLine(o.ToString());

@@ -9,7 +9,7 @@ session = requests.Session()
 res = session.get(url)
 html = res.text
 
-soup = BeautifulSoup(html, features="html5lib")
+soup = BeautifulSoup(html, features="lxml")
 
 dlbtn = soup.find_all(class_="dev-page-download")
 
@@ -23,7 +23,8 @@ if len(dlbtn):
     print(href)
     r = session.get(href, stream=True)
     if r.status_code == 200:
-        d = r.headers['content-disposition']
+        d = r.headers['content-disposition'] # returns a string, it has info about file name. 
+        
         path = d.split("\'\'")[1]
         with open(path, 'wb') as f:
             r.raw.decode_content = True

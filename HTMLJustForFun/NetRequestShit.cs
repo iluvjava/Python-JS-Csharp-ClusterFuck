@@ -63,8 +63,6 @@ namespace WebRequest
             client_handler.AllowAutoRedirect = true;
             client_handler.UseCookies = true;
             client_handler.MaxResponseHeadersLength = 30;
-            
-            
             client = new HttpClient(client_handler);
             
         }
@@ -224,7 +222,6 @@ namespace WebRequest
         public void LoadPage()
         {
             MyLittleRequest mlr = mlr_thispage;
-
             mlr.cookie_jar = cookie_pot.GetCookies(new Uri(base_url));
             HttpResponseMessage res = mlr.MakeGetRequestAsync().Result;
             state = "loaded";
