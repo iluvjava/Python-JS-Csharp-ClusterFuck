@@ -34,7 +34,7 @@ namespace WebRequest
     public class MyLittleRequest : IDisposable
     {
         // URL upon first request. 
-        public string base_uri;
+        //public string base_uri;
         public CookieCollection cookie_jar { get; set; }
         public HttpClient client {get; protected set;}
         public HttpClientHandler client_handler { get; protected set;}
@@ -56,9 +56,9 @@ namespace WebRequest
             Match m = rx.Match(baseurl);
             if (!m.Success)
             {
-                throw new IncorrectHTTPURL();
+                throw new IncorrectURL();
             }
-            base_uri = baseurl;
+            //base_uri = baseurl;
             client_handler = new HttpClientHandler();
             client_handler.AllowAutoRedirect = true;
             client_handler.UseCookies = true;
@@ -95,25 +95,27 @@ namespace WebRequest
         {
             header.Add(
                 "user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36"
+                "PostmanRuntime/7.15.0"
                 );
-            header.Add(
-                "accept",
-                "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
-                );
+            //header.Add(
+            //    "accept",
+            //    "*/*"
+            //    );
             //Check Customed Headers. 
+            header.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));
             
         }
 
 
         public async Task<HttpResponseMessage> MakeGetRequestAsync
         (
+            string base_uri = "",
             IDictionary<string, string> Uri_Params = null
         )
         {
             SetupHeaderModifier();
             var p = Uri_Params == null ? "" : new FormUrlEncodedContent(Uri_Params).ToString();
-            Uri uri = new Uri(this.base_uri + p);
+            Uri uri = new Uri(base_uri + p);
             CookieCollection c = cookie_jar != null ? cookie_jar : new CookieCollection();
             
             //prepare cookie
@@ -133,15 +135,13 @@ namespace WebRequest
         /// The raw http response. 
         /// </returns>
         public async Task<HttpResponseMessage> MakePostRequestAsync
-        (IDictionary<string, string> formdata = null)
+        (string url = "", IDictionary<string, string> formdata = null)
         {
             if (formdata == null)
             {
                 formdata = new Dictionary<string, string>();
                 formdata[""] = "";
             }
-
-            string url = base_uri;
             FormUrlEncodedContent content = new FormUrlEncodedContent(formdata);
             HttpResponseMessage response = await client.PostAsync(url, content);
             return response;
@@ -161,21 +161,21 @@ namespace WebRequest
     }
 
     [Serializable]
-    internal class IncorrectHTTPURL : Exception
+    internal class IncorrectURL : Exception
     {
-        public IncorrectHTTPURL()
+        public IncorrectURL()
         {
         }
 
-        public IncorrectHTTPURL(string message) : base(message)
+        public IncorrectURL(string message) : base(message)
         {
         }
 
-        public IncorrectHTTPURL(string message, Exception innerException) : base(message, innerException)
+        public IncorrectURL(string message, Exception innerException) : base(message, innerException)
         {
         }
 
-        protected IncorrectHTTPURL(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected IncorrectURL(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
@@ -206,7 +206,7 @@ namespace WebRequest
             Match m = rx.Match(baseurl);
             if (!m.Success)
             {
-                throw new IncorrectHTTPURL();
+                throw new IncorrectURL();
             }
 
             base_url = baseurl;
@@ -281,9 +281,11 @@ namespace WebRequest
             }
             res += "Is loaded"+nl;
             res += $"Request Header: {nl}" + this.request_headers.ToString() + nl;
-            res += "Request Cookies Len: " + this.mlr_thispage.client_handler.CookieContainer.Count + nl;
+            res += "Request Cookies Len: " + this.mlr_thispage.client_handler.CookieContainer.Count 
+                + nl;
             res += $"Response Header: {nl}"+ this.response_headers.ToString() + nl;
-            res += "Cookies Gotten: " + this.cookie_pot.GetCookieHeader(new Uri(this.base_url)).ToString() + nl;
+            res += "Cookies Gotten: " + 
+                this.cookie_pot.GetCookieHeader(new Uri(this.base_url)).ToString() + nl;
             res += "String Content Lenght: " + this.content_raw_string.Length;
             return res;
         }
@@ -311,6 +313,88 @@ namespace WebRequest
                 return result;
             }
             return null;
+        }
+    }
+
+
+    /// <summary>
+    /// This class has a MyLittleRequest in it. 
+    /// </summary>
+    public class WebPage2
+    {
+        public string base_url;
+        protected string state = "not loaded yet";
+        public CQ doc_css { get; protected set; }
+        // the request is going to be made when page loads. 
+        // Feel free to access and modify this properties. 
+        public MyLittleRequest mlr_thispage { get; protected set; }
+
+        protected HttpRequestHeaders request_headers;
+        protected HttpResponseHeaders response_headers;
+        public string content_raw_string;
+
+        public WebPage2(string baseurl)
+        {
+            Regex rx = new Regex(@"^https?://.*$");
+            Match m = rx.Match(baseurl);
+            if (!m.Success)
+            {
+                throw new IncorrectURL();
+            }
+
+            base_url = baseurl;
+            // Instanciate request
+            mlr_thispage = new MyLittleRequest(base_url);
+        }
+        public void LoadPage()
+        {
+            MyLittleRequest mlr = mlr_thispage;
+            HttpResponseMessage res = mlr.MakeGetRequestAsync(this.base_url).Result;
+            state = "loaded";
+            string content_str = res.Content.ReadAsStringAsync().Result;
+            content_raw_string = content_str;
+            doc_css = new CQ(content_str);
+            response_headers = res.Headers;
+            this.request_headers = mlr.client.DefaultRequestHeaders;
+        }
+
+        /// <summary>
+        /// This method will exchange the request object to the new instance of Webpage. 
+        /// <remarks>
+        /// The returned webpage is not loaded. 
+        /// </remarks>
+        /// </summary>
+        /// <param name="url">
+        /// string representing the url. 
+        /// </param>
+        /// <returns>
+        /// An new instance of the the page. 
+        /// </returns>
+        public WebPage2 Transfer(string url)
+        {
+            WebPage2 newwebpage = new WebPage2(url);
+            newwebpage.mlr_thispage = this.mlr_thispage;
+            return newwebpage;
+        }
+
+        override
+        public string ToString()
+        {
+            var nl = Environment.NewLine;
+            var res = $"---------->Web Page: \"{base_url}\" ";
+            if (this.state == "not loaded yet")
+            {
+                res += "is not loaded yet";
+                return res;
+            }
+            res += "Is loaded" + nl;
+            res += $"Request Header: {nl}" + this.request_headers.ToString() + nl;
+            res += "Request Cookies Len: " + this.mlr_thispage.client_handler.CookieContainer.Count
+                + nl;
+            res += $"Response Header: {nl}" + this.response_headers.ToString() + nl;
+            res += "Cookies len: " + this.mlr_thispage.client_handler.CookieContainer.Count+nl;
+            res += "String Content Lenght: " + this.content_raw_string.Length;
+            return res;
         }
     }
 
@@ -495,12 +579,14 @@ namespace WebRequest
                     header.Add
                         (
                            "user-agent",
-                           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36"
+                           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML," +
+                           " like Gecko) Chrome/75.0.3770.90 Safari/537.36"
                         );
                     header.Add
                         (
                             "accept",
-                            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
+                            "text/html,application/xhtml+xml,application/xml;q=0.9," +
+                            "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
                         );
                     header.Add
                         (

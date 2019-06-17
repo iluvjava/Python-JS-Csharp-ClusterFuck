@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace WebRequest.Tests
 {
@@ -126,7 +127,8 @@ namespace WebRequest.Tests
                 newpage.LoadPage();
                 var response = newpage.content_raw_string;
                 print(newpage);
-                print("Looking for content-disposition header: " + newpage.GetValFromResponseHeader("content-disposition"));
+                print("Looking for content-disposition header: " 
+                    + newpage.GetValFromResponseHeader("content-disposition"));
                 print("Raw String representing png: " + response.Substring(0, 2000));
             }
         }
@@ -138,10 +140,37 @@ namespace WebRequest.Tests
             client_handler.AllowAutoRedirect = true;
             client_handler.UseCookies = true;
             var properties = client_handler.Properties;
-            print("Investigaring if httpclient saves the cookies accroding to reponse header from the server. ");
+            print("Investigaring if httpclient saves the cookies " +
+                "accroding to reponse header from the server. ");
             MyLittleRequest mlr = new MyLittleRequest(url1);
             var res = mlr.MakeGetRequestAsync().Result;
             print("Cookie container count: "+ mlr.client_handler.CookieContainer.Count);
+
+        }
+
+        [TestMethod()]
+        public void Webpage2Test()
+        {
+            var page = new WebPage2(url1);
+            print("Trying to css select the download link: ");
+            page.LoadPage();
+            string dllink = page.doc_css["a.dev-page-download[href]"].Attr("href");
+            print(dllink);
+            print("Trying to transfer to the above page: ");
+            var newpage = page.Transfer(dllink);
+            //Using postman default header
+            CustomizedHeaders fun = delegate (HttpRequestHeaders arg)
+            {
+                print("The delegated defined in the test is called. ");
+                arg.Add("Cache-Control", "no-cache");
+                arg.Add("accept-encoding", "gzip,deflate");
+                arg.Add("connection", "keepalive");
+            };
+            newpage.mlr_thispage.header_customizer = fun;
+
+            newpage.LoadPage();
+            print(newpage);
+            print(newpage.content_raw_string);
 
         }
 
