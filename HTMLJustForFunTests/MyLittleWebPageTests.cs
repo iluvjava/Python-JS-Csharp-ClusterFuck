@@ -139,6 +139,9 @@ namespace WebRequest.Tests
             client_handler.UseCookies = true;
             var properties = client_handler.Properties;
             print("Investigaring if httpclient saves the cookies accroding to reponse header from the server. ");
+            MyLittleRequest mlr = new MyLittleRequest(url1);
+            var res = mlr.MakeGetRequestAsync().Result;
+            print("Cookie container count: "+ mlr.client_handler.CookieContainer.Count);
 
         }
 

@@ -115,6 +115,7 @@ namespace WebRequest
             var p = Uri_Params == null ? "" : new FormUrlEncodedContent(Uri_Params).ToString();
             Uri uri = new Uri(this.base_uri + p);
             CookieCollection c = cookie_jar != null ? cookie_jar : new CookieCollection();
+            
             //prepare cookie
             client_handler.CookieContainer.Add(c);
             HttpResponseMessage response = await client.GetAsync(uri);
