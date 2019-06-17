@@ -96,19 +96,39 @@ namespace WebRequest.Tests
         [TestMethod()]
         public void DeviantArtClassTest()
         {
-            print("Trying to make connection to: "+ url1);
-            DeviantArtPage dapage = DeviantArtPage.GetInstance(url1);
-            dapage.LoadPage();
-            print(dapage);
-            var dllink = dapage.GetDownloadLink();
-            print($"This is DL link: {dllink}");
-            print("Trying to download: ");
-            var newpage = dapage.Transfer(dllink);
-            newpage.LoadPage();
-            var response = newpage.content_raw_string;
-            print(newpage);
-            print("Base Address" +nl+newpage.mlr_thispage.client.BaseAddress);
-            print("Raw String representing png: " + response.Substring(0, 2000));
+            goto test2;
+            {
+                print("Trying to make connection to: " + url1);
+                DeviantArtPage dapage = DeviantArtPage.GetInstance(url1);
+                dapage.LoadPage();
+                print(dapage);
+                var dllink = dapage.GetDownloadLink();
+                print($"This is DL link: {dllink}");
+                print("Trying to download: ");
+                var newpage = dapage.TransferCookies(dllink);
+                newpage.LoadPage();
+                var response = newpage.content_raw_string;
+                print(newpage);
+                print("Base Address" + nl + newpage.mlr_thispage.client_handler);
+                print("Raw String representing png: " + response.Substring(0, 2000));
+            }
+
+            test2:
+            {
+                print("Trying to make connection to: " + url1);
+                DeviantArtPage dapage = DeviantArtPage.GetInstance(url1);
+                dapage.LoadPage();
+                print(dapage);
+                var dllink = dapage.GetDownloadLink();
+                print($"This is DL link: {dllink}");
+                print("Trying to download: ");
+                var newpage = dapage.Download_Redirect();
+                newpage.LoadPage();
+                var response = newpage.content_raw_string;
+                print(newpage);
+                print("Looking for content-disposition header: " + newpage.GetValFromResponseHeader("content-disposition"));
+                print("Raw String representing png: " + response.Substring(0, 2000));
+            }
         }
 
         public static void print(object o)

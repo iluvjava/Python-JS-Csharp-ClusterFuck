@@ -13,6 +13,15 @@ namespace WebRequest
 {
 
 
+    /// <summary>
+    /// A declared delegate for swapping out parts of the request class, 
+    /// Just so we can modify the headers in custimizable ways before the 
+    /// http request is being made. 
+    /// </summary>
+    /// <param name="headers">
+    /// The headers in the httpclient,before the request is made. 
+    /// </param>
+    public delegate void CustomizedHeaders(HttpRequestHeaders headers);
 
 
     /// <summary>
@@ -29,7 +38,8 @@ namespace WebRequest
         public CookieCollection cookie_jar { get; set; }
         public HttpClient client {get; protected set;}
         public HttpClientHandler client_handler { get; protected set;}
-        public IDictionary<string, string> customed_headers;
+        //Swappable delegate.
+        public CustomizedHeaders header_customizer;
 
 
         /// <summary>
@@ -52,10 +62,31 @@ namespace WebRequest
             client_handler = new HttpClientHandler();
             client_handler.AllowAutoRedirect = true;
             client_handler.UseCookies = true;
+            client_handler.MaxResponseHeadersLength = 30;
             
             
             client = new HttpClient(client_handler);
-            PrepareHeaders(client.DefaultRequestHeaders);
+            
+        }
+
+
+        /// <summary>
+        /// Chooses the function to prepare the header for a get/post 
+        /// request. 
+        /// <remarks>
+        /// Called right before the time when the get/post? request is made. 
+        /// </remarks>
+        /// </summary>
+        protected void SetupHeaderModifier()
+        {
+            if (this.header_customizer == null)
+            {
+                PrepareHeaders(client.DefaultRequestHeaders);
+            }
+            else
+            {
+                this.header_customizer(client.DefaultRequestHeaders);
+            }
         }
 
 
@@ -73,14 +104,7 @@ namespace WebRequest
                 "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
                 );
             //Check Customed Headers. 
-            if (customed_headers != null)
-            {
-                foreach (KeyValuePair<string, string> kvp in customed_headers)
-                {
-                    header.Add(kvp.Key, kvp.Value);
-                }
-                
-            }
+            
         }
 
 
@@ -89,6 +113,7 @@ namespace WebRequest
             IDictionary<string, string> Uri_Params = null
         )
         {
+            SetupHeaderModifier();
             var p = Uri_Params == null ? "" : new FormUrlEncodedContent(Uri_Params).ToString();
             Uri uri = new Uri(this.base_uri + p);
             CookieCollection c = cookie_jar != null ? cookie_jar : new CookieCollection();
@@ -216,12 +241,15 @@ namespace WebRequest
             );
 
             //refresh base url
-            
         }
 
 
         /// <summary>
-        /// Return an unloaded page that transfer from this page. 
+        /// Return an unloaded page that has cookies from this page. 
+        /// <remarks>
+        /// It only transfers the cookies, It adds this url's cookies 
+        /// to the new url's cookies refering to the new url. 
+        /// </remarks>
         /// 
         /// </summary>
         /// <param name="url">
@@ -231,7 +259,7 @@ namespace WebRequest
         /// <returns>
         /// An new unloaded instance of the Webpage object. 
         /// </returns>
-        public WebPage Transfer(string url)
+        public WebPage TransferCookies(string url)
         {
             var newpage = new WebPage(url);
             // Cookies Transfer
@@ -262,6 +290,30 @@ namespace WebRequest
             return res;
         }
 
+        /// <summary>
+        /// Gives the name of the header and it returns the value for that header.
+        /// </summary>
+        /// <param name="name">
+        /// 
+        /// The name of the key. 
+        /// </param>
+        /// <returns>
+        /// null is returned if we can not find the value for that header. 
+        /// </returns>
+        public string GetValFromResponseHeader(string name)
+        {
+            IEnumerable<string> res = new List<string>();
+            if (this.response_headers.TryGetValues(name, out res))
+            {
+                string result = "";
+                foreach (var term in res)
+                {
+                    result += term + "; ";
+                }
+                return result;
+            }
+            return null;
+        }
     }
 
     [Obsolete]
@@ -426,6 +478,59 @@ namespace WebRequest
         }
 
 
+        /// <summary>
+        /// This function cusomized the headers for a new request and transfer 
+        /// cookies to the new download url. 
+        /// </summary>
+        /// <returns>
+        /// Null if returned if there is something wrong
+        /// </returns>
+        public WebPage Download_Redirect()
+        {
+            string dl = this.GetDownloadLink();
+            if (dl.Length != 0)
+            {
+                WebPage newpage = this.TransferCookies(dl);
+                //Establish Headers. 
+                CustomizedHeaders header_modifier = delegate(HttpRequestHeaders header)
+                {
+                    header.Add
+                        (
+                           "user-agent",
+                           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36"
+                        );
+                    header.Add
+                        (
+                            "accept",
+                            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3"
+                        );
+                    header.Add
+                        (
+                            "accept-encoding",
+                            "gzip, deflate, br"
+                        );
+                    header.Add
+                        (
+                          "referer",
+                          base_url
+                        );
+                    header.Add
+                        (
+                            "upgrade-insecure-requests", "1"
+                        );
+                    header.Add
+                        (
+                            "host", "www.deviantart.com"
+                        );
+                };
+                newpage.mlr_thispage.header_customizer = header_modifier;
+                return newpage;
+            }
+            return null;
+        }
+
+
+
     }
 
     [Obsolete]
@@ -538,3 +643,10 @@ namespace WebRequest
         }
     }
 }
+/*  Log: 
+ *  The reponse made by deviant art transfer did not contain content-type 
+ *  in the response header. 
+ * 
+ * 
+ * 
+ */
