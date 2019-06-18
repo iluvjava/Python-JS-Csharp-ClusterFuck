@@ -16,7 +16,7 @@ Python. C# and Node js.
             - No solution, cause unknown. 
     Progress: 
         Code Refractoring. 
-    Branch: 
+    Branch out: 
         - Use Restsharp and see if problem 1 persisted, Content-type and Content Disposition were shown in the python's
         request. 
     Problem: 
@@ -24,4 +24,10 @@ Python. C# and Node js.
         on my desktop. 
             - Setting the header's user agent solved the problem. 
 
+```
+
+# 18/06/2019: 
+```
+    Progress: 
+        Sync GET and POST request method in Namespace RestSharpAttempt are completed and seems to work. 
 ```
