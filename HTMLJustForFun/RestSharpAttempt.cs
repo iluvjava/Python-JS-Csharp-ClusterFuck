@@ -10,13 +10,24 @@ using CsQuery;
 
 namespace HTMLJustForFun
 {
+
+
+    public delegate IRestRequest RequestCustomizer(IRestRequest request);
+
     class RestSharpAttempt
     {
     }
 
+    /// <summary>
+    /// This is a class that encapusulate a client, and it automate the process of making different 
+    /// kinds of request to different urls. 
+    /// - The cookies is saved and automatically used when using this client. 
+    /// - 
+    /// </summary>
     public class MyLittleRestClient
     {
         public RestClient r_client;
+        
         
         public MyLittleRestClient()
         {
@@ -29,7 +40,7 @@ namespace HTMLJustForFun
         /// Make a get request for the given url 
         /// </summary>
         /// <param name="url">
-        /// Encoded get request url. 
+        /// Abosolute URL please. 
         /// <param name ="parameters">
         /// The parameters with the get reqeust, 
         /// </param>
@@ -41,20 +52,50 @@ namespace HTMLJustForFun
             var request = PrepareRequest(url+parameters);
             VerifyUrl(url);
             request.Method = Method.GET;
-            var res = r_client.Get(request);
+            var res = r_client.Execute(request);
             return res;
         }
 
+        public async Task<IRestResponse>  MakeGetRequestAsync(string url, string parameters="")
+        {
+            var t = await Task<IRestResponse>.Run
+                (
+                    () => 
+                    {
+                        return this.MakeGetRequest(url, parameters);
+                    }
+                );
+           
+            return t; 
+        }
+
+        /// <summary>
+        /// This method makes a posts request with given formdata represented by the 
+        /// a string to string dictionary. 
+        /// </summary>
+        /// <param name="url">
+        /// A valide absolute url. 
+        /// </param>
+        /// <param name="parameters">
+        /// A string => string dic, it has the formdata for the post request. 
+        /// </param>
+        /// <returns>
+        /// IRestResponse responsed from the server. 
+        /// </returns>
         public IRestResponse MakePostRequest(string url, IDictionary<string, string> parameters)
         {
             var request = PrepareRequest(url);
+            
             request.Method = Method.POST;
             foreach (var kvp in parameters)
             {
-                request.AddParameter(kvp.Key,kvp.Value);
+                Console.WriteLine(kvp.Key+" = "+ kvp.Value);
+                request.AddParameter(new Parameter(kvp.Key, kvp.Value, ParameterType.GetOrPost));
+                Console.WriteLine(request.Parameters.Count);
             }
             return r_client.Post(request);
         }
+
 
         protected void VerifyUrl(string baseurl)
         {
@@ -66,7 +107,7 @@ namespace HTMLJustForFun
             }
         }
 
-        protected  IRestRequest PrepareRequest(string url)
+        protected IRestRequest PrepareRequest(string url)
         {
             var request = new RestRequest(url);
             PrepareHeaders(request);
@@ -97,6 +138,8 @@ namespace HTMLJustForFun
                 );
         }
     }
+
+    
     [Serializable]
     class IncorrectURL : Exception
     {

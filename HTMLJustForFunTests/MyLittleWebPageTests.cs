@@ -20,6 +20,9 @@ namespace WebRequest.Tests
 
         string url1 = "https://www.deviantart.com/heddopen/art/Princess-test-II-779031701";
         string url2 = "https://www.deviantart.com/";
+        string posturl = "https://postman-echo.com/post";
+        string pokedex = 
+            "https://courses.cs.washington.edu/courses/cse154/webservices/pokedex/game.php";
         string nl = Environment.NewLine;
         [TestMethod()]
         public void MyLittleWebPageTest()
@@ -179,23 +182,52 @@ namespace WebRequest.Tests
 
         }
 
-
+        /// <summary>
+        /// Testing get requests with cookies transfer using the 
+        /// MylittleRestClient. 
+        /// </summary>
         [TestMethod()]
         public void UsingRestSharp()
         {
-            MyLittleRestClient mlrc = new MyLittleRestClient();
-            var res = mlrc.MakeGetRequest(url1);
-            print("cookie len: " + res.Cookies.Count);
-            IEnumerator e = res.Headers.GetEnumerator();
-            printEnumerator(e);
-            string content = res.Content;
-            CQ c = new CQ(content);
-            string dllink = c["a.dev-page-download[href]"].Attr("href");
-            res = mlrc.MakeGetRequest(dllink);
-            print();
-            printEnumerator(res.Headers.GetEnumerator());
-            print(res.Content);
+
+            {
+                MyLittleRestClient mlrc = new MyLittleRestClient();
+                var res = mlrc.MakeGetRequestAsync(url1).Result;
+                print("cookie len: " + res.Cookies.Count);
+                IEnumerator e = res.Headers.GetEnumerator();
+                printEnumerator(e);
+                string content = res.Content;
+                CQ c = new CQ(content);
+                string dllink = c["a.dev-page-download[href]"].Attr("href");
+                res = mlrc.MakeGetRequest(dllink);
+                print();
+                printEnumerator(res.Headers.GetEnumerator());
+                print(res.Content);
+            }
         }
+
+
+        /// <summary>
+        /// Testing postrequest using the MyLittleRestClient class.
+        /// </summary>
+        [TestMethod()]
+        public void UsingRestSharp2()
+        {
+            IDictionary<string, string> formdata = new Dictionary<string, string>()
+            {
+                { "startgame", "true" },
+                { "mypokemon" ,"detective-pikachu"}
+            };
+            var mlrc = new MyLittleRestClient();
+            var response = mlrc.MakePostRequest(pokedex,formdata);
+            print(response.Content);
+
+        }
+
+
+
+
+
         public static void print(object o = null)
         {
             Console.WriteLine(o == null?"":o.ToString());
