@@ -329,8 +329,8 @@ namespace WebRequest
         // Feel free to access and modify this properties. 
         public MyLittleRequest mlr_thispage { get; protected set; }
 
-        protected HttpRequestHeaders request_headers;
-        protected HttpResponseHeaders response_headers;
+        public HttpRequestHeaders request_headers { get; protected set; }
+        public HttpResponseHeaders response_headers { get; protected set; }
         public string content_raw_string;
 
         public WebPage2(string baseurl)

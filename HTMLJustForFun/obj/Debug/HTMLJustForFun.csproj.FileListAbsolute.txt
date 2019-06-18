@@ -22,3 +22,5 @@ C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\HtmlAgilityPack.xml
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.csproj.CopyComplete
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\RestSharp.dll
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\RestSharp.xml

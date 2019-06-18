@@ -7,6 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using RestSharp;
+using HTMLJustForFun;
+using CsQuery;
+using System.Collections;
 
 namespace WebRequest.Tests
 {
@@ -170,13 +174,39 @@ namespace WebRequest.Tests
 
             newpage.LoadPage();
             print(newpage);
+            print(newpage.response_headers);
             print(newpage.content_raw_string);
 
         }
 
-        public static void print(object o)
+
+        [TestMethod()]
+        public void UsingRestSharp()
         {
-            Console.WriteLine(o.ToString());
+            MyLittleRestClient mlrc = new MyLittleRestClient();
+            var res = mlrc.MakeGetRequest(url1);
+            print("cookie len: " + res.Cookies.Count);
+            IEnumerator e = res.Headers.GetEnumerator();
+            printEnumerator(e);
+            string content = res.Content;
+            CQ c = new CQ(content);
+            string dllink = c["a.dev-page-download[href]"].Attr("href");
+            res = mlrc.MakeGetRequest(dllink);
+            print();
+            printEnumerator(res.Headers.GetEnumerator());
+            print(res.Content);
+        }
+        public static void print(object o = null)
+        {
+            Console.WriteLine(o == null?"":o.ToString());
+        }
+
+        public static  void printEnumerator(IEnumerator e)
+        {
+            while (e.MoveNext())
+            {
+                print(e.Current);
+            }
         }
     }
 }

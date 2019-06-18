@@ -39,3 +39,5 @@ C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunT
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\HtmlAgilityPack.xml
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\CsQuery.xml
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\obj\Debug\HTMLJustForFunTests.csproj.CopyComplete
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\RestSharp.dll
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\RestSharp.xml

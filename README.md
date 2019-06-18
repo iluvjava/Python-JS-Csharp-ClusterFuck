@@ -12,8 +12,16 @@ Python. C# and Node js.
         What are the list of Request Properties httpclinet supports? 
             - By default, there is no properties in the HttpClientHandler.
     Problem: 
-        Content-Type and Content Disposition headers were missing in the response headers from DeviantArt domain, 
+        1. Content-Type and Content Disposition headers were missing in the response headers from DeviantArt domain, 
             - No solution, cause unknown. 
     Progress: 
         Code Refractoring. 
+    Branch: 
+        - Use Restsharp and see if problem 1 persisted, Content-type and Content Disposition were shown in the python's
+        request. 
+    Problem: 
+        2. A mobile page is returned when using the rest client, very weird problem. Yeah, I visited a mobile page 
+        on my desktop. 
+            - Setting the header's user agent solved the problem. 
+
 ```
