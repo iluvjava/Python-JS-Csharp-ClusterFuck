@@ -1,4 +1,6 @@
-﻿using CsQuery;
+﻿using AngleSharp;
+using AngleSharp.Dom;
+using CsQuery;
 using LittleRestClient;
 using RestSharp;
 using System;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Webpages
 {
@@ -16,7 +19,7 @@ namespace Webpages
     }
 
     /// <summary>
-    /// This class represents a single webpage. 
+    /// This class represents a single generic websites, it should be useful for many other things.
     /// </summary>
     public class Webpage
     {
@@ -31,28 +34,29 @@ namespace Webpages
         /// The content type as from the header of the response. 
         /// </summary>
         public string content_type;
-        public bool is_successful{ get; protected set; }
-        public IRestResponse response; 
+        public bool is_successful { get; protected set; }
+        public IRestResponse response;
 
         /// <summary>
         /// The raw content gotten from the page in the form of a byte array. 
         /// </summary>
-        byte[] raw_content;
+        public byte[] raw_content { get; protected set; }
+        public string raw_content_string { get; protected set; }
 
-       
-       /// <summary>
-       /// 
-       /// </summary>
-       /// <param name="baseurl">
-       /// A url with the correct heading. 
-       /// </param>
-       /// <exception>
-       /// An Incorrect URL exception is thrown if the input url is not a valid url. 
-       /// </exception>
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseurl">
+        /// A url with the correct heading. 
+        /// </param>
+        /// <exception>
+        /// An Incorrect URL exception is thrown if the input url is not a valid url. 
+        /// </exception>
         public Webpage(string baseurl)
         {
             Regex rx = new Regex("^(https{0,1}://.*)|(localhost:.*)$");
-            if (! rx.IsMatch(baseurl))
+            if (!rx.IsMatch(baseurl))
             {
                 throw new IncorrectURL();
             }
@@ -72,7 +76,8 @@ namespace Webpages
                 return;
             this.raw_content = res.RawBytes;
             this.content_type = res.ContentType;
-            this.response = res; 
+            this.response = res;
+            this.raw_content_string = res.Content;
         }
 
 
@@ -81,15 +86,15 @@ namespace Webpages
         {
             var nl = Environment.NewLine;
             var res = "";
-            res += "Base URL: " + this.base_url+ nl;
-            res += "Status: " + (this.is_successful ? "Loaded" : "Failed to load")+ nl;
+            res += "Base URL: " + this.base_url + nl;
+            res += "Status: " + (this.is_successful ? "Loaded" : "Failed to load") + nl;
             if (!is_successful)
             {
                 return res;
             }
             res += "Content Type: " + this.content_type + nl;
             res += "Content length: " + this.raw_content.Length;
-            return res; 
+            return res;
         }
 
         /// <summary>
@@ -105,28 +110,40 @@ namespace Webpages
         /// <returns>
         /// Boolean to indicate the status. 
         /// </returns>
-        public bool SaveAsFile(string path, string filename= null)
+        public bool SaveAsFile(string path, string filename = null)
         {
+            try
+            {
+                DirectoryInfo dirinfo = new DirectoryInfo(path);
+                if (!dirinfo.Exists) return false;
+                if (filename == null) filename = GetFileName();
 
-            DirectoryInfo dirinfo = new DirectoryInfo(path);
-            if (!dirinfo.Exists)return false;
-            if (filename == null) filename = GetFileName();
-            return false;
+                using (FileStream fs = new FileStream(path + $"/{filename}", FileMode.CreateNew))
+                {
+                    fs.Write(this.raw_content, 0, this.raw_content.Length);
+                };
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
         }
 
         /// <summary>
-        /// Returns the file name. 
+        /// Returns the file name if this object is every going to be saved. 
         /// </summary>
         public string GetFileName()
         {
-            var contenttype = this.content_type;
-            contenttype = contenttype.Substring(contenttype.IndexOf("/")+1);
-            contenttype = contenttype.Replace("-","");
+            string[] contenttype = this.content_type.Split(';');
 
-            if (contenttype == "html")
+            string subtype = contenttype[0].Split('/')[1];
+
+            if (subtype == "html")
             {
-                string s =  System.Text.Encoding.UTF8.GetString(this.raw_content);
-                CQ q = new CQ(s);
+                var result = AngleSharpBridge.Get(this.raw_content_string).Title+".html";
+                return Uri.EscapeDataString(result);
             }
 
             string filename = this.GetHashCode().ToString();
@@ -137,13 +154,23 @@ namespace Webpages
                 {
                     string v = (string)param.Value;
                     filename = v.Substring(v.LastIndexOf("="));
-                    filename = filename.Substring(0,filename.Length-1);
+                    filename = filename.Substring(0, filename.Length - 1);
                 }
-
             }
-            return filename+ "."+contenttype; 
+            return Uri.EscapeDataString(filename) + "." + subtype;
+        }
+    }
+
+    public class AngleSharpBridge
+    {
+        public static IDocument Get(string s)
+        {
+            var config = Configuration.Default;
+            var context = BrowsingContext.New(config);
+            var document = context.OpenAsync(req => req.Content(s)).Result;
+            return document;
         }
 
-        
     }
+
 }

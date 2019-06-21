@@ -25,6 +25,7 @@ namespace WebRequest.Tests
         string pokedex = 
             "https://courses.cs.washington.edu/courses/cse154/webservices/pokedex/game.php";
         string nl = Environment.NewLine;
+        string desktop = @"C:\Users\Administrator\Desktop";
         [TestMethod()]
         public void MyLittleWebPageTest()
         {
@@ -230,6 +231,7 @@ namespace WebRequest.Tests
         {
             Webpages.Webpage wp = new Webpages.Webpage(url1);
             print(wp.GetFileName());
+            wp.SaveAsFile(this.desktop);
             
         }
 

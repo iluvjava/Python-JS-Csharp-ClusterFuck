@@ -36,5 +36,5 @@ Python. C# and Node js.
 ```
     Problem: 
         The CsQuery doesn't have a way to get the innertext for a DOM node, lacking of similar functionalities is a problem. 
-            - Solution: AngularSharp
+            - Solution: AngulSharp
 ```

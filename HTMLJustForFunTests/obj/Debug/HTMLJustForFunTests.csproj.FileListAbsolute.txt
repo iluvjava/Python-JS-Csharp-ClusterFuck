@@ -41,3 +41,9 @@ C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunT
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\obj\Debug\HTMLJustForFunTests.csproj.CopyComplete
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\RestSharp.dll
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\RestSharp.xml
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\HTMLJustForFunTests.dll.config
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\AngleSharp.dll
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\System.Text.Encoding.CodePages.dll
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\AngleSharp.xml
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml

@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using CsQuery;
 using System.Net;
 
+
+/// <summary>
+/// 
+/// </summary>
 namespace LittleRestClient
 {
 
@@ -24,18 +28,19 @@ namespace LittleRestClient
     /// This is a class that encapusulate a client, and it automate the process of making different 
     /// kinds of request to different urls. 
     /// - The cookies is saved and automatically used when using this client. 
-    /// - 
+    /// - Support delegate for customizable headers for request. 
     /// </summary>
     public class MyLittleRestClient
     {
         public RestClient r_client { get; protected set;}
-        public RequestCustomizer swappable_customizer;
+        public RequestCustomizer swappable_customizer = null;
         
         /// <summary>
         /// This is shared when it's specified. 
         /// </summary>
         public static CookieContainer SharedCookies;
-        
+
+
         public MyLittleRestClient()
         {
             r_client = new RestClient();
@@ -142,9 +147,10 @@ namespace LittleRestClient
         protected IRestRequest PrepareRequest(string url)
         {
             var request = new RestRequest(url);
-            if (swappable_customizer == null) PrepareHeaders(request);
+            if (this.swappable_customizer == null)
+            { PrepareHeaders(request); }
             else
-            this.swappable_customizer(request);
+            { this.swappable_customizer(request); }
             return request;
         }
 
