@@ -7,16 +7,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CsQuery;
+using System.Net;
 
-namespace HTMLJustForFun
+namespace LittleRestClient
 {
 
-
+    /// <summary>
+    /// This is a swappable parts for the MyLittleRestClient class, using this 
+    /// to customized your own web request when making a request. 
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     public delegate IRestRequest RequestCustomizer(IRestRequest request);
-
-    class RestSharpAttempt
-    {
-    }
 
     /// <summary>
     /// This is a class that encapusulate a client, and it automate the process of making different 
@@ -26,14 +28,20 @@ namespace HTMLJustForFun
     /// </summary>
     public class MyLittleRestClient
     {
-        public RestClient r_client;
+        public RestClient r_client { get; protected set;}
+        public RequestCustomizer swappable_customizer;
         
+        /// <summary>
+        /// This is shared when it's specified. 
+        /// </summary>
+        public static CookieContainer SharedCookies;
         
         public MyLittleRestClient()
         {
             r_client = new RestClient();
             r_client.FollowRedirects = true;
-            r_client.CookieContainer = new System.Net.CookieContainer();
+            r_client.CookieContainer = MyLittleRestClient.SharedCookies==null?
+                SharedCookies: new System.Net.CookieContainer();
         }
 
         /// <summary>
@@ -96,6 +104,25 @@ namespace HTMLJustForFun
             return r_client.Post(request);
         }
 
+        /// <summary>
+        /// Make an async post request given the parameters for formddata. 
+        /// </summary>
+        /// <returns>
+        /// Async task object with a result: IRestResponse. 
+        /// </returns>
+        public async Task<IRestResponse> MakPostRequestAsync
+        (string url, IDictionary<string, string> parameters)
+        {
+            var t = await Task<IRestResponse>.Run
+            (
+                () =>
+                {
+                    return this.MakePostRequest(url, parameters);
+                }
+
+            );
+            return t; 
+        }
 
         protected void VerifyUrl(string baseurl)
         {
@@ -107,10 +134,17 @@ namespace HTMLJustForFun
             }
         }
 
+        /// <summary>
+        /// Prepare the headers for the IRestRequest that are going to be sent. 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         protected IRestRequest PrepareRequest(string url)
         {
             var request = new RestRequest(url);
-            PrepareHeaders(request);
+            if (swappable_customizer == null) PrepareHeaders(request);
+            else
+            this.swappable_customizer(request);
             return request;
         }
 
@@ -139,7 +173,6 @@ namespace HTMLJustForFun
         }
     }
 
-    
     [Serializable]
     class IncorrectURL : Exception
     {

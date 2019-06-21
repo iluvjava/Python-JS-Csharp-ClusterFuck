@@ -31,3 +31,10 @@ Python. C# and Node js.
     Progress: 
         Sync GET and POST request method in Namespace RestSharpAttempt are completed and seems to work. 
 ```
+
+# 20/06/2019:
+```
+    Problem: 
+        The CsQuery doesn't have a way to get the innertext for a DOM node, lacking of similar functionalities is a problem. 
+            - Solution: AngularSharp
+```

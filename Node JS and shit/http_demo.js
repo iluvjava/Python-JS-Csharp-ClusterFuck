@@ -9,5 +9,5 @@ http.createServer((req,res)=>
     res.write("<h1>Hellow world.</h1>");
     res.write("<p>This is the URL: " + req.url+"</p>");
     res.end();
-
 }).listen(8888, ()=>{console.log("call back function invoked. ")});
+

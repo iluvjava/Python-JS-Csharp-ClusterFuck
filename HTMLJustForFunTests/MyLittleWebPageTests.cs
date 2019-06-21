@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using RestSharp;
-using HTMLJustForFun;
+using LittleRestClient;
 using CsQuery;
 using System.Collections;
+using Webpages;
 
 namespace WebRequest.Tests
 {
@@ -224,9 +225,13 @@ namespace WebRequest.Tests
 
         }
 
-
-
-
+        [TestMethod()]
+        public void WebpageTest3()
+        {
+            Webpages.Webpage wp = new Webpages.Webpage(url1);
+            print(wp.GetFileName());
+            
+        }
 
         public static void print(object o = null)
         {
