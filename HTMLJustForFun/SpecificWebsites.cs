@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Webpages;
+/// <summary>
+/// </summary>
 
 namespace SpecificWebpages
 {
@@ -15,15 +17,19 @@ namespace SpecificWebpages
     {
     }
 
-    public class DA
+
+    /// <summary>
+    /// This class represents a specific domain. 
+    /// - There is a possibility that we get the new beta theme for the DA
+    ///   this means we have to distinguish them. 
+    /// </summary>
+    public class DAArtistwork
     {
         string daurl;
         IDocument doc;
-        Webpage dapage;
-
-        protected DA()
+        public Webpage dapage;
+        protected DAArtistwork()
         {
-
         }
 
         /// <summary>
@@ -42,14 +48,7 @@ namespace SpecificWebpages
         /// </returns>
         public string GetDownloadLink()
         {
-            var collection = this.doc.QuerySelectorAll("a.dev-page-download");
-            if (collection.Length == 0)
-            {
-                collection = this.doc.QuerySelectorAll(".dev-content-normal");
-                if (collection.Length == 0) return null; 
-                return collection[0].GetAttribute("src");
-            }
-            var element = collection[0];
+            var element = this.doc.QuerySelector("[href *=\"download\"]");
             return element.GetAttribute("href");
         }
 
@@ -67,7 +66,6 @@ namespace SpecificWebpages
                 {
                     return this.SaveImage(path);
                 }
-
             );
             return t;
         }
@@ -81,14 +79,12 @@ namespace SpecificWebpages
             return true; 
         }
 
-
         /// <summary>
         /// Create an instance of the DA object
         /// </summary>
         /// <remarks>
         /// This function is pivotal. 
         /// </remarks>
-        /// 
         /// <param name="url"></param>
         /// <returns>
         /// An instance of DA opened with the given URL. 
@@ -98,14 +94,14 @@ namespace SpecificWebpages
         /// regex: ^https?://www.deviantart.com.*$
         /// Other excpetion might be thrown from Webpage class. 
         /// </excpetion>
-        public static DA GetInstance(string url)
+        public static DAArtistwork GetInstance(string url)
         {
-            Regex rx = new Regex("^https?://www.deviantart.com/.*$");
+            Regex rx = new Regex("^https?://www.deviantart.com/.+/art/.+$");
             if (!rx.IsMatch(url))
             {
                 throw new IncorrectURL();
             }
-            DA d = new DA();
+            DAArtistwork d = new DAArtistwork();
             d.daurl = url;
             RequestCustomizer rc = delegate (IRestRequest request)
             {
@@ -113,10 +109,13 @@ namespace SpecificWebpages
                 request.AddHeader("Connection", "keep-alive");
                 request.AddHeader("accept-encoding", "gzip, deflate");
                 request.AddHeader("Accept", "*/*");
-                request.AddHeader("Host", "www.deviantart.com");
+                request.AddHeader("Host", "www.deviantart.com"); 
+                // Important to each specific websites. 
                 request.AddHeader("Postman-Token",
                   "444dc8e3-1a2c-4802-8df7-234017033b7a,ede1a149-0f07-4750-85e2-f03030318567");
                 request.AddHeader("Cache-Control", "no-cache");
+                //request.AddHeader
+                //("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Mobile Safari/537.36");
                 return request;
             };
             Webpage.Client.swappable_customizer = rc;
@@ -126,9 +125,7 @@ namespace SpecificWebpages
             d.doc = doc;
             return d;
         }
-
-
-
-
     }
+
+
 }

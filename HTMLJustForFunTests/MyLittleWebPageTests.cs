@@ -27,8 +27,11 @@ namespace WebRequest.Tests
         string posturl = "https://postman-echo.com/post";
         string pokedex = 
             "https://courses.cs.washington.edu/courses/cse154/webservices/pokedex/game.php";
+
         string nl = Environment.NewLine;
         string desktop = @"C:\Users\Administrator\Desktop";
+        string user = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
         [TestMethod()]
         public void MyLittleWebPageTest()
         {
@@ -145,20 +148,20 @@ namespace WebRequest.Tests
             }
         }
 
-        [TestMethod()]
-        public void InvestigateHttpClient()
-        {
-            var client_handler = new HttpClientHandler();
-            client_handler.AllowAutoRedirect = true;
-            client_handler.UseCookies = true;
-            var properties = client_handler.Properties;
-            print("Investigaring if httpclient saves the cookies " +
-                "accroding to reponse header from the server. ");
-            MyLittleRequest mlr = new MyLittleRequest(url1);
-            var res = mlr.MakeGetRequestAsync().Result;
-            print("Cookie container count: "+ mlr.client_handler.CookieContainer.Count);
-
-        }
+        //[TestMethod()]
+        //public void InvestigateHttpClient()
+        //{
+        //    var client_handler = new HttpClientHandler();
+        //    client_handler.AllowAutoRedirect = true;
+        //    client_handler.UseCookies = true;
+        //    var properties = client_handler.Properties;
+        //    print("Investigaring if httpclient saves the cookies " +
+        //        "accroding to reponse header from the server. ");
+        //    MyLittleRequest mlr = new MyLittleRequest(url1);
+        //    var res = mlr.MakeGetRequestAsync().Result;
+        //    print("Cookie container count: "+ mlr.client_handler.CookieContainer.Count);
+        //
+        //}
 
         [TestMethod()]
         public void Webpage2Test()
@@ -237,16 +240,22 @@ namespace WebRequest.Tests
             wp.SaveAsFile(this.desktop);
         }
 
-
+        /// <summary>
+        ///
+        /// </summary>
         [TestMethod()]
         public void DAClassTest()
         {
-            int i = 10;
+            int i = 20;
             while (i-- != 0)
             {
-                DA instance = DA.GetInstance(url1);
+                DAArtistwork instance = DAArtistwork.GetInstance(url1);
                 print(instance.GetDownloadLink());
-                //instance.SaveImageAsync(desktop);
+                print("------------------------------Raw Content---------------------------------");
+                print(instance.dapage.raw_content_string);
+                Assert.IsTrue(
+                    instance.GetDownloadLink() != null);
+                print(instance.SaveImageAsync(user).Result);
             }
         }
 
@@ -269,10 +278,12 @@ namespace WebRequest.Tests
                         request.AddHeader("Connection", "keep-alive");
                         request.AddHeader("accept-encoding", "gzip, deflate");
                         request.AddHeader("Accept", "*/*");
-                    //  request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393");
+                        //  request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) 
+                        //AppleWebKit /537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 
+                        //Edge /14.14393");
                     request.AddHeader("Host", "www.deviantart.com");
                         request.AddHeader("Postman-Token",
-                          "444dc8e3-1a2c-4802-8df7-234017033b7a,ede1a149-0f07-4750-85e2-f03030318567");
+                       "444dc8e3-1a2c-4802-8df7-234017033b7a,ede1a149-0f07-4750-85e2-f03030318567");
                         request.AddHeader("Cache-Control", "no-cache");
                         return request;
                     };

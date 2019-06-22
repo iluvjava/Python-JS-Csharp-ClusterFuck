@@ -117,7 +117,6 @@ namespace Webpages
                 DirectoryInfo dirinfo = new DirectoryInfo(path);
                 if (!dirinfo.Exists) return false;
                 if (filename == null) filename = GetFileName();
-
                 using (FileStream fs = new FileStream(path + $"/{filename}", FileMode.CreateNew))
                 {
                     fs.Write(this.raw_content, 0, this.raw_content.Length);

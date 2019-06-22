@@ -41,13 +41,14 @@ namespace LittleRestClient
         public static CookieContainer SharedCookies = new CookieContainer();
         public static string UserAgent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 " +
             "(KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136";
+        public static string UserAgent2 = "PostmanRuntime/7.15.0";
 
         public MyLittleRestClient()
         {
             r_client = new RestClient();
             r_client.FollowRedirects = true;
             r_client.CookieContainer = MyLittleRestClient.SharedCookies;
-            r_client.UserAgent = MyLittleRestClient.UserAgent;
+            r_client.UserAgent = MyLittleRestClient.UserAgent2;
         }
 
         /// <summary>
