@@ -13,6 +13,7 @@ using CsQuery;
 using System.Collections;
 using Webpages;
 using SpecificWebpages;
+using System.Threading;
 
 namespace WebRequest.Tests
 {
@@ -20,8 +21,9 @@ namespace WebRequest.Tests
     public class MyLittleWebPageTests
     {
 
-        string url1 = "https://www.deviantart.com/heddopen/art/Princess-test-II-779031701";
+        string url1 = "https://www.deviantart.com/heddopen/art/Lil-Happi-Dashie-Colour-750967238";
         string url2 = "https://www.deviantart.com/";
+        string url3 = "https://www.deviantart.com/rainbow-highway/art/Phencyclidine-8k-736954613";
         string posturl = "https://postman-echo.com/post";
         string pokedex = 
             "https://courses.cs.washington.edu/courses/cse154/webservices/pokedex/game.php";
@@ -239,9 +241,13 @@ namespace WebRequest.Tests
         [TestMethod()]
         public void DAClassTest()
         {
-            DA instance = DA.GetInstance(url1);
-            print(instance.GetDownloadLink());
-            //instance.SaveImageAsync(desktop);
+            int i = 10;
+            while (i-- != 0)
+            {
+                DA instance = DA.GetInstance(url1);
+                print(instance.GetDownloadLink());
+                //instance.SaveImageAsync(desktop);
+            }
         }
 
 
@@ -251,12 +257,34 @@ namespace WebRequest.Tests
         [TestMethod()]
         public void MiscTest()
         {
-            Webpages.Webpage wp = new Webpages.Webpage(url1);
-            print(wp);
-            print(Webpage.Client);
-            print(wp.raw_content_string);
-
-
+            {
+                int i = 20;
+                while (i-- != 0)
+                {
+                    Random r = new Random();
+                    Webpages.Webpage wp = new Webpages.Webpage(url3);
+                    RequestCustomizer rc = delegate (IRestRequest request)
+                    {
+                        request.AddHeader("cache-control", "no-cache");
+                        request.AddHeader("Connection", "keep-alive");
+                        request.AddHeader("accept-encoding", "gzip, deflate");
+                        request.AddHeader("Accept", "*/*");
+                    //  request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393");
+                    request.AddHeader("Host", "www.deviantart.com");
+                        request.AddHeader("Postman-Token",
+                          "444dc8e3-1a2c-4802-8df7-234017033b7a,ede1a149-0f07-4750-85e2-f03030318567");
+                        request.AddHeader("Cache-Control", "no-cache");
+                        return request;
+                    };
+                    Webpage.Client.swappable_customizer = rc;
+                    print(wp);
+                    print(Webpage.Client);
+                    print(wp.raw_content_string);
+                    Assert.IsTrue(wp.raw_content_string.
+                        Contains("<!--[if IE 9]><html class=\"ie eq9 lt10 \"><![endif]-->"));
+                    //Thread.Sleep(30);
+                }
+            }
         }
 
         public static void print(object o = null)
@@ -270,6 +298,21 @@ namespace WebRequest.Tests
             {
                 print(e.Current);
             }
+        }
+
+        /// <summary>
+        /// Creates a random hex string with given length. 
+        /// </summary>
+        /// <param name="digits"></param>
+        /// <returns></returns>
+        public static string GetRandomHexNumber(int digits, Random random)
+        {
+            byte[] buffer = new byte[digits / 2];
+            random.NextBytes(buffer);
+            string result = String.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
+            if (digits % 2 == 0)
+                return result;
+            return result + random.Next(16).ToString("X");
         }
     }
 }

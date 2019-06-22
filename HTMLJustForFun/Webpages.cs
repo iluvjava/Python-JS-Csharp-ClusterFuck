@@ -43,7 +43,6 @@ namespace Webpages
         public byte[] raw_content { get; protected set; }
         public string raw_content_string { get; protected set; }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -64,7 +63,6 @@ namespace Webpages
             GetWebPage();
         }
 
-
         /// <summary>
         /// GET, byte array, and content type will be established. 
         /// </summary>
@@ -81,7 +79,6 @@ namespace Webpages
             this.response = res;
             this.raw_content_string = res.Content;
         }
-
 
         override
         public string ToString()
@@ -116,6 +113,7 @@ namespace Webpages
         {
             try
             {
+                Console.WriteLine("Saving File to: "+ path);
                 DirectoryInfo dirinfo = new DirectoryInfo(path);
                 if (!dirinfo.Exists) return false;
                 if (filename == null) filename = GetFileName();

@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Dom;
 using LittleRestClient;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,10 @@ namespace SpecificWebpages
         /// </summary>
         /// <returns>
         /// A string that contains the resource of the image. 
+        /// Null will be returned if it's not there: 
+        /// <remarks>
+        /// It heppens if mobile client content is loaded. 
+        /// </remarks>
         /// </returns>
         public string GetDownloadLink()
         {
@@ -41,6 +46,7 @@ namespace SpecificWebpages
             if (collection.Length == 0)
             {
                 collection = this.doc.QuerySelectorAll(".dev-content-normal");
+                if (collection.Length == 0) return null; 
                 return collection[0].GetAttribute("src");
             }
             var element = collection[0];
@@ -53,29 +59,36 @@ namespace SpecificWebpages
         /// <returns>
         /// True or false to indicate the status. 
         /// </returns>
-        public void SaveImageAsync(string path)
+        public Task<bool> SaveImageAsync(string path)
         {
-            var t =Task.Run
+            var t = Task.Run
             (
                 () =>
                 {
-                    this.SaveImage(path);
+                    return this.SaveImage(path);
                 }
 
             );
+            return t;
         }
 
-        protected void SaveImage(string path)
+        protected bool SaveImage(string path)
         {
             string dllink = this.GetDownloadLink();
+            if (dllink == null) return false; //failed case. 
             Webpage wp = new Webpage(dllink);
             wp.SaveAsFile(path);
+            return true; 
         }
 
 
         /// <summary>
         /// Create an instance of the DA object
         /// </summary>
+        /// <remarks>
+        /// This function is pivotal. 
+        /// </remarks>
+        /// 
         /// <param name="url"></param>
         /// <returns>
         /// An instance of DA opened with the given URL. 
@@ -94,6 +107,19 @@ namespace SpecificWebpages
             }
             DA d = new DA();
             d.daurl = url;
+            RequestCustomizer rc = delegate (IRestRequest request)
+            {
+                request.AddHeader("cache-control", "no-cache");
+                request.AddHeader("Connection", "keep-alive");
+                request.AddHeader("accept-encoding", "gzip, deflate");
+                request.AddHeader("Accept", "*/*");
+                request.AddHeader("Host", "www.deviantart.com");
+                request.AddHeader("Postman-Token",
+                  "444dc8e3-1a2c-4802-8df7-234017033b7a,ede1a149-0f07-4750-85e2-f03030318567");
+                request.AddHeader("Cache-Control", "no-cache");
+                return request;
+            };
+            Webpage.Client.swappable_customizer = rc;
             Webpage newdapage = new Webpage(url);
             IDocument doc = AngleSharpBridge.Get(newdapage.raw_content_string);
             d.dapage = newdapage;

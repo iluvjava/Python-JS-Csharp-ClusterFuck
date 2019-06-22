@@ -39,15 +39,15 @@ namespace LittleRestClient
         /// This is shared when it's specified. 
         /// </summary>
         public static CookieContainer SharedCookies = new CookieContainer();
-
+        public static string UserAgent = "Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 " +
+            "(KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10136";
 
         public MyLittleRestClient()
         {
             r_client = new RestClient();
             r_client.FollowRedirects = true;
             r_client.CookieContainer = MyLittleRestClient.SharedCookies;
-            r_client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
-                "(KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36";
+            r_client.UserAgent = MyLittleRestClient.UserAgent;
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace LittleRestClient
             if (this.swappable_customizer == null)
             { PrepareHeaders(request); }
             else
-            { this.swappable_customizer(request); }
+            {  return this.swappable_customizer(request); }
             return request;
         }
 
@@ -165,9 +165,9 @@ namespace LittleRestClient
             
             request.AddHeader("Accept","*/*"
                 );
-            request.AddHeader("accept-encoding",
-                "gzip, deflate, br"
-                );
+            //request.AddHeader("accept-encoding",
+            //    "gzip, deflate, br"
+            //    );
             request.AddHeader(
                 "Cache-Control", "no-cache"
                 );

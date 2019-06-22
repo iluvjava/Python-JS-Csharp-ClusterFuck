@@ -47,4 +47,11 @@ Python. C# and Node js.
         - Fix Attempt: Set the user agent properties in the Instance of RequestClient 
         object instead of adding then to the headers of the Irequest. (failed)
         - Fix Attempt: Set the accept property in header to be: "*/*" (Success 75% sure)
+        - Fix Attempt: Set the headers using delagate, set the header completely the 
+        same from the code provided by postman. (95% Worked)
+            - Problem: Sometimes, once in a blue moon, I got to the client html. 
+    Question: 
+        - Why does keeping the same header key "Postman-token" seems to work? 
+            - Don't know, is this magic? 
+
 ```
