@@ -38,3 +38,13 @@ Python. C# and Node js.
         The CsQuery doesn't have a way to get the innertext for a DOM node, lacking of similar functionalities is a problem. 
             - Solution: AngulSharp
 ```
+
+# 21/062019: 
+```
+    Problem:
+        Sometimes the client is associated with the correct User-Agent header, sometimes it's not, 
+        this is a very mysterious bug. 
+        - Fix Attempt: Set the user agent properties in the Instance of RequestClient 
+        object instead of adding then to the headers of the Irequest. (failed)
+        - Fix Attempt: Set the accept property in header to be: "*/*" (Success 75% sure)
+```

@@ -12,6 +12,7 @@ using LittleRestClient;
 using CsQuery;
 using System.Collections;
 using Webpages;
+using SpecificWebpages;
 
 namespace WebRequest.Tests
 {
@@ -232,7 +233,30 @@ namespace WebRequest.Tests
             Webpages.Webpage wp = new Webpages.Webpage(url1);
             print(wp.GetFileName());
             wp.SaveAsFile(this.desktop);
-            
+        }
+
+
+        [TestMethod()]
+        public void DAClassTest()
+        {
+            DA instance = DA.GetInstance(url1);
+            print(instance.GetDownloadLink());
+            //instance.SaveImageAsync(desktop);
+        }
+
+
+        ///<summary>
+        /// 
+        ///</summary>
+        [TestMethod()]
+        public void MiscTest()
+        {
+            Webpages.Webpage wp = new Webpages.Webpage(url1);
+            print(wp);
+            print(Webpage.Client);
+            print(wp.raw_content_string);
+
+
         }
 
         public static void print(object o = null)

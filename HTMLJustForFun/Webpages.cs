@@ -73,7 +73,9 @@ namespace Webpages
             IRestResponse res = Webpage.Client.MakeGetRequest(this.base_url);
             this.is_successful = res.IsSuccessful;
             if (!is_successful)
-                return;
+            {
+                throw new Exception();
+            }
             this.raw_content = res.RawBytes;
             this.content_type = res.ContentType;
             this.response = res;
@@ -161,6 +163,9 @@ namespace Webpages
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class AngleSharpBridge
     {
         public static IDocument Get(string s)

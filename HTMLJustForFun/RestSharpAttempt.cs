@@ -34,19 +34,20 @@ namespace LittleRestClient
     {
         public RestClient r_client { get; protected set;}
         public RequestCustomizer swappable_customizer = null;
-        
+
         /// <summary>
         /// This is shared when it's specified. 
         /// </summary>
-        public static CookieContainer SharedCookies;
+        public static CookieContainer SharedCookies = new CookieContainer();
 
 
         public MyLittleRestClient()
         {
             r_client = new RestClient();
             r_client.FollowRedirects = true;
-            r_client.CookieContainer = MyLittleRestClient.SharedCookies==null?
-                SharedCookies: new System.Net.CookieContainer();
+            r_client.CookieContainer = MyLittleRestClient.SharedCookies;
+            r_client.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+                "(KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36";
         }
 
         /// <summary>
@@ -58,14 +59,16 @@ namespace LittleRestClient
         /// The parameters with the get reqeust, 
         /// </param>
         /// </param>
-        /// <returns></returns>
+        /// <returns>
+        /// 
+        /// </returns>
         public IRestResponse MakeGetRequest(string url, string parameters = "")
         {
             parameters = Uri.EscapeDataString(parameters);
             var request = PrepareRequest(url+parameters);
             VerifyUrl(url);
             request.Method = Method.GET;
-            var res = r_client.Execute(request);
+            var res = r_client.Get(request);
             return res;
         }
 
@@ -159,22 +162,14 @@ namespace LittleRestClient
         /// </summary>
         protected void PrepareHeaders(IRestRequest request)
         {
-            request.AddHeader("User-Agent",
-                " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                +
-                "Chrome/75.0.3770.90 Safari/537.36"
-                +
-                "accept: text / html, application / xhtml + xml, application / xml; q = 0.9, image"+
-                " / webp, image / " +
-                "apng, */*; q=0.8, application/signed-exchange; v=b3"              
-                );
-            request.AddHeader("Accept",
-                "text/html, application/xhtml+xml, application/xml; " +
-                "q=0.9, image/webp, image/apng, */*; " +
-                "q=0.8, application/signed-exchange; v=b3"
+            
+            request.AddHeader("Accept","*/*"
                 );
             request.AddHeader("accept-encoding",
                 "gzip, deflate, br"
+                );
+            request.AddHeader(
+                "Cache-Control", "no-cache"
                 );
         }
     }
