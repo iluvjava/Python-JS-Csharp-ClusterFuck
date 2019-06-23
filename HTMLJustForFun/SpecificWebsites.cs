@@ -1,98 +1,44 @@
 ﻿using AngleSharp.Dom;
 using LittleRestClient;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Webpages;
+
 /// <summary>
 /// </summary>
 
 namespace SpecificWebpages
 {
-    class SpecificWebsites
-    {
-    }
-
-
     /// <summary>
-    /// This class represents a specific domain. 
+    /// This class represents a specific domain.
     /// - There is a possibility that we get the new beta theme for the DA
-    ///   this means we have to distinguish them. 
+    ///   this means we have to distinguish them.
     /// </summary>
     public class DAArtistwork
     {
-        string daurl;
-        IDocument doc;
         public Webpage dapage;
+        private string daurl;
+        private IDocument doc;
+
         protected DAArtistwork()
         {
-        }
-
-        /// <summary>
-        /// ----------------Method under testing--------------------------------
-        /// An internal method that searches for the download link for the image on the page. 
-        ///     - If the download btn is on the page
-        ///         - the link for the dl btn is returned 
-        ///     - the src link for the main image on the page is returned. 
-        /// </summary>
-        /// <returns>
-        /// A string that contains the resource of the image. 
-        /// Null will be returned if it's not there: 
-        /// <remarks>
-        /// It heppens if mobile client content is loaded. 
-        /// </remarks>
-        /// </returns>
-        public string GetDownloadLink()
-        {
-            var element = this.doc.QuerySelector("[href *=\"download\"]");
-            return element.GetAttribute("href");
-        }
-
-        /// <summary>
-        /// This method attemps to save images from the DA website. 
-        /// </summary>
-        /// <returns>
-        /// True or false to indicate the status. 
-        /// </returns>
-        public Task<bool> SaveImageAsync(string path)
-        {
-            var t = Task.Run
-            (
-                () =>
-                {
-                    return this.SaveImage(path);
-                }
-            );
-            return t;
-        }
-
-        protected bool SaveImage(string path)
-        {
-            string dllink = this.GetDownloadLink();
-            if (dllink == null) return false; //failed case. 
-            Webpage wp = new Webpage(dllink);
-            wp.SaveAsFile(path);
-            return true; 
         }
 
         /// <summary>
         /// Create an instance of the DA object
         /// </summary>
         /// <remarks>
-        /// This function is pivotal. 
+        /// This function is pivotal.
         /// </remarks>
         /// <param name="url"></param>
         /// <returns>
-        /// An instance of DA opened with the given URL. 
+        /// An instance of DA opened with the given URL.
         /// </returns>
         /// <excpetion>
-        /// An incorrect URL exeception is thrown if the input url doesn't match the 
+        /// An incorrect URL exeception is thrown if the input url doesn't match the
         /// regex: ^https?://www.deviantart.com.*$
-        /// Other excpetion might be thrown from Webpage class. 
+        /// Other excpetion might be thrown from Webpage class.
         /// </excpetion>
         public static DAArtistwork GetInstance(string url)
         {
@@ -109,8 +55,8 @@ namespace SpecificWebpages
                 request.AddHeader("Connection", "keep-alive");
                 request.AddHeader("accept-encoding", "gzip, deflate");
                 request.AddHeader("Accept", "*/*");
-                request.AddHeader("Host", "www.deviantart.com"); 
-                // Important to each specific websites. 
+                request.AddHeader("Host", "www.deviantart.com");
+                // Important to each specific websites.
                 request.AddHeader("Postman-Token",
                   "444dc8e3-1a2c-4802-8df7-234017033b7a,ede1a149-0f07-4750-85e2-f03030318567");
                 request.AddHeader("Cache-Control", "no-cache");
@@ -125,7 +71,56 @@ namespace SpecificWebpages
             d.doc = doc;
             return d;
         }
+
+        /// <summary>
+        /// ----------------Method under testing--------------------------------
+        /// An internal method that searches for the download link for the image on the page.
+        ///     - If the download btn is on the page
+        ///         - the link for the dl btn is returned
+        ///     - the src link for the main image on the page is returned.
+        /// </summary>
+        /// <returns>
+        /// A string that contains the resource of the image.
+        /// Null will be returned if it's not there:
+        /// <remarks>
+        /// It heppens if mobile client content is loaded.
+        /// </remarks>
+        /// </returns>
+        public string GetDownloadLink()
+        {
+            var element = this.doc.QuerySelector("[href *=\"download\"]");
+            return element.GetAttribute("href");
+        }
+
+        /// <summary>
+        /// This method attemps to save images from the DA website.
+        /// </summary>
+        /// <returns>
+        /// True or false to indicate the status.
+        /// </returns>
+        public Task<bool> SaveImageAsync(string path)
+        {
+            var t = Task.Run
+            (
+                () =>
+                {
+                    return this.SaveImage(path);
+                }
+            );
+            return t;
+        }
+
+        protected bool SaveImage(string path)
+        {
+            string dllink = this.GetDownloadLink();
+            if (dllink == null) return false; //failed case.
+            Webpage wp = new Webpage(dllink);
+            wp.SaveAsFile(path);
+            return true;
+        }
     }
 
-
+    internal class SpecificWebsites
+    {
+    }
 }

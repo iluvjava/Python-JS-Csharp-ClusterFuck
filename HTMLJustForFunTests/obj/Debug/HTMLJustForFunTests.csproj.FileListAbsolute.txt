@@ -43,10 +43,7 @@ C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunT
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\RestSharp.xml
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\HTMLJustForFunTests.dll.config
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\AngleSharp.dll
-C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\System.Text.Encoding.CodePages.dll
-C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\AngleSharp.xml
-C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\obj\Debug\HTMLJustForFunTests.csprojAssemblyReference.cache
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\obj\Debug\HTMLJustForFunTests.csproj.CoreCompileInputs.cache
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\obj\Debug\HTMLJustForFunTests.dll
@@ -74,3 +71,4 @@ C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\HtmlAgilityPack.xml
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\obj\Debug\HTMLJustForFunTests.csproj.CopyComplete
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\Newtonsoft.Json.xml
