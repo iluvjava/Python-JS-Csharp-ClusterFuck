@@ -152,3 +152,8 @@ C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debu
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.csproj.CopyComplete
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.exe
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\obj\Debug\HTMLJustForFun.pdb
+C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\Json.NET.Web.dll
+C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\Newtonsoft.Json.dll
+C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\Newtonsoft.Json.xml
+C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\WebDriver.dll
+C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFun\bin\Debug\WebDriver.xml

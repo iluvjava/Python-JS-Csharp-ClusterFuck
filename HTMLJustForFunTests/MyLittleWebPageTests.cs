@@ -298,6 +298,22 @@ namespace WebRequest.Tests
             }
         }
 
+
+        /// <summary>
+        /// It also tests the Derpibooru APIs. 
+        /// </summary>
+        [TestMethod()]
+        public void JsonSerializeTest()
+        {
+            // string stuff = "{\"key\":{\"key2\":\"val\"}}";
+            // IDictionary<string, object> dict = APIs.JsonDecode(stuff);
+            // print(dict["key"].GetType());
+            // print(DB.GetTodayImages());
+            print(DB.GetMainpageImages(1));
+            print("-----------------------------------------------");
+            print(DB.GetMainpageImages(2));
+        }
+
         public static void print(object o = null)
         {
             Console.WriteLine(o == null?"":o.ToString());

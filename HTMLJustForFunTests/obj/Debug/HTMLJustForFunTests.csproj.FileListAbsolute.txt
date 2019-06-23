@@ -73,3 +73,4 @@ C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\HtmlAgilityPack.xml
 C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\obj\Debug\HTMLJustForFunTests.csproj.CopyComplete
+C:\Users\victo\source\repos\FunWith-API-HTTP-HTML-and-C-\HTMLJustForFunTests\bin\Debug\Newtonsoft.Json.xml

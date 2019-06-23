@@ -53,5 +53,13 @@ Python. C# and Node js.
     Question: 
         - Why does keeping the same header key "Postman-token" seems to work? 
             - Don't know, is this magic? 
-
+```
+# 22/062019: 
+```
+    Action: 
+        Abandon Deviantart scraping project. 
+    Action: 
+        Testing API class and make requests to derpibooru
+    Tools: 
+        Json.Net framework. 
 ```

@@ -57,23 +57,48 @@ namespace LittleRestClient
         /// <param name="url">
         /// Abosolute URL please. 
         /// <param name ="parameters">
-        /// The parameters with the get reqeust, 
+        /// A dictionary from string to string to represents the data parameters for 
+        /// the get request. 
         /// </param>
         /// </param>
         /// <returns>
         /// 
         /// </returns>
-        public IRestResponse MakeGetRequest(string url, string parameters = "")
+        public IRestResponse MakeGetRequest
+            (string url, IDictionary<string, string> parameters = null)
         {
-            parameters = Uri.EscapeDataString(parameters);
-            var request = PrepareRequest(url+parameters);
+            
+            var request = PrepareRequest(url+EncodeGetURLParameters(parameters));
             VerifyUrl(url);
             request.Method = Method.GET;
             var res = r_client.Get(request);
             return res;
         }
+        /// <summary>
+        /// This method encode the key and value for the url. 
+        /// </summary>
+        /// <param name="arg">
+        /// A map that repesents the parameters, if it's null, then the function
+        /// will just return ""; 
+        /// </param>
+        /// <returns></returns>
+        protected static string EncodeGetURLParameters(IDictionary<string, string> arg)
+        {
+            if (arg == null || arg.Count == 0) return "";
+            var res = new StringBuilder("?");
+            foreach (var kvp in arg)
+            {
+                res.Append(Uri.EscapeDataString(kvp.Key));
+                res.Append("=");
+                res.Append(Uri.EscapeDataString(kvp.Value));
+                res.Append("&");
+            }
+            string result = res.ToString();
+            return result.Substring(0,res.Length-1);
+        }
 
-        public async Task<IRestResponse>  MakeGetRequestAsync(string url, string parameters="")
+        public async Task<IRestResponse>  MakeGetRequestAsync
+            (string url, IDictionary<string, string> parameters = null)
         {
             var t = await Task<IRestResponse>.Run
                 (
@@ -169,9 +194,9 @@ namespace LittleRestClient
             //request.AddHeader("accept-encoding",
             //    "gzip, deflate, br"
             //    );
-            request.AddHeader(
-                "Cache-Control", "no-cache"
-                );
+            //request.AddHeader(
+            //    "Cache-Control", "no-cache"
+            //    );
         }
     }
 
