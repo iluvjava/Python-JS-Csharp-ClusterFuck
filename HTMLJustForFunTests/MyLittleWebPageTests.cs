@@ -23,9 +23,11 @@ namespace WebRequest.Tests
             "https://courses.cs.washington.edu/courses/cse154/webservices/pokedex/game.php";
 
         private string posturl = "https://postman-echo.com/post";
-        private string url1 = "https://www.deviantart.com/heddopen/art/Lil-Happi-Dashie-Colour-750967238";
+        private string url1 = 
+            "https://www.deviantart.com/heddopen/art/Lil-Happi-Dashie-Colour-750967238";
         private string url2 = "https://www.deviantart.com/";
-        private string url3 = "https://www.deviantart.com/rainbow-highway/art/Phencyclidine-8k-736954613";
+        private string url3 = 
+            "https://www.deviantart.com/rainbow-highway/art/Phencyclidine-8k-736954613";
         private string user = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
         /// <summary>
@@ -153,6 +155,10 @@ namespace WebRequest.Tests
             {
                 print(token.ToString());
             }
+            print("Trying to convert each of the image object in the json response.");
+            IDBImage image = j["images"][0].ToObject<DBImage>();
+            print(image);
+
         }
 
         [TestMethod()]

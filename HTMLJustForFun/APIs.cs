@@ -1,11 +1,31 @@
 ﻿using LittleRestClient;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SpecificWebpages
 {
+    /// <summary>
+    /// This interface defines the field of an images json object in te
+    /// </summary>
+    public interface IDBImage
+    {
+        DateTime created_at { get; set; }
+        string description { get; set; }
+        int downvotes { get; set; }
+        string file_name { get; set; }
+        DateTime first_seen_at { get; set; }
+        int id { get; set; }
+        string image { get; set; }
+        string tags { get; set; }
+        DateTime updated_at { get; set; }
+        int upvotes { get; set; }
+    }
+
     public class APIs
     {
         /// <summary>
@@ -62,6 +82,21 @@ namespace SpecificWebpages
         public static string TodayImages = "https://derpibooru.org/images.json";
 
         /// <summary>
+        /// Given a Jtoken, this method will convert it to an instance of the IDBImage.
+        /// </summary>
+        /// <param name="j">
+        /// The Jtoken as an instance representing the image object in the response from the
+        /// DB api.
+        /// </param>
+        /// <returns>
+        /// An DBImage referred as an IDBImage.
+        /// </returns>
+        public static IDBImage ConverToDBImage(JToken j)
+        {
+            return j.ToObject<IDBImage>();
+        }
+
+        /// <summary>
         /// Get the main page images converted to JSON, given a page offset
         /// </summary>
         /// <param name="pageoffset">
@@ -101,6 +136,51 @@ namespace SpecificWebpages
 
                 );
             return t;
+        }
+    }
+
+    /// <summary>
+    /// This class represents an image object in the json response from the derpibooru apis.
+    ///
+    /// </summary>
+    public class DBImage : IDBImage
+    {
+        public DateTime created_at { get; set; }
+        public string description { get; set; }
+        public int downvotes { get; set; }
+        public string file_name { get; set; }
+        public DateTime first_seen_at { get; set; }
+        public int id { get; set; }
+        public string image { get; set; }
+        public string tags { get; set; }
+        public DateTime updated_at { get; set; }
+        public int upvotes { get; set; }
+
+        public override string ToString()
+        {
+            string nl = Environment.NewLine;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(id);
+            sb.Append(created_at.ToString() + nl);
+            sb.Append(updated_at.ToString() + nl);
+            sb.Append(first_seen_at.ToString() + nl);
+            sb.Append(upvotes.ToString() + nl);
+            sb.Append(downvotes.ToString() + nl);
+            sb.Append(tags + nl);
+            sb.Append("https:" + image);
+            sb.Append(file_name);
+            sb.Append(description);
+            return sb.ToString();
+        }
+
+
+    }
+
+    public class DBImageConverter : CustomCreationConverter<IDBImage>
+    {
+        public override IDBImage Create(Type objectType)
+        {
+            return new DBImage();
         }
     }
 }
