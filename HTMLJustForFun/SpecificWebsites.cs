@@ -8,7 +8,7 @@ using Webpages;
 /// <summary>
 /// </summary>
 
-namespace SpecificWebpages
+namespace APIs
 {
     /// <summary>
     /// This class represents a specific domain.

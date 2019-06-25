@@ -63,3 +63,12 @@ Python. C# and Node js.
     Tools: 
         Json.Net framework. 
 ```
+
+# 25/06/2019: 
+```
+    Action: 
+        - Add different way of encoding the GET request parameters for the MyLittleResclient 
+        class. (Done but not tested yet)
+    Action: 
+        - Add support for GET with query string too. (Done but not tested yet.)
+```

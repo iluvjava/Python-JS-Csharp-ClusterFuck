@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 
 /// <summary>
 ///
@@ -19,6 +20,21 @@ namespace LittleRestClient
     /// <param name="request"></param>
     /// <returns></returns>
     public delegate IRestRequest RequestCustomizer(IRestRequest request);
+
+    /// <summary>
+    /// Different ways of encoding get parameters into the url.
+    /// </summary>
+    public enum URLENCODEMODE
+    {
+        /// <summary>
+        /// Space is %20, it's using escape datastring. 
+        /// </summary>
+        EscapeData,
+        /// <summary>
+        /// Space is +, it's usring URLEncode.
+        /// </summary>
+        UnicodeURL
+    }
 
     /// <summary>
     /// This is a class that encapusulate a client, and it automate the process of making different
@@ -39,6 +55,8 @@ namespace LittleRestClient
         public static string UserAgent2 = "PostmanRuntime/7.15.0";
         public RequestCustomizer swappable_customizer = null;
 
+        public RestClient r_client { get; protected set; }
+
         public MyLittleRestClient()
         {
             r_client = new RestClient();
@@ -46,9 +64,6 @@ namespace LittleRestClient
             r_client.CookieContainer = MyLittleRestClient.SharedCookies;
             r_client.UserAgent = MyLittleRestClient.UserAgent2;
         }
-
-        public RestClient r_client { get; protected set; }
-
         /// <summary>
         /// Make a get request for the given url
         /// </summary>
@@ -72,6 +87,24 @@ namespace LittleRestClient
             return res;
         }
 
+        /// <summary>
+        /// This method returns a IRestResponse when given an url with a 
+        /// query string. 
+        /// </summary>
+        /// <param name="url">
+        /// The url to make get request. 
+        /// </param>
+        /// <param name="querystring">
+        /// The querystring for the get request. 
+        /// </param>
+        /// <returns>
+        /// IRestResponse. 
+        /// </returns>
+        public IRestResponse MakeGetRequest
+            (string url, string querystring)
+        {
+            return MakeGetRequest(url+Uri.EscapeDataString(querystring)); 
+        }
         public async Task<IRestResponse> MakeGetRequestAsync
                     (string url, IDictionary<string, string> parameters = null)
         {
@@ -141,16 +174,32 @@ namespace LittleRestClient
         /// will just return "";
         /// </param>
         /// <returns></returns>
-        protected static string EncodeGetURLParameters(IDictionary<string, string> arg)
+        protected static string EncodeGetURLParameters
+        (IDictionary<string, string> arg, URLENCODEMODE mode = URLENCODEMODE.EscapeData)
         {
             if (arg == null || arg.Count == 0) return "";
             var res = new StringBuilder("?");
             foreach (var kvp in arg)
             {
-                res.Append(Uri.EscapeDataString(kvp.Key));
+                string k = kvp.Key, v = kvp.Value;
+                switch (mode)
+                {
+                    case URLENCODEMODE.EscapeData:
+                        k = Uri.EscapeDataString(k);
+                        v = Uri.EscapeDataString(v);
+                        break;
+                    case URLENCODEMODE.UnicodeURL:
+                        k = HttpUtility.UrlEncode(k);
+                        v = HttpUtility.UrlEncode(v);
+                        break;
+                    default:
+                        throw new Exception("Unimplimented URL Encode standard. ");
+                }
+                res.Append(k);
                 res.Append("=");
-                res.Append(Uri.EscapeDataString(kvp.Value));
+                res.Append(v);
                 res.Append("&");
+                
             }
             string result = res.ToString();
             return result.Substring(0, res.Length - 1);

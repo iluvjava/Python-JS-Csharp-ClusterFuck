@@ -3,7 +3,7 @@ using LittleRestClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using SpecificWebpages;
+using APIs;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpecificWebpages
+namespace APIs
 {
     /// <summary>
     /// This interface defines the field of an images json object in te
@@ -25,7 +25,10 @@ namespace SpecificWebpages
         DateTime updated_at { get; set; }
         int upvotes { get; set; }
     }
-
+    /// <summary>
+    /// This class contains static method that are associated with 
+    /// parsing JSON. 
+    /// </summary>
     public class APIs
     {
         /// <summary>
@@ -77,10 +80,14 @@ namespace SpecificWebpages
         public static MyLittleRestClient MLC = new MyLittleRestClient();
 
         /// <summary>
+        /// The DB search endpoint for the API. 
+        /// </summary>
+        public static string SearchEndpoint = "https://derpibooru.org/search.json";
+
+        /// <summary>
         /// This is the endpoint to today's images to derpibooru.
         /// </summary>
         public static string TodayImages = "https://derpibooru.org/images.json";
-
         /// <summary>
         /// Given a Jtoken, this method will convert it to an instance of the IDBImage.
         /// </summary>
@@ -137,6 +144,18 @@ namespace SpecificWebpages
                 );
             return t;
         }
+        /// <summary>
+        /// This method performs a search on the DB api and return the result. 
+        /// </summary>
+        /// <param name="strquery">The query string</param>
+        /// <returns></returns>
+        public static JObject SearchDB(string strquery, int page =1, int perpage= 50)
+        {
+            var parameters = new Dictionary<string, string>()
+            { { "page" , page.ToString()}, {"perpage", perpage.ToString() } };
+            string response = MLC.MakeGetRequest(DB.SearchEndpoint, parameters).Content;
+            return APIs.JsonToJObject(response);
+        }
     }
 
     /// <summary>
@@ -155,24 +174,22 @@ namespace SpecificWebpages
         public string tags { get; set; }
         public DateTime updated_at { get; set; }
         public int upvotes { get; set; }
-
         public override string ToString()
         {
             string nl = Environment.NewLine;
             StringBuilder sb = new StringBuilder();
-            sb.Append(id);
+            sb.Append(id+ nl);
             sb.Append(created_at.ToString() + nl);
             sb.Append(updated_at.ToString() + nl);
             sb.Append(first_seen_at.ToString() + nl);
             sb.Append(upvotes.ToString() + nl);
             sb.Append(downvotes.ToString() + nl);
             sb.Append(tags + nl);
-            sb.Append("https:" + image);
-            sb.Append(file_name);
-            sb.Append(description);
+            sb.Append("https:" + image+nl);
+            sb.Append(file_name+nl);
+            sb.Append(description+nl);
             return sb.ToString();
         }
-
 
     }
 
