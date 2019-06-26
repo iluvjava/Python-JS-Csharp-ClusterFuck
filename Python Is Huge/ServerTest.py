@@ -12,6 +12,8 @@ def user_name():
 @app.route("/specific")
 def specific_website():
     return render_template("specificwebsite.html")
+@app.rounte()
+def script()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888, debug=True)
