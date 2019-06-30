@@ -395,23 +395,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Administrator\\.nuget\\packages\\": {},
+    "C:\\Users\\victo\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrator\\source\\repos\\FunWith-API-HTTP-HTML-and-C-\\My SeeSharp Library Attempt\\MyLibrary\\MyLibrary.csproj",
+      "projectUniqueName": "C:\\Users\\victo\\source\\repos\\FunWith-API-HTTP-HTML-and-C-\\My SeeSharp Library Attempt\\MyLibrary\\MyLibrary.csproj",
       "projectName": "MyLibrary",
-      "projectPath": "C:\\Users\\Administrator\\source\\repos\\FunWith-API-HTTP-HTML-and-C-\\My SeeSharp Library Attempt\\MyLibrary\\MyLibrary.csproj",
-      "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Administrator\\source\\repos\\FunWith-API-HTTP-HTML-and-C-\\My SeeSharp Library Attempt\\MyLibrary\\obj\\",
+      "projectPath": "C:\\Users\\victo\\source\\repos\\FunWith-API-HTTP-HTML-and-C-\\My SeeSharp Library Attempt\\MyLibrary\\MyLibrary.csproj",
+      "packagesPath": "C:\\Users\\victo\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\victo\\source\\repos\\FunWith-API-HTTP-HTML-and-C-\\My SeeSharp Library Attempt\\MyLibrary\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\victo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
