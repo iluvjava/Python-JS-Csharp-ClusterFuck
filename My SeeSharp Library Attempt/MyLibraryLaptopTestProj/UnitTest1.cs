@@ -18,6 +18,12 @@ namespace Tests
             print(stuff);
         }
 
+        [Test]
+        public void XMLSerilizationTest()
+        {
+
+        }
+
         public static void print(object arg)
         {
             Console.WriteLine(arg == null? "null" :arg.ToString());
