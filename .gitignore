@@ -1,7 +1,7 @@
 
-*.csproj
+# *.csproj
 
-**/*.csproj
+# **/*.csproj
 **/*.user
 .vs/
 **/Debug/
