@@ -78,9 +78,13 @@ namespace LittleRestClient
         ///
         /// </returns>
         public IRestResponse MakeGetRequest
-            (string url, IDictionary<string, string> parameters = null)
+        (
+            string url,
+            IDictionary<string, string> parameters = null, 
+            URLENCODEMODE mode = URLENCODEMODE.EscapeData
+        )
         {
-            var request = PrepareRequest(url + EncodeGetURLParameters(parameters));
+            var request = PrepareRequest(url + EncodeGetURLParameters(parameters, mode));
             VerifyUrl(url);
             request.Method = Method.GET;
             var res = r_client.Get(request);
@@ -106,13 +110,16 @@ namespace LittleRestClient
             return MakeGetRequest(url+Uri.EscapeDataString(querystring)); 
         }
         public async Task<IRestResponse> MakeGetRequestAsync
-                    (string url, IDictionary<string, string> parameters = null)
+        (   string url, 
+            IDictionary<string, string> parameters = null,
+            URLENCODEMODE mode = URLENCODEMODE.EscapeData
+        )
         {
             var t = await Task<IRestResponse>.Run
                 (
                     () =>
                     {
-                        return this.MakeGetRequest(url, parameters);
+                        return this.MakeGetRequest(url, parameters, mode);
                     }
                 );
 

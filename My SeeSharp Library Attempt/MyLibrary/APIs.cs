@@ -25,9 +25,10 @@ namespace APIs
         DateTime updated_at { get; set; }
         int upvotes { get; set; }
     }
+
     /// <summary>
-    /// This class contains static method that are associated with 
-    /// parsing JSON. 
+    /// This class contains static method that are associated with
+    /// parsing JSON.
     /// </summary>
     public class APIs
     {
@@ -80,7 +81,7 @@ namespace APIs
         public static MyLittleRestClient MLC = new MyLittleRestClient();
 
         /// <summary>
-        /// The DB search endpoint for the API. 
+        /// The DB search endpoint for the API.
         /// </summary>
         public static string SearchEndpoint = "https://derpibooru.org/search.json";
 
@@ -88,6 +89,7 @@ namespace APIs
         /// This is the endpoint to today's images to derpibooru.
         /// </summary>
         public static string TodayImages = "https://derpibooru.org/images.json";
+
         /// <summary>
         /// Given a Jtoken, this method will convert it to an instance of the IDBImage.
         /// </summary>
@@ -131,8 +133,9 @@ namespace APIs
             string response = MLC.MakeGetRequest(TodayImages).Content;
             return APIs.JsonToJObject(response);
         }
+
         /// <summary>
-        /// Async method for getting today's images. 
+        /// Async method for getting today's images.
         /// </summary>
         /// <returns></returns>
         public static Task<JObject> GetTodayImagesAsync()
@@ -147,16 +150,22 @@ namespace APIs
                 );
             return t;
         }
+
         /// <summary>
-        /// This method performs a search on the DB api and return the result. 
+        /// This method performs a search on the DB api and return the result.
         /// </summary>
         /// <param name="strquery">The query string</param>
         /// <returns></returns>
-        public static JObject SearchDB(string strquery, int page =1, int perpage= 50)
+        public static JObject SearchDB(string strquery, int page = 1, int perpage = 50)
         {
             var parameters = new Dictionary<string, string>()
-            { { "page" , page.ToString()}, {"perpage", perpage.ToString() } };
-            string response = MLC.MakeGetRequest(DB.SearchEndpoint, parameters).Content;
+            {
+                { "page" , page.ToString() },
+                { "perpage", perpage.ToString() },
+                { "q", strquery }
+            };
+            string response =
+                MLC.MakeGetRequest(DB.SearchEndpoint, parameters, URLENCODEMODE.UnicodeURL).Content;
             return APIs.JsonToJObject(response);
         }
     }
@@ -181,19 +190,18 @@ namespace APIs
         {
             string nl = Environment.NewLine;
             StringBuilder sb = new StringBuilder();
-            sb.Append(id+ nl);
+            sb.Append(id + nl);
             sb.Append(created_at.ToString() + nl);
             sb.Append(updated_at.ToString() + nl);
             sb.Append(first_seen_at.ToString() + nl);
             sb.Append(upvotes.ToString() + nl);
             sb.Append(downvotes.ToString() + nl);
             sb.Append(tags + nl);
-            sb.Append("https:" + image+nl);
-            sb.Append(file_name+nl);
-            sb.Append(description+nl);
+            sb.Append("https:" + image + nl);
+            sb.Append(file_name + nl);
+            sb.Append(description + nl);
             return sb.ToString();
         }
-
     }
 
     public class DBImageConverter : CustomCreationConverter<IDBImage>
