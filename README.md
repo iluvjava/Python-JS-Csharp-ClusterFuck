@@ -75,3 +75,14 @@ Python. C# and Node js.
         - Chose a bunch of source codes that is actually working and make them 
         into a library. 
 ```
+
+# 30/06/2019: 
+```
+    Progress: 
+        Added gitignore to so that I can work on different places and different computers. 
+    Progress: 
+        Copied and paste XML serialization (MyLittleXML) from my previous project. 
+    Progress: 
+        Get request no support different modes for encoding the paramters. 
+
+```
