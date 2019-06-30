@@ -1,0 +1,10 @@
+*.sln
+*.csproj
+**/*.sln
+**/*.csproj
+**/*.user
+.vs/
+**/Debug/
+**/bin/
+**/obj/
+**/node_modules/
