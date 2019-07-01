@@ -18,11 +18,14 @@ def prepare_list():
 
         Return: 
             A list of file names. 
+            None if there is not enough books to populate. 
     '''
     mydir = scriptrootdir + "/static/resource/bunchofpdfs"
     allfiles = [
         f for f in os.listdir(mydir)]
     res = []
+    if (len(allfiles) < 10):
+        return None
     for f in range(10):
         randomnum = random.randint(0, len(allfiles)-1)
         res.append(allfiles.pop(randomnum))

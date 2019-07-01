@@ -1,5 +1,7 @@
-from flask import Flask, render_template
+# ------------------------------------------------------------------------------
+from flask import Flask, render_template, send_file
 import ContentPreparation as Prep
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -27,10 +29,8 @@ def file_access(filename):
         return: 
             a file in the static/resource/bunchofpdfs/
     """
-
-
-    return "getrequest paremeter: " + filename
-
+    filepath = "static/resource/bunchofpdfs/"+filename
+    return send_file(filepath, mimetype="application/pdf")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888, debug=True)

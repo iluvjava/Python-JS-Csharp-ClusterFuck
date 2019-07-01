@@ -2,7 +2,7 @@
 {
     "use strict";
 
-    window.addEventListener("onload", initiate)
+    window.addEventListener("load", initiate)
 
     const DerpibooruEndpoint = "";
     
