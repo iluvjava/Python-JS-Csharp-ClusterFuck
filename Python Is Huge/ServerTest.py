@@ -29,7 +29,7 @@ def file_access(filename):
     """
 
 
-    return "not implemented yet"
+    return "getrequest paremeter: " + filename
 
 
 if __name__ == "__main__":

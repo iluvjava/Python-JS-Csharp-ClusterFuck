@@ -3,8 +3,7 @@
     {% for element in elementlist%}
         <li>
             <a 
-            href="{{url_for('static', 
-                filename = 'resource/bunchofpdfs/{{element}}')}}">
+            href="/bunchofpdfs/{{ element }}">
             {{element}}
             </a>
         </li>

@@ -88,4 +88,17 @@ Python. C# and Node js.
         metadata is in the html in the syntax of "{{variablename}}", 
         control block and structure are in the syntax of {% ???? %}. 
         This is the Jinga that python flask is using. 
+    Oh my god: 
+        - Python is creepy in many ways, and quirky too. I have run into 
+        problem just because I run the srcipt in a different directory than before. 
+
+        - jinja is also running script that has it own syntax and grammar 
+        outside of the python script, which is quirky. I don't like that one 
+        bit, but it's probably for the best because python slow. 
+
+        - Furthermore, url_for('static', filename='{{varname}}') is not good 
+        because the {{varname}} is interpreted literally. 
+
+        - Low level stuff is handled by python, there is completely no need 
+        to worry about uri encoding, which is... pretty cool! 
 ```
