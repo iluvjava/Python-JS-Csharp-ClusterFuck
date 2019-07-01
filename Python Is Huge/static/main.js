@@ -14,12 +14,10 @@
     function populateDerpibooru(json)
     {
         
-
     }
 
     function getDerpibooruImages()
     {
-
 
     }
 
@@ -27,7 +25,6 @@
     {
         
     }
-
 
     function id(id)
     {
