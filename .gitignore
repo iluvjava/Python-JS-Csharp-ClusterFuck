@@ -4,7 +4,11 @@
 # **/*.csproj
 **/*.user
 .vs/
+**/.vscode/
 **/Debug/
 **/bin/
 **/obj/
 **/node_modules/
+**/__pycache__/
+
+Python Is Huge/Static/resource/

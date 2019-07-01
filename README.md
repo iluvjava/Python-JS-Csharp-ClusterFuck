@@ -84,5 +84,8 @@ Python. C# and Node js.
         Copied and paste XML serialization (MyLittleXML) from my previous project. 
     Progress: 
         Get request no support different modes for encoding the paramters. 
-
+    Learned: 
+        metadata is in the html in the syntax of "{{variablename}}", 
+        control block and structure are in the syntax of {% ???? %}. 
+        This is the Jinga that python flask is using. 
 ```

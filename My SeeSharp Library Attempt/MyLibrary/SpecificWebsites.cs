@@ -3,12 +3,11 @@ using LittleRestClient;
 using RestSharp;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Webpages;
 
 /// <summary>
 /// </summary>
 
-namespace APIs
+namespace Webpages
 {
     /// <summary>
     /// This class represents a specific domain.

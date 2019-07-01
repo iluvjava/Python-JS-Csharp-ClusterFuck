@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-
+import ContentPreparation as Prep
 app = Flask(__name__)
 
 @app.route("/")
@@ -17,10 +17,19 @@ def specific_website():
         Render a specific website that use the jinja template to 
         render the content of the webpage. 
     '''
-    elementlist = ["element 1", "element 2"]
+    thelist = Prep.prepare_list()
+    return render_template("specificwebsite.html", elementlist=thelist)
 
-    return render_template("specificwebsite.html", elementlist = elementlist)
+@app.route("/bunchofpdfs/<filename>", methods=["GET"])
+def file_access(filename):
+    """
+        This function returns a file attechment to the client
+        return: 
+            a file in the static/resource/bunchofpdfs/
+    """
 
+
+    return "not implemented yet"
 
 
 if __name__ == "__main__":

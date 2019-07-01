@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 /// <summary>
@@ -87,16 +88,19 @@ namespace SMLService.MyLittleXML
         }
 
         /// <summary>
-        /// Store the object onto the harddisk, XML format.
+        /// This method will try to serialized the objedt specifed into XML formatt and store it 
+        /// in the specified directory. 
         /// </summary>
         /// <returns>
-        /// True if operation succesful
-        /// false if there is something wrong.
+        /// True or false to indicate whether operation is successful. 
         /// </returns>
         public bool serialize()
         {
             // All the information must be present.
-            if (ObjectToStore == null || FileName == null || FileLocation == null) return false;
+            if (ObjectToStore == null || FileName == null || FileLocation == null)
+            {
+                throw new NoObjectToSerilizeException();
+            }
             TextWriter writer = null;
             try
             {
@@ -120,6 +124,29 @@ namespace SMLService.MyLittleXML
                     writer.Close();
             }
             return true;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    [Serializable]
+    internal class NoObjectToSerilizeException : Exception
+    {
+        public NoObjectToSerilizeException()
+        {
+        }
+
+        public NoObjectToSerilizeException(string message) : base(message)
+        {
+        }
+
+        public NoObjectToSerilizeException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected NoObjectToSerilizeException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

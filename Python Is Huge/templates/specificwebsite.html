@@ -1,6 +1,12 @@
 {% extends "baselayout.html"%}
 {%block content%}
     {% for element in elementlist%}
-        <li>{{element}}</li>
+        <li>
+            <a 
+            href="{{url_for('static', 
+                filename = 'resource/bunchofpdfs/{{element}}')}}">
+            {{element}}
+            </a>
+        </li>
     {% endfor %}
 {%endblock%}
