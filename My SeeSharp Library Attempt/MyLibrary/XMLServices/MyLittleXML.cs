@@ -48,7 +48,7 @@ namespace SMLService.MyLittleXML
         //write object to disk. True means it will overwrite file on hardisk
         //and overwrite object in the field of the instance.
         public bool OverWrite { get; set; }
-
+        // If any error occurred, it can be refereced here. 
         protected Exception OccurredError { get; }
         /// <summary>
         /// THis method reads from the file.
@@ -77,6 +77,7 @@ namespace SMLService.MyLittleXML
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 //Utilities.Stuff.ConsoleLog(e.Message + "\n" + e.StackTrace);
             }
             finally

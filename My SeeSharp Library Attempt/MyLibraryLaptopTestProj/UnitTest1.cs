@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using APIs;
 using System;
+using XMLService.MyLittleXML;
 
 namespace Tests
 {
@@ -21,7 +22,8 @@ namespace Tests
         [Test]
         public void XMLSerilizationTest()
         {
-
+            ObjectXMLCache<string> stuff = new ObjectXMLCache<string>("stuff","", "filename");
+            
         }
 
         public static void print(object arg)
