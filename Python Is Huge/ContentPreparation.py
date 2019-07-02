@@ -11,25 +11,28 @@ print("__name__ = " + __name__)
 print("running under dir: "+ sys.path[0])
 scriptrootdir = sys.path[0]
 
-def prepare_list():
-    '''
-        This method will randomly choose 10 files from the 
-        static/resource/bunchofpdfs directory. 
+class BookShelves: 
 
-        Return: 
-            A list of file names. 
-            None if there is not enough books to populate. 
-    '''
-    mydir = scriptrootdir + "/static/resource/bunchofpdfs"
-    allfiles = [
-        f for f in os.listdir(mydir)]
-    res = []
-    if (len(allfiles) < 10):
-        return None
-    for f in range(10):
-        randomnum = random.randint(0, len(allfiles)-1)
-        res.append(allfiles.pop(randomnum))
-    return res
+    def __init__(self):
+        mydir = scriptrootdir + "/static/resource/bunchofpdfs"
+        self._AllBooks = [
+            f for f in os.listdir(mydir)]
+    
+    def get_books(self):
+        '''
+            Return 10 random books from the list of books read from
+            the folder. 
+        '''
+        res = []
+        if (len(self._AllBooks) < 10):
+            return None
+        for f in range(10):
+            randomnum = random.randint(0, len(self._AllBooks)-1)
+            res.append(self._AllBooks.pop(randomnum))
+        return res
+
+Instance = BookShelves()
+
 
 if __name__ == "__main__":
-    print(prepare_list())
+    print(Instance.get_books())

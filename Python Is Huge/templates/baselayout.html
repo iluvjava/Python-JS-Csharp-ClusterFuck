@@ -4,8 +4,13 @@
         <title>The Title</title>
         <script src="{{url_for('static', filename='main.js')}}">
         </script>
+        <link rel="stylesheet" type="text/css" 
+        href="{{url_for('static', filename='layouttemplate.css')}}">
         <ref >
     </head>
+    <nev>
+        This is the negivgation bar. 
+    </nev>
     <body>
         <ul id="imagelist">
             {% block content %}

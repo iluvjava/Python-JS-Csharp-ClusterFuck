@@ -102,3 +102,11 @@ Python. C# and Node js.
         - Low level stuff is handled by python, there is completely no need 
         to worry about uri encoding, which is... pretty cool! 
 ```
+
+
+# Major Referece Materials
+- The Python Flask: 
+    - https://github.com/CoreyMSchafer/code_snippets/tree/master/Python/Flask_Blog
+- The SQL Connection: 
+    - https://github.com/microsoft/sql-server-samples/tree/master/samples/tutorials
+    

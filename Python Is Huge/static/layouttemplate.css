@@ -1,0 +1,27 @@
+/*
+    Main CSS for the whole website. 
+*/
+
+body 
+{
+    text-align: left;
+    width: 66%;
+    margin: auto;
+}
+
+body li 
+{
+    list-style-type: none
+}
+
+a 
+{
+    color:black;
+    background: yellow;
+    text-decoration: none;
+}
+
+a:hover
+{
+    background: yellowgreen;
+}

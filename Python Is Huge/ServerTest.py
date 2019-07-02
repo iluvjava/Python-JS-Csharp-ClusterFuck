@@ -12,14 +12,13 @@ def test_route():
 def user_name():
     return "<h>Under Construction</h>"
 
-
 @app.route("/specific")
 def specific_website():
     '''
         Render a specific website that use the jinja template to 
         render the content of the webpage. 
     '''
-    thelist = Prep.prepare_list()
+    thelist = Prep.Instance.get_books()
     return render_template("specificwebsite.html", elementlist=thelist)
 
 @app.route("/bunchofpdfs/<filename>", methods=["GET"])
@@ -31,6 +30,8 @@ def file_access(filename):
     """
     filepath = "static/resource/bunchofpdfs/"+filename
     return send_file(filepath, mimetype="application/pdf")
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8888, debug=True)
