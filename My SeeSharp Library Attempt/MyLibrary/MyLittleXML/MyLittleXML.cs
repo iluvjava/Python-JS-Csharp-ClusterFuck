@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 /// <summary>
 /// This name space contain classes that serilize and deserialize data.
 /// </summary>
-namespace XMLService.MyLittleXML
+namespace MyLibrary.MyLittleXML
 {
     /// <summary>
     /// <para>
@@ -78,6 +78,7 @@ namespace XMLService.MyLittleXML
             {
                 Console.WriteLine(e);
                 //Utilities.Stuff.ConsoleLog(e.Message + "\n" + e.StackTrace);
+                return false; 
             }
             finally
             {

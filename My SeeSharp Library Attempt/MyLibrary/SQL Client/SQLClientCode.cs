@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace MyLibrary.SQL_Client
+namespace MyLibrary.SQLClient
 {
     /// <summary>
     /// This class contains stuff needed for making a connections,
@@ -14,7 +14,7 @@ namespace MyLibrary.SQL_Client
     public class MyLittleSqlClient
     {
         /// <summary>
-        /// Bool if you want to see connection log and stuff like that. 
+        /// Bool if you want to see connection log and stuff like that.
         /// </summary>
         public static bool Log = false;
 
@@ -22,33 +22,41 @@ namespace MyLibrary.SQL_Client
         /// Singleton
         /// </summary>
         public static MyLittleSqlClient TheInstance;
+
         public MySqlConnection DBConn;
 
         /// <summary>
-        /// Constructor internal to keep singleton. 
+        /// Constructor internal to keep singleton.
         /// </summary>
         internal MyLittleSqlClient()
         {
-
         }
 
         /// <summary>
         /// Get the default config for the testing codes.
+        ///     - If the config files DNE, it will create a new XML file with 
+        ///     default settings in it. 
+        ///     - If the config files exists, it will load it; which is used 
+        ///     by the dataconnection. 
         /// </summary>
         /// <returns></returns>
-        public static IDictionary<string, string> GetDefultConnectionConfig()
+        public static SQLConnConfig GetDefultConnectionConfig()
         {
-            return new Dictionary<string, string>()
+            var defultconfig = SQLConnConfig.GetConfig();
+            var config = 
+                new MyLittleXML.ObjectXMLCache<SQLConnConfig>
+                (defultconfig, "","dbconn.config");
+            if (config.Deserialize())
             {
-                {"Server", "localhost" },
-                { "UserID", "root"},
-                { "DataBase", "myschema" },
-                { "PassWord", "PassWord" }
-            };
+                return config.ObjectToStore; 
+            }
+            Print("\n Config DNE, creating new config. \n");
+            config.Serialize();
+            return defultconfig; 
         }
 
         /// <summary>
-        /// Return an instance of the connection. 
+        /// Return an instance of the connection.
         /// </summary>
         /// <returns></returns>
         public static MyLittleSqlClient GetInstance()
@@ -57,10 +65,10 @@ namespace MyLibrary.SQL_Client
 
             var config = GetDefultConnectionConfig();
             var builder = new MySqlConnectionStringBuilder();
-            builder.Server = config["Server"];
-            builder.UserID = config["UserID"];
-            builder.Database = config["DataBase"];
-            builder.Password = config["PassWord"];
+            builder.Server = config.Server;
+            builder.UserID = config.UserID;
+            builder.Database = config.DataBase;
+            builder.Password = config.PassWord;
             var connectionstring = builder.ConnectionString;
             var dbconn = new MySqlConnection(connectionstring);
             dbconn.Open();
@@ -70,12 +78,12 @@ namespace MyLibrary.SQL_Client
         }
 
         /// <summary>
-        /// Get an instance of the db connection. 
+        /// Get an instance of the db connection.
         /// </summary>
         /// <returns></returns>
-        public static Task<MyLittleSqlClient> GetInstanceAsync()
+        public async static Task<MyLittleSqlClient> GetInstanceAsync()
         {
-            var res = Task<MyLittleSqlClient>.Run
+            var res = await Task<MyLittleSqlClient>.Run
                 (
                     () =>
                     {
@@ -83,7 +91,56 @@ namespace MyLibrary.SQL_Client
                     }
                 );
             return res;
+        }
 
+        /// <summary>
+        /// Give a string that only update the data.
+        /// Method returns the data read from the db.
+        /// </summary>
+        /// <param name="qry"></param>
+        /// <returns>
+        /// Null will be returned if there is anykind of error.
+        /// </returns>
+        public MySqlDataReader QueryExtractData(string qry)
+        {
+            try
+            {
+                var command = new MySqlCommand(qry, this.DBConn);
+                return command.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                Print(e);
+                return null;
+            }
+        }
+
+        public async Task<MySqlDataReader> QueryExtractDataAsync(string qry)
+        {
+            var t = await Task<MySqlDataReader>.Run
+                (
+                    () =>
+                    {
+                        return QueryExtractData(qry);
+                    }
+                );
+            return t;
+        }
+
+        /// <summary>
+        /// The method provided for this class to log stuff.
+        /// </summary>
+        /// <param name="stuff"></param>
+        internal static void Print(object stuff)
+        {
+            if (!Log) return;
+            Console.WriteLine(stuff == null ? "null" : stuff.ToString());
+        }
+
+        internal static void Print()
+        {
+            if (!Log) return; 
+            Console.WriteLine();
         }
     }
 
@@ -117,7 +174,8 @@ namespace MyLibrary.SQL_Client
 
                 var dbconn = new MySqlConnection(builder.ToString());
                 Console.WriteLine(dbconn);
-                Console.WriteLine("Connect and select everything from the database.");
+                Console.WriteLine
+                    ("Connect and select everything from the database.");
 
                 var query = "SELECT * FROM mytable";
                 var mysqlcommand = new MySqlCommand(query, dbconn);
@@ -141,7 +199,41 @@ namespace MyLibrary.SQL_Client
         }
     }
 
-    internal class SQLClientCode
+
+    [Serializable]
+    public struct SQLConnConfig
     {
+        public string Server;
+        public string DataBase;
+        public string UserID;
+        public string PassWord;
+
+        /// <summary>
+        /// Get the default config for connecting to database. 
+        /// </summary>
+        /// <returns></returns>
+        public static SQLConnConfig GetConfig()
+        {
+            var res = new SQLConnConfig();
+            res.Server = "localhost";
+            res.UserID = "root";
+            res.DataBase = "mychema";
+            res.PassWord = "password";
+            return res; 
+        }
+        override
+        public string ToString()
+        {
+            var nl = Environment.NewLine;
+            var res = "";
+            res += "=====SQL Config=====" + nl; 
+            res += this.Server + nl;
+            res += this.UserID + nl;
+            res += this.DataBase + nl;
+            res += this.PassWord + nl;
+            return res; 
+        }
+
     }
+
 }

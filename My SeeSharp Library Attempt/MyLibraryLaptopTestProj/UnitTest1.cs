@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using APIs;
 using System;
-using XMLService.MyLittleXML;
+using MyLibrary.MyLittleXML;
+using MyLibrary.SQLClient;
+using System.Collections.Generic;
 
 namespace Tests
 {
@@ -30,9 +32,22 @@ namespace Tests
         [Test]
         public void TestDemonMethod()
         {
-            MyLibrary.SQL_Client.SQLClientBuilder.Demo();
+            
         }
 
+
+        [Test]
+        public void TestSQLConnection()
+        {
+            TestReadingConfig:
+            {
+                print("Testing loading config. ");
+                var sqlconfig = 
+                    MyLittleSqlClient.GetDefultConnectionConfig();
+                print(sqlconfig); 
+            }
+
+        }
         public static void print(object arg)
         {
             Console.WriteLine(arg == null? "null" :arg.ToString());
