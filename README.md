@@ -103,6 +103,31 @@ Python. C# and Node js.
         to worry about uri encoding, which is... pretty cool! 
 ```
 
+# 02/07/2019: 
+## What I learned: 
+    - Making a connection to a MYSQL database, execute the command, and then read out the stuff. 
+    - Major components:
+        - MySql.Data.MysqlClient from nuget. 
+        - server url; servername, database name, urserid, password; (I wonder why port is not here...)
+        - MySqlConnectionStringBuilder
+        - MySqlConnection
+        - MysqlCommand
+        - MySqlDataReader
+    - Procedures For doing this shit: 
+        - Make a connection string
+        - Prepare a connection
+        - Prepare a sql command 
+            - Give the connection to the sqlcommand
+        - Execute the command object and it will return a MySqlDataReader
+        - The data reader is an iterable, it's a list of map. 
+    - How to make the process painless? 
+        - Store the configs as xml first. 
+        - Put all the query together, minimize the number of times connection is used. 
+        - Use OOP programming paradigm and Functional paradigms. 
+        - Run tests. 
+        - Package everything and make it into a library. 
+
+
 
 # Major Referece Materials
 - The Python Flask: 

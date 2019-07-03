@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.12.1" />
     <PackageReference Include="Json.NET.Web" Version="1.0.49" />
+    <PackageReference Include="MySql.Data" Version="8.0.16" />
     <PackageReference Include="RestSharp" Version="106.6.9" />
   </ItemGroup>
 

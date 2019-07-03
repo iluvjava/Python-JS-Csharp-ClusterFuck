@@ -17,19 +17,13 @@ class BookShelves:
         mydir = scriptrootdir + "/static/resource/bunchofpdfs"
         self._AllBooks = [
             f for f in os.listdir(mydir)]
+        self._AllBooks.sort()
     
     def get_books(self):
         '''
-            Return 10 random books from the list of books read from
-            the folder. 
+           Return all books in the folder in alphebetical order. 
         '''
-        res = []
-        if (len(self._AllBooks) < 10):
-            return None
-        for f in range(10):
-            randomnum = random.randint(0, len(self._AllBooks)-1)
-            res.append(self._AllBooks.pop(randomnum))
-        return res
+        return self._AllBooks
 
 Instance = BookShelves()
 

@@ -62,7 +62,7 @@ namespace APIs
         /// <returns>
         ///
         /// </returns>
-        public static JObject JsonToJObject(string arg)
+        public static JObject StringToJObject(string arg)
         {
             return JsonConvert.DeserializeObject<JObject>(arg);
         }
@@ -118,7 +118,7 @@ namespace APIs
             string response =
                 DB.MLC.MakeGetRequest(DB.TodayImages, new Dictionary<string, string>()
                 {{ "page", pageoffset.ToString()}}).Content;
-            return APIs.JsonToJObject(response);
+            return APIs.StringToJObject(response);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace APIs
         public static JObject GetTodayImages()
         {
             string response = MLC.MakeGetRequest(TodayImages).Content;
-            return APIs.JsonToJObject(response);
+            return APIs.StringToJObject(response);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace APIs
             };
             string response =
                 MLC.MakeGetRequest(DB.SearchEndpoint, parameters, URLENCODEMODE.UnicodeURL).Content;
-            return APIs.JsonToJObject(response);
+            return APIs.StringToJObject(response);
         }
     }
 

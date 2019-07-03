@@ -23,7 +23,14 @@ namespace Tests
         public void XMLSerilizationTest()
         {
             ObjectXMLCache<string> stuff = new ObjectXMLCache<string>("stuff","", "filename");
-            
+            print(stuff);
+            stuff.Serialize();
+        }
+
+        [Test]
+        public void TestDemonMethod()
+        {
+            MyLibrary.SQL_Client.SQLClientBuilder.Demo();
         }
 
         public static void print(object arg)

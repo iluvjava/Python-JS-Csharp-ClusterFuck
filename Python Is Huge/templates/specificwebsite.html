@@ -5,8 +5,8 @@
         {% for element in elementlist %}
             <li>
                 <a 
-                href="/bunchofpdfs/{{ element }}">
-                {{element}}
+                href="{{element[1]}}">
+                {{element[0][:-4]}}
                 </a>
             </li>
         {% endfor %}

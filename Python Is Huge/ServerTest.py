@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, url_for
 import ContentPreparation as Prep
 
 app = Flask(__name__)
@@ -19,7 +19,14 @@ def specific_website():
         render the content of the webpage. 
     '''
     thelist = Prep.Instance.get_books()
-    return render_template("specificwebsite.html", elementlist=thelist)
+    booknamelink = []
+    for bookname in thelist:
+        booknamelink.append (
+                (bookname, 
+                    url_for("file_access", filename=bookname)
+                )
+            )
+    return render_template("specificwebsite.html", elementlist=booknamelink)
 
 @app.route("/bunchofpdfs/<filename>", methods=["GET"])
 def file_access(filename):

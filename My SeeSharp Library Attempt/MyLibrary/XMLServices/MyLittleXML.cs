@@ -6,21 +6,31 @@ using System.Xml.Serialization;
 /// <summary>
 /// This name space contain classes that serilize and deserialize data.
 /// </summary>
-namespace SMLService.MyLittleXML
+namespace XMLService.MyLittleXML
 {
     /// <summary>
     /// <para>
     /// The class have been casually tested.
     /// </para>
-    /// This class will help you store object,
-    /// and do all the boring primary executions
-    /// on stream and shit like that. It should have
-    /// fancy interface for all different sorts of relative
-    /// parameters.
+    /// This class serialize a serializable instance to a xml file on disk. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class ObjectXMLCache<T>
     {
+        public string FileLocation { get; set; }
+
+        public string FileName { get; set; }
+
+        public T ObjectToStore { get; set; }
+
+        //This bool determine adtion both read objects from disk and
+        //write object to disk. True means it will overwrite file on hardisk
+        //and overwrite object in the field of the instance.
+        public bool OverWrite { get; set; }
+
+        // If any error occurred, it can be refereced here. 
+        protected Exception OccurredError { get; }
+
         /// <summary>
         /// Cached the object to a string
         /// </summary>
@@ -39,17 +49,6 @@ namespace SMLService.MyLittleXML
             FileName = filename;
             this.OverWrite = overwrite;
         }
-
-        public string FileLocation { get; set; }
-        public string FileName { get; set; }
-        public T ObjectToStore { get; set; }
-
-        //This bool determine adtion both read objects from disk and
-        //write object to disk. True means it will overwrite file on hardisk
-        //and overwrite object in the field of the instance.
-        public bool OverWrite { get; set; }
-        // If any error occurred, it can be refereced here. 
-        protected Exception OccurredError { get; }
         /// <summary>
         /// THis method reads from the file.
         /// <param>
@@ -61,7 +60,7 @@ namespace SMLService.MyLittleXML
         /// true or false to indeicate wheter the execution
         /// is seuccessful.
         /// </returns>
-        public bool deserialize()
+        public bool Deserialize()
         {
             if (this.FileLocation == null || this.FileName == null)
                 return false;
@@ -95,7 +94,7 @@ namespace SMLService.MyLittleXML
         /// <returns>
         /// True or false to indicate whether operation is successful. 
         /// </returns>
-        public bool serialize()
+        public bool Serialize()
         {
             // All the information must be present.
             if (ObjectToStore == null || FileName == null || FileLocation == null)
@@ -125,6 +124,19 @@ namespace SMLService.MyLittleXML
                     writer.Close();
             }
             return true;
+        }
+
+        public override string ToString()
+        {
+            string res = "";
+            var nl = Environment.NewLine;
+            var dir = Path.GetFullPath
+                (this.FileLocation==""?"./":this.FileLocation);
+            res += dir.ToString()+ nl;
+            res += this.FileName+ nl;
+            res += this.ObjectToStore.GetType().ToString()+nl;
+            res += this.OverWrite ? "Overwrite"+nl : "";
+            return res; 
         }
     }
 
