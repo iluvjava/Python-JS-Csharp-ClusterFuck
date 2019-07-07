@@ -101,11 +101,20 @@ namespace MyLibrary.SQLClient
         /// <returns>
         /// Null will be returned if there is anykind of error.
         /// </returns>
-        public MySqlDataReader QueryExtractData(string qry)
+        public MySqlDataReader QueryExtractData
+            (string qry, IDictionary<string, string> parameters = null)
         {
             try
             {
+
                 var command = new MySqlCommand(qry, this.DBConn);
+                if (parameters != null)
+                {
+                    foreach (var stuff in parameters)
+                    {
+                        command.Parameters.AddWithValue(stuff.Key, stuff.Value);
+                    }
+                }
                 return command.ExecuteReader();
             }
             catch (Exception e)
@@ -115,13 +124,14 @@ namespace MyLibrary.SQLClient
             }
         }
 
-        public async Task<MySqlDataReader> QueryExtractDataAsync(string qry)
+        public async Task<MySqlDataReader> QueryExtractDataAsync
+            (string qry, IDictionary<string, string> parameters)
         {
             var t = await Task<MySqlDataReader>.Run
                 (
                     () =>
                     {
-                        return QueryExtractData(qry);
+                        return QueryExtractData(qry, parameters);
                     }
                 );
             return t;
