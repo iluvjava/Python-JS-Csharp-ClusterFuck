@@ -4,7 +4,7 @@ This script is a simple website in python flask.
 """
 
 # -------------------------------------------------------------------------------
-from flask import Flask, render_template, send_file, url_for, request
+from flask import Flask, render_template, send_file, url_for, request,json, Response
 import ContentPreparation as Prep
 
 app = Flask(__name__)
@@ -20,48 +20,86 @@ def user_name():
     return "<h>Under Construction</h>"
 
 
-@app.route("/specific")
+@app.route("/bookslist")
 def specific_website():
     '''
         Render a specific website that use the jinja template to 
         render the content of the webpage. 
     '''
-    thelist = Prep.Instance.get_books()
-    booknamelink = []
-
-    if len(booknamelink) == 0:
-        return render_template("specificswebsite.html")
-
-    for bookname in thelist:
-        booknamelink.append(
+    BookList = Prep.BooksShelveInstance.get_books()
+    BookLinksList = []
+    if len(BookList) == 0:
+        return render_template("specificwebsite.html")
+    for bookname in BookList:
+        BookLinksList.append(
             (bookname,
-             url_for("file_access", filename=bookname)
+             url_for("file_access", filename=bookname, accesstype="Books")
              )
         )
-    return render_template("specificwebsite.html", elementlist=booknamelink)
+    return render_template("specificwebsite.html", elementlist=BookLinksList)
 
 
-@app.route("/bunchofpdfs/<filename>", methods=["GET"])
+@app.route("/files/<filename>", methods=["GET"])
 def file_access(filename):
     """
         This function returns a file attechment to the client
-        return: 
+        :return:
             a file in the static/resource/bunchofpdfs/
+        :param
+            accesstype: each string corresponds to a different implementation.
     """
-    filepath = "static/resource/bunchofpdfs/" + filename
-    return send_file(filepath, mimetype="application/pdf")
+    filepath = None
+    ContentType = None
+    accesstype = request.args.get("accesstype")
+    if (accesstype == "Books"):
+        filepath = Prep.BooksShelveInstance.get_rootdir() +"/"+ filename
+        ContentType = "application/pdf"
+    elif (accesstype == "Videos"):
+        filepath = Prep.VideoShelvesInstance.get_abs_rootdir()+"/"+filename
+        ContentType = "video/x-matroska"
+    return send_file(filepath, mimetype=ContentType)
 
 
-@app.route("/postportal", methods =["Post"])
+@app.route("/postportaltest", methods =["Post"])
 def post_portal():
     '''
-    Post test.
+        Constructing a response to post request, responding with a json type.
     :param parameters:
     :return:
     '''
-    parameters = request.form.to_dict()
+    parameters = request.form.to_dict() # parameters, fromdata.
+    if(len(parameters) == 0):
+        parameters["status"] = "unsuccessful"
+    else:
+        parameters["status"] = "successful"
+    js = json.dumps(parameters) # construct the json response.
+    resp = Response(js, status= 200, mimetype="application/json")
+    return resp
 
-    return str(parameters)
+@app.route("/getvideos", methods=["Post"])
+def get_video():
+    """
+        A post endpoint, very simple.
+    :return:
+        Json object for API
+    """
+    PostParams = request.form.to_dict()
+    Prejs = {}
+    if ("videos" not in PostParams.keys()):
+        Prejs["error"] = "Invalid Post Parameters"
+        return Response(Prejs, status = 403, mimetype="application/json")
+    VideoList = Prep.VideoShelvesInstance.get_filenames()
+    for fn in VideoList:
+        Prejs[fn] = url_for("file_access", filename=fn, accesstype="Videos")
+    return Response(json.dumps(Prejs), status = 200, mimetype="application/json")
+
+@app.errorhandler(404)
+def not_found(error= None):
+    responses = {}
+    responses["title"] = "Error page 404"
+    responses["errorcode"] = 404
+    responses["erromessage"] = "Page not found..."
+    return render_template("errorpage.html", arg = responses)
 
 
 if __name__ == "__main__":

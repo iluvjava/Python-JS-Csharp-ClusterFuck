@@ -128,6 +128,15 @@ Python. C# and Node js.
     - Run tests. 
     - Package everything and make it into a library. 
 
+#09/07/2019: 
+## What I leared: 
+- Post reponse with Json type. 
+    ```
+    js = json.dumps(parameters) # construct the json response.
+    resp = Response(js, status= 200, mimetype="application/json")
+    return resp  # the client want the returned object. 
+    ```
+
 
 
 # Major Referece Materials
@@ -137,3 +146,5 @@ Python. C# and Node js.
     - https://github.com/microsoft/sql-server-samples/tree/master/samples/tutorials
 - C# Windows MYSQL Command Object: 
     - https://dev.mysql.com/doc/connector-net/en/connector-net-tutorials-sql-command.html
+- C# ASP.NET MVC (Slow)
+    - https://www.youtube.com/watch?v=phyV-OQNeRM
