@@ -10,5 +10,5 @@
 **/obj/
 **/node_modules/
 **/__pycache__/
-
+**/.idea/
 Python Is Huge/Static/resource/
