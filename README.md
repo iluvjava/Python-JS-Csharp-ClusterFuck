@@ -135,6 +135,13 @@ Python. C# and Node js.
     js = json.dumps(parameters) # construct the json response.
     resp = Response(js, status= 200, mimetype="application/json")
     return resp  # the client want the returned object. 
+
+    request.args # parameters for the get requests. 
+    url_for("function_routehandle", key=vals) 
+        - when call under the context of executing scirpt: 
+            - if parameters is part of the url, it will be ther
+            - if not,
+                - the paramters will be in the key and val of the request to the rounted endpoint.
     ```
 
 

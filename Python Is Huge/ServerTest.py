@@ -4,7 +4,7 @@ This script is a simple website in python flask.
 """
 
 # -------------------------------------------------------------------------------
-from flask import Flask, render_template, send_file, url_for, request,json, Response
+from flask import Flask, render_template, send_file, url_for, request, json, Response
 import ContentPreparation as Prep
 
 app = Flask(__name__)
@@ -20,7 +20,7 @@ def user_name():
     return "<h>Under Construction</h>"
 
 
-@app.route("/bookslist")
+@app.route("/index")
 def specific_website():
     '''
         Render a specific website that use the jinja template to 
@@ -52,34 +52,37 @@ def file_access(filename):
     ContentType = None
     accesstype = request.args.get("accesstype")
     if (accesstype == "Books"):
-        filepath = Prep.BooksShelveInstance.get_rootdir() +"/"+ filename
+        filepath = Prep.BooksShelveInstance.get_rootdir() + "/" + filename
         ContentType = "application/pdf"
     elif (accesstype == "Videos"):
-        filepath = Prep.VideoShelvesInstance.get_abs_rootdir()+"/"+filename
-        ContentType = "video/x-matroska"
+        filepath = Prep.VideoShelvesInstance.get_abs_rootdir() + "/" + filename
+        ContentType = "video/mp4"
     return send_file(filepath, mimetype=ContentType)
 
 
-@app.route("/postportaltest", methods =["Post"])
+@app.route("/postportaltest", methods=["Post"])
 def post_portal():
     '''
         Constructing a response to post request, responding with a json type.
     :param parameters:
     :return:
     '''
-    parameters = request.form.to_dict() # parameters, fromdata.
-    if(len(parameters) == 0):
+    parameters = request.form.to_dict()  # parameters, fromdata.
+    if (len(parameters) == 0):
         parameters["status"] = "unsuccessful"
     else:
         parameters["status"] = "successful"
-    js = json.dumps(parameters) # construct the json response.
-    resp = Response(js, status= 200, mimetype="application/json")
+    js = json.dumps(parameters)  # construct the json response.
+    resp = Response(js, status=200, mimetype="application/json")
     return resp
+
 
 @app.route("/getvideos", methods=["Post"])
 def get_video():
     """
         A post endpoint, very simple.
+        simple json that: video names -> get URL
+            - type -> mimetype of video
     :return:
         Json object for API
     """
@@ -87,19 +90,21 @@ def get_video():
     Prejs = {}
     if ("videos" not in PostParams.keys()):
         Prejs["error"] = "Invalid Post Parameters"
-        return Response(Prejs, status = 403, mimetype="application/json")
+        return Response(Prejs, status=403, mimetype="application/json")
     VideoList = Prep.VideoShelvesInstance.get_filenames()
     for fn in VideoList:
         Prejs[fn] = url_for("file_access", filename=fn, accesstype="Videos")
-    return Response(json.dumps(Prejs), status = 200, mimetype="application/json")
+    Prejs["type"] = "video/mp4";
+    return Response(json.dumps(Prejs), status=200, mimetype="application/json")
+
 
 @app.errorhandler(404)
-def not_found(error= None):
+def not_found(error=None):
     responses = {}
     responses["title"] = "Error page 404"
     responses["errorcode"] = 404
     responses["erromessage"] = "Page not found..."
-    return render_template("errorpage.html", arg = responses)
+    return render_template("errorpage.html", arg=responses)
 
 
 if __name__ == "__main__":

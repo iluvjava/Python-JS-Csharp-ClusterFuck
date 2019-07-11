@@ -47,7 +47,8 @@ class VideoShelves:
     A class that prepares all the videos in the disk for post quick post response.
     - Scans the disk and make then into a dictionary.
     """
-    VideoFileRootDir = "C:/Users/Administrator/Desktop/MLP Random Episodes"
+    VideoFileRootDir =\
+        "C:/Users/Administrator/source/repos/FunWith-API-HTTP-HTML-and-C-/Python Is Huge/static/resource/videos"
 
     def __init__(self):
         self._AllVideos = []

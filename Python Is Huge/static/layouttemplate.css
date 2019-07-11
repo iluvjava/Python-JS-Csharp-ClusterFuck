@@ -25,3 +25,8 @@ a:hover
 {
     background: yellowgreen;
 }
+
+video
+{
+    width: 100%;
+}
