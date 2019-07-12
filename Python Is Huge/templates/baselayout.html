@@ -2,7 +2,9 @@
 <html lang="en">
     <head>
         <title>The Title</title>
+        {% block scripts %}
         <script src="{{url_for('static', filename='main.js')}}">
+        {% endblock %}
         </script>
         <link rel="stylesheet" type="text/css" 
         href="{{url_for('static', filename='layouttemplate.css')}}">
