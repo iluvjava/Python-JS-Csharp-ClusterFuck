@@ -15,6 +15,7 @@ namespace MyWebAppAttempt.Controllers
         // GET: MyFirstLittle
         public ActionResult Index()
         {
+
             return View();
         }
 
