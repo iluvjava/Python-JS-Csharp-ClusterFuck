@@ -29,7 +29,7 @@ namespace MyLibrary.SQLClient
         /// <summary>
         /// Constructor internal to keep singleton.
         /// </summary>
-        protected MyLittleSqlClient()
+        internal MyLittleSqlClient()
         {
         }
 
@@ -58,34 +58,24 @@ namespace MyLibrary.SQLClient
 
         /// <summary>
         /// Return an instance of the connection.
-        /// This method won't renew the data object that is 
-        /// in the static field. 
         /// </summary>
-        /// <returns>
-        /// Null is returned if there is something wrong. 
-        /// </returns>
+        /// <returns></returns>
         public static MyLittleSqlClient GetInstance()
         {
-            try
-            {
-                if (TheInstance != null) return MyLittleSqlClient.TheInstance;
-                var config = GetDefultConnectionConfig();
-                var builder = new MySqlConnectionStringBuilder();
-                builder.Server = config.Server;
-                builder.UserID = config.UserID;
-                builder.Database = config.DataBase;
-                builder.Password = config.PassWord;
-                var connectionstring = builder.ConnectionString;
-                var dbconn = new MySqlConnection(connectionstring);
-                dbconn.Open();
-                var res = new MyLittleSqlClient();
-                res.DBConn = dbconn;
-                return res;
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+            if (TheInstance != null) return MyLittleSqlClient.TheInstance;
+
+            var config = GetDefultConnectionConfig();
+            var builder = new MySqlConnectionStringBuilder();
+            builder.Server = config.Server;
+            builder.UserID = config.UserID;
+            builder.Database = config.DataBase;
+            builder.Password = config.PassWord;
+            var connectionstring = builder.ConnectionString;
+            var dbconn = new MySqlConnection(connectionstring);
+            dbconn.Open();
+            var res = new MyLittleSqlClient();
+            res.DBConn = dbconn;
+            return res;
         }
 
         /// <summary>
@@ -254,26 +244,6 @@ namespace MyLibrary.SQLClient
             res += this.PassWord + nl;
             return res; 
         }
-
-    }
-
-
-
-    /// <summary>
-    /// This is a class that make use the MyLittleSQLClient 
-    /// to provide a model for the database connection. 
-    /// This class models a table. 
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// </summary>
-    public class MyLittleEntityExample
-    {
-        public MyLittleSqlClient DBConn = MyLittleSqlClient.GetInstance(); 
-
-
-
-
 
     }
 
