@@ -1,13 +1,10 @@
 (
 ()=>
 {
-
+    console.log("gameoflife.js running on: "+ document.URL);
 }
 )
 ();
-
-
-
     /**
      * This functio returns a 2d array with the given dimension.
      */
@@ -36,18 +33,18 @@
     }
 
     /**
-     * This class represents the model and method for the 
-     * game of life. 
+     * This is directly connected to the canvas on the page. 
      */
     class GameBoard
     {
-        constructor()
+        constructor(littleh = 1)
         {
-            this.littleh = 1;
+            this.littleh = littleh;
             this.board = document.getElementById("thegameboard");
+            this.canvasctx = this.board.getContext("2d");
             this.w = Math.floor(this.board.width/this.littleh); 
             this.h = Math.floor(this.board.height/this.littleh);
-            this.model = create_2dRand_array(this.h, this.w);
+            this.model = create_2dRand_array(this.h, this.w); 
             console.log("Rand 2d  generated: ");
             console.log(this.model);
         }
@@ -69,6 +66,20 @@
         }
 
         /**
+         * Function paints a black pixels at the sepcified location. 
+         * @param {*} x 
+         * @param {*} y 
+         */
+        draw_pixel_at(x, y)
+        {
+            let newpixel = new ImageData(1, 1);
+            for(let i =0; i< 3; i++)
+            newpixel.data[i] = 255;
+            this.canvasctx.putImageData(newpixel, x, y);
+        }
+
+
+        /**
          * Return the number of neigbours that are alived in a certain position.
          * - if the position is at the edge of the board, it will 
          * looked to the other end of the board as neigbour. 
@@ -86,7 +97,6 @@
                 jj = jj === -1? this.w - 1 : jj; 
                 ii = ii === this.h ? 0: ii;
                 jj = jj === this.w ? 0: jj;
-                
                 res += this.model[ii][jj];
             }
             return res; 
@@ -128,6 +138,16 @@
         }
 
         /**
+         * it will render all the frames, 
+         * 
+         * @param {*} framescount 
+         */
+        render_frames(framescount)
+        {
+            
+        }
+
+        /**
          * This method get the current model and update it to he board. 
          */
         update_graphics()
@@ -156,7 +176,7 @@
 
     "use sctrict"; 
 
-    console.log("gameoflife.js running on: "+ document.URL);
+  
 
     thegame = null;
 
@@ -171,11 +191,64 @@
         let timerid = setInterval(updateGameboard, 0);
         setTimeout(()=>{clearInterval(timerid);}, 10000);
     }
+
+    function prepare_eventlisteners()
+    {
+        id("rangeslider").addEventListener("change", rangeslider_lis);
+        id("play").addEventListener("click", playbtn_eventlis);
+    }
+
+    function rangeslider_lis()
+    {
+
     
+    }
+
+    function playbtn_eventlis()
+    {
+
+    }
     function updateGameboard()
     {
         console.log("updating...");
         thegame.updateGame();
+    }
+
+
+    function id(ID)
+    {
+        let res = document.getElementById(ID); 
+        if(!res)
+        {
+            throw new Error("id "+ ID + " not found. ");
+        }
+    }
+
+
+    /**
+     * It runs all function asnchronously and then wait 
+     * until all of then are finished. 
+     * @param {Function} tasks
+     * A list of functions, it doesn't have input parameters.  
+     * @param {Function} callback
+     * The function callback will be calleck back with the result input 
+     * to the function. 
+     */
+    function runAllFunctionsAsyncly(tasks, callback)
+    {
+        // map tasks to list of promises
+        let promiselist = tasks.map(
+            (task) =>
+            {
+                return new Promise(
+                    (resolve, reject) =>
+                    {
+                        resolve(task());
+                    }
+                )
+            }
+        )
+        Promise.all(promiselist).then(callback);
     }
 
 

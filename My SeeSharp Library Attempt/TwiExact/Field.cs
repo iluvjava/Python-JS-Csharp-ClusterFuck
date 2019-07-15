@@ -53,6 +53,17 @@ namespace TwiExact.Field
         {
             return ConstructExactRational(new BigInteger(a), new BigInteger(b));
         }
+        /// <summary>
+        /// Integers are legit retional numbers. 
+        /// </summary>
+        /// <param name="a">
+        /// The numerator. 
+        /// </param>
+        /// <returns></returns>
+        public static ExactRational ConstructExactRational(long a)
+        {
+            return ConstructExactRational(a, 1L);
+        }
 
         /// <summary>
         ///
@@ -140,6 +151,7 @@ namespace TwiExact.Field
 
         public override OrderedField MultiplicativeInverse()
         {
+            // divided by zero will be thrown by construction method. 
             return ConstructExactRational(d, n);
         }
 

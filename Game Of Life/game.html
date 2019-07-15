@@ -8,8 +8,27 @@
         </head>
         <body>
                 <div id="gameoflife">
-                    <canvas id="thegameboard" width="1000" height="1000">
+                    <canvas id="thegameboard" width="800" height="800">
                     </canvas>
                 </div>
         </body>
-    </html>
+
+        <div id="controlpanel">
+            <span>
+                Render Frames: 
+            </span>
+            <input type="number" >
+            <br>
+            <span>
+                Render Intervals in ms: 
+            </span>
+            <input type="range" id="rangeslider" min=0 max=1000> 
+            <span id="renderrange"></span>
+            <br>
+            <button id="play">
+                Render and Play
+            </button>
+
+        </div> 
+
+</html>
