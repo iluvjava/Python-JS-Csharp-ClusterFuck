@@ -16,30 +16,61 @@ class My2DArray
         throw new Error("My2DArray must be larger than zero. ");
         this._Arr = new Array(firstaccess * secondaccess);
         this._FirstAccess = firstaccess;
-        this._SecondAccess = secondaccess;
+        this._SecondAcess = secondaccess;
     }
 
     /**
-     * get element of the array at that position. 
+     * get element of the array at that position, ondex beyond the 
+     * - length of the element will loop back to the beginning
+     * - negative numbers will loop back from the back. 
      * @param {*} x 
      * @param {*} y 
      */
     get(x, y)
     {
-        if(x < 0 || x >= firstaccess|| y < 0 || x >= secondaccess)
-        throw new Error("Index out of range. ");
-        return this._Arr[x*this._FirstAccess+y]; 
+        let l = this._remapIndex(x,y); 
+        return this._Arr[l[0]*this._FirstAccess+l[1]]; 
     }
 
     /**
-     * Set the element to a certain value. 
+     * This function remaps indices that are invalid to the size of the 
+     * matrix. 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    _remapIndex(x,y)
+    {
+        if(x<0||y<0)
+        {
+            if(x<0)
+            {
+                x =-x;
+            }
+            y =-y;
+        }
+        if(x >= this._FirstAccess || y >= this._SecondAcess)
+        {
+            if(x>= this._FirstAccess)
+            {
+                x%=this._FirstAccess;
+            }
+            y%=this._SecondAcess;
+        }
+        return [x,y]; 
+    }
+
+
+    /**
+     * - 
+     * - length of the element will loop back to the beginning
+     * - negative numbers will loop back from the back. 
      * @param {*} x 
      * @param {*} y 
      * @param {*} val 
      */
     set(x, y, val)
     {
-        if(x < 0 || x >= firstaccess|| y < 0 || x >= secondaccess)
+        if(x < 0 || x >= this._FirstAccess|| y < 0 || x >= this._FirstAccess)
         throw new Error("Index out of range. ");
         this._Arr[x*this._FirstAccess+y] = val; 
     }
@@ -58,5 +89,53 @@ function testMy2DArray()
  */
 class GameOfLifeLogic
 {
+
+    /**
+     * Pass in a 2d array to for the model of the game. 
+     * @param {My2DArray} array 
+     */
+    constructor(array)
+    {
+        this.Model = array; 
+        this._H = array.firstaccess; 
+        this._W = array.secondaccess;
+    }
+
+  
+    /**
+     * Return the number of neigbours that are alived in a certain position.
+     * * Counts the numbers of alives at that surrounded the grid at 
+     * * that position. 
+     */
+    alive_count(pos1, pos2)
+    {
+        let res = 0;
+        for(let i = -1; i < 2; i++)
+        for(let j = -1; j < 2; j++)
+        {
+            res += this.Model.get(i, j);
+        }
+        return res; 
+    }
+
+        /**
+     * This function return a bool to indicated if the block at 
+     * that position should be updated. 
+     * 
+     */
+    should_live(posi1, posi2)
+    {
+        let alivecount = this.alive_count(posi1, posi2);
+        if(this.model[posi1][posi2])
+        {
+            if(alivecount <= 3)
+            {
+                if(alivecount < 2)return false;
+                return true;
+            }
+            return false;
+        }
+        return alivecount === 3;
+    }
 
 }

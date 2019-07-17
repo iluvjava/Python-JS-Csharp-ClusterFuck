@@ -43,7 +43,6 @@ namespace TwiExact
                 throw new UnBalancedBracketException();
 
             var seperatorposition = new List<int>();
-
             for (int i = 1;  i < expression.Length - 1; i++)
             {
                 //bracket is syntactical 
