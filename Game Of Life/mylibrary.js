@@ -177,6 +177,9 @@ class GameOfLifeLogic
 
 }
 
+/*
+    Testing module. 
+*/
 (
 ()=>
 {
@@ -188,8 +191,10 @@ class GameOfLifeLogic
     console.log("This is the 2d array we have here: ");
     console.log(thearray);
     console.log("Testing the game model. ");
+    let thegame = new GameOfLifeLogic(thearray);
+    thegame.update();
+    console.log(thegame);
     
-
 }
 )
 ();
