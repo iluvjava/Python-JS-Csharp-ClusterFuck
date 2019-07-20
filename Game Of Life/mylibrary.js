@@ -180,9 +180,16 @@ class GameOfLifeLogic
 (
 ()=>
 {
-    console.log("Testing the script. ");
-
+    console.log("Testing the script.... ");
+    let thearray = new My2DArray(3, 3);
+    thearray.set(0,0,1);
+    thearray.set(1,0,1);
+    thearray.set(1,1,1);
+    console.log("This is the 2d array we have here: ");
+    console.log(thearray);
+    console.log("Testing the game model. ");
     
+
 }
 )
 ();
