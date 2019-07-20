@@ -77,18 +77,11 @@ class My2DArray
 }
 
 /**
- * test. 
- */
-function testMy2DArray()
-{
-    return; 
-}
-
-/**
  * It models the game of life. 
  */
 class GameOfLifeLogic
 {
+    
 
     /**
      * Pass in a 2d array to for the model of the game. 
@@ -96,9 +89,10 @@ class GameOfLifeLogic
      */
     constructor(array)
     {
-        this.Model = array; 
+        this.Model = array;  // The current frame we are looking at.
         this._H = array.firstaccess; 
         this._W = array.secondaccess;
+        this._Tensor = new Array(); // Stores all the board in sequence. 
     }
 
   
@@ -118,7 +112,7 @@ class GameOfLifeLogic
         return res; 
     }
 
-        /**
+    /**
      * This function return a bool to indicated if the block at 
      * that position should be updated. 
      * 
@@ -138,4 +132,57 @@ class GameOfLifeLogic
         return alivecount === 3;
     }
 
+    /**
+     * This function push the frames of the game model in the list. 
+     * it update the current frames to the new model. 
+     * this method also returns a sequence of frames. 
+     * @param {*} frames 
+     */
+    update(frames = 1)
+    {
+        for(let i = 0; i < frames; i++)
+        {
+            this._updateOneFrame;
+        }
+        this.Model = this._Tensor[this._Tensor.length - 1]; 
+        let allframes = new My2DArray();
+        for
+        (
+            let i = this._Tensor.length, j =0;
+            j < frames;
+            i--, j++
+        )
+        {
+            allframes.push(this._Tensor[i]);
+        }
+        return allframes; 
+    }
+
+    /**
+     * Retrive the most recent matrix and then update the matrix. 
+     *  * it will pushes the new frame into the current model array. 
+     */
+    _updateOneFrame()
+    {
+
+        let newframe = new My2DArray();
+        for(let i =0; i < this._W; i++)
+        for(let j =0; j < this._H; j++)
+        {
+            newframe.set(i,j,this.should_live(i,j));
+        }
+        this._Tensor.push(newframe);
+    }
+
+
 }
+
+(
+()=>
+{
+    console.log("Testing the script. ");
+
+    
+}
+)
+();
