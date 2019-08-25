@@ -56,8 +56,8 @@ namespace TwiExactTests
         {
             var expression1 = "-1+8-9+(-9/3-(4-5))";
             var p = Parser.GetInstance(expression1);
-            bool good = p.ValidateBracketBalance() && 
-
+            bool good = p.ValidateBracketBalance() && p.ValidateOptBalance();
+            print(good? "Good":"bad");
         }
 
         public static void print(object arg)
