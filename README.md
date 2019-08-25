@@ -148,6 +148,9 @@ Python. C# and Node js.
 - Parser, Twiexact, OptBalance validation. 
 
 
+# 25/08/2019
+- Adding Priority queue implemented using heap into C# mydatastructue, it's useful. 
+
 # Major Referece Materials
 - The Python Flask: 
     - https://github.com/CoreyMSchafer/code_snippets/tree/master/Python/Flask_Blog

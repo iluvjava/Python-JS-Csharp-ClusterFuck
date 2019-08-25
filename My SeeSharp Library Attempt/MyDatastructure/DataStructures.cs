@@ -134,6 +134,7 @@ namespace MyDatastructure
             }
         }
 
+
         protected int GetFirstChildIndex(int arg)
         {
             return arg * HeapChildrenCount + 1;
@@ -150,22 +151,6 @@ namespace MyDatastructure
                 return 0;
             }
             return (arg - 1) / HeapChildrenCount;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="arg"></param>
-        /// <throw>
-        /// Exception if there is an internal failure.
-        /// </throw>
-        protected void IsIndexValid(params int[] arg)
-        {
-            for (int i = -1; ++i != arg.Length;)
-                if (arg[i] < 0 || arg[i] >= size)
-                {
-                    throw new Exception("Internal Error.");
-                }
         }
 
         /// <summary>
@@ -239,7 +224,6 @@ namespace MyDatastructure
         /// </returns>
         protected int PercolateUp(int arg)
         {
-            IsIndexValid(arg);
             if (arg == 0)
             {
                 return arg;
@@ -277,6 +261,19 @@ namespace MyDatastructure
             ArrayHeap[arg2] = firstthing;
             ArrayHeap[arg1] = secondthing;
         }
+
+        /// <summary>
+        /// it will use Floyd buildheap algorithm, it will not modify the inputs. 
+        /// </summary>
+        /// <return>
+        /// A new heap that made from the Floyd Buildheap Algorithm.
+        /// </return>
+        public static MyLittleArrayHeapPriorityQueue<R> BuildHeap<R> (R[] arg)
+        where R: IComparable<R> 
+        {
+            return null;
+        }
+
     }
 
     [Serializable]
@@ -299,37 +296,4 @@ namespace MyDatastructure
         }
     }
 
-
-    /// <summary>
-    /// A simpler Binary Heap. It cannot remove element/check contain from the queue but support 
-    /// multiple of the same element. 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class SimpleBinaryHeapPriorityQeue<T> : IPriorityQ<T> where T : IComparable<T>
-    {
-        public bool Contains(T arg)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Equeue(T arg)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T Peek()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(T arg)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T RemoveMin()
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
