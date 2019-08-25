@@ -128,6 +128,7 @@ Python. C# and Node js.
     - Run tests. 
     - Package everything and make it into a library. 
 
+
 #09/07/2019: 
 ## What I leared: 
 - Post reponse with Json type. 
@@ -143,7 +144,8 @@ Python. C# and Node js.
             - if not,
                 - the paramters will be in the key and val of the request to the rounted endpoint.
     ```
-
+# 31/07/2019: 
+- Parser, Twiexact, OptBalance validation. 
 
 
 # Major Referece Materials

@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using TwiExact.Field;
+using TwiExact.Parser;
 namespace TwiExactTests
 {
     [TestClass]
@@ -45,6 +46,18 @@ namespace TwiExactTests
                 Assert.IsTrue(
                     a.MultiplicativeInverse() * a == ExactRational.ConstructExactRational(1,1));
             }
+        }
+
+        /// <summary>
+        /// Test whether the expression validator works. 
+        /// </summary>
+        [TestMethod]
+        public void ValidationsOfOpteratorsAndParsingTest()
+        {
+            var expression1 = "-1+8-9+(-9/3-(4-5))";
+            var p = Parser.GetInstance(expression1);
+            bool good = p.ValidateBracketBalance() && 
+
         }
 
         public static void print(object arg)

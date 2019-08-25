@@ -2,7 +2,7 @@
 
 #gameoflife
 {
-    width: 100vw;
+    width: auto;
     height: auto;
 }
 
@@ -13,6 +13,6 @@ TODO: yo
 * special stuff. 
 */
 #thegameboard {
-    width: 100vw;
+    width:auto;
     height: auto;
 }

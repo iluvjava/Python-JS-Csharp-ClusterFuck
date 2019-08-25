@@ -70,11 +70,35 @@ class My2DArray
      */
     set(x, y, val)
     {
-        if(x < 0 || x >= this._FirstAccess|| y < 0 || x >= this._FirstAccess)
-        throw new Error("Index out of range. ");
-        this._Arr[x*this._FirstAccess+y] = val; 
+        let l = this._remapIndex(x,y);
+        this._Arr[l[0]*this._FirstAccess+l[1]] = val; 
     }
+
+    getHeight()
+    {
+        return this._FirstAccess;
+    }
+
+    getWidth()
+    {
+        return this._SecondAcess;
+    }
+    /**
+     * Return an instance of My2DArray where each entry is either a 1 or a 0. 
+     */
+    static getRandomBool2DArray(x, y)
+    {
+        let res = new My2DArray(x,y);
+        for(let i = 0; i < x; i++)for(let j = 0; j < y; j++)
+        {
+            res.set(i ,j, Math.floor(Math.random()*2)); 
+        }
+        return res; 
+    }
+
 }
+
+
 
 /**
  * It models the game of life. 
@@ -89,10 +113,31 @@ class GameOfLifeLogic
      */
     constructor(array)
     {
-        this.Model = array;  // The current frame we are looking at.
-        this._H = array.firstaccess; 
-        this._W = array.secondaccess;
+        this.CurrentFrame = array;  // The current frame we are looking at.
+        this._H = array.getWidth(); 
+        this._W = array.getHeight();
         this._Tensor = new Array(); // Stores all the board in sequence. 
+        print("GameOfLifeLogic constructor: ");
+        print(this);
+    }
+
+
+
+
+    /**
+     * The height of the size of the canvas
+     */
+    getHeight()
+    {
+        return this.CurrentFrame.getHeight();
+    }
+
+    /**
+     * The width of the model.
+     */
+    getWidth()
+    {
+        return this.CurrentFrame.getWidth();
     }
 
   
@@ -101,13 +146,13 @@ class GameOfLifeLogic
      * * Counts the numbers of alives at that surrounded the grid at 
      * * that position. 
      */
-    alive_count(pos1, pos2)
+    alive_count(x, y)
     {
         let res = 0;
         for(let i = -1; i < 2; i++)
         for(let j = -1; j < 2; j++)
         {
-            res += this.Model.get(i, j);
+            res += this.CurrentFrame.get(x + i, y + j);
         }
         return res; 
     }
@@ -120,7 +165,7 @@ class GameOfLifeLogic
     should_live(posi1, posi2)
     {
         let alivecount = this.alive_count(posi1, posi2);
-        if(this.model[posi1][posi2])
+        if(this.CurrentFrame.get(posi1, posi2))
         {
             if(alivecount <= 3)
             {
@@ -133,22 +178,26 @@ class GameOfLifeLogic
     }
 
     /**
-     * This function push the frames of the game model in the list. 
-     * it update the current frames to the new model. 
-     * this method also returns a sequence of frames. 
-     * @param {*} frames 
+     * This function push the frames of the game model in the list. It does the 
+     * following things: 
+     * *1. Render then pushes frames into the tensor. 
+     * *2. All the frames are in reverse order. 
+     * 
+     * @param {Integer} frames 
+     * @returns {Array} 
+     * An array of my2darray containing all the frames needs to plot the shit. 
      */
     update(frames = 1)
     {
         for(let i = 0; i < frames; i++)
         {
-            this._updateOneFrame;
+            this._updateOneFrame();
         }
-        this.Model = this._Tensor[this._Tensor.length - 1]; 
-        let allframes = new My2DArray();
+        //all new rendered frames. 
+        let allframes = new Array();
         for
         (
-            let i = this._Tensor.length, j =0;
+            let i = this._Tensor.length -1 , j =0;
             j < frames;
             i--, j++
         )
@@ -161,20 +210,120 @@ class GameOfLifeLogic
     /**
      * Retrive the most recent matrix and then update the matrix. 
      *  * it will pushes the new frame into the current model array. 
+     *  * it will refer the current frame to the newly redered frame. 
      */
     _updateOneFrame()
     {
-
-        let newframe = new My2DArray();
+        let newframe = new My2DArray(this._H, this._W);
         for(let i =0; i < this._W; i++)
         for(let j =0; j < this._H; j++)
         {
             newframe.set(i,j,this.should_live(i,j));
         }
+        this.CurrentFrame = newframe; 
+        print(this.CurrentFrame);
         this._Tensor.push(newframe);
     }
 
 
+}
+
+/**
+ * This class will handle all the stupid trivials things about 
+ * putting the data into the canvas. 
+ * * - The view will forcely fit the squares into the view, 
+ *  * using floating point and shit, so it might distorted the view 
+ *   if the size of the game board is too extreme. 
+ */
+class GameView 
+{
+
+    /**
+     * 
+     * @param {HTML Canvas Element} thecanvas 
+     * @param {GameOfLifeLogic} gamelogic 
+     * @param {Integer} interval 
+     * Frame display interval in ms. 
+     */
+    constructor(thecanvas, gamelogic, interval = 1000)
+    {
+        this._Context = thecanvas.getContext("2d"); 
+        this._Width = thecanvas.width;
+        this._Height = thecanvas.height;
+        this._MWidth = gamelogic.getWidth();
+        this._MHeight = gamelogic.getHeight();
+        this._Model = gamelogic; 
+        this._AnimationInterval = interval;
+        this._LittleX = this._Width/this._MWidth; 
+        this._LittleY = this._Height/this._MHeight;
+        print("GameView Constructor: ");
+        print(this);
+    }
+
+    /**
+     * Plays frames on the canvas. 
+     * 
+     */
+    playFrames(frames = 10)
+    {
+        let tensor = this._Model.update(frames);
+        let counter = frames -1; 
+        let timeid = setInterval
+        (
+            ()=>
+            {
+                this._clearCanvas();
+                if(counter == -1 )
+                {
+                    clearInterval(timeid);
+                    return;
+                }
+                print("counter" + counter);
+
+                // the 2d array. 
+                let bigarray = tensor[counter];
+                for(let i = 0; i < this._MHeight; i++)
+                for(let j = 0; j < this._MWidth; j++)
+                {
+                    if(bigarray.get(j, i))this._plotSquareAt(j,i);
+                }
+                counter--;
+            }
+            ,
+            this._AnimationInterval
+        ); 
+    }
+
+    
+
+    /**
+     * 
+     * @param {Integer} x 
+     * @param {Integer} y 
+     */
+    _plotSquareAt(x, y)
+    {
+        if(y > this._MHeight || x > this._MWidth)
+        {
+            throw new Error();
+        }
+        this._Context.fillRect(
+            x*this._LittleX, y*this._LittleY, this._LittleX, this._LittleY 
+        );
+    }
+    /**
+     * This method clears the whole canvas. 
+     */
+    _clearCanvas()
+    {
+        this._Context.clearRect(0,0,this._Width, this._Height);
+    }
+
+}
+
+function print(stuff="")
+{
+    console.log(stuff);
 }
 
 /*
@@ -194,7 +343,8 @@ class GameOfLifeLogic
     let thegame = new GameOfLifeLogic(thearray);
     thegame.update();
     console.log(thegame);
-    
+    console.log("Create the game view for the game: ");
+
 }
 )
 ();
