@@ -1,8 +1,7 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Text;
 
-namespace MyDatastructure
+namespace MyDatastructure.Maps
 {
     /// <summary>
     /// An interface for my own set implementation.

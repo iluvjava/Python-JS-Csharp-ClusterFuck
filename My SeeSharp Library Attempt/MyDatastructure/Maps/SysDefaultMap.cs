@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MyDatastructure
+namespace MyDatastructure.Maps
 {
     public class KVP<K, V>
     {

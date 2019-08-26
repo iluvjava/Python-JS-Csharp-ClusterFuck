@@ -1,25 +1,14 @@
-﻿using System;
+﻿using MyDatastructure.PriorityQ;
+using MyDatastructure.Maps;
+using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using static System.Array;
 
 namespace MyDatastructure
 {
-    /// <summary>
-    /// this is an interface for priorityqueue.
-    /// </summary>
-    public interface IPriorityQ<T>
-    {
-        bool Contains(T arg);
-
-        void Equeue(T arg);
-
-        T Peek();
-
-        void Remove(T arg);
-
-        T RemoveMin();
-    }
+    
 
     /// <summary>
     /// This is a min heap using 4 children heap structure.
@@ -31,24 +20,65 @@ namespace MyDatastructure
     public class MyLittleArrayHeapPriorityQueue<T> : IPriorityQ<T> where T : IComparable<T>
     {
         protected T[] ArrayHeap;
+        protected IComparer<T> CustomizedComparer;
         protected int HeapChildrenCount;
         protected IMap<T, int> Indices;
         protected int size = 0;
+
+        public int Size
+        {
+            get
+            {
+                return size;
+            }
+        }
 
         public MyLittleArrayHeapPriorityQueue
         (
             IMap<T, int> IndexMap,
             int heapchildrecount,
-            int initialHeapSize
+            int initialHeapSize,
+            IComparer<T> comparer = null
         )
         {
+            if (heapchildrecount <= 1 || initialHeapSize <= 1)
+            {
+                throw new InvalidArgumentException();
+            }
             Indices = IndexMap;
             HeapChildrenCount = heapchildrecount;
             ArrayHeap = CreateGenericArray<T>(initialHeapSize);
+            CustomizedComparer = comparer;
         }
 
         public MyLittleArrayHeapPriorityQueue() : this(new SysDefaultMap<T, int>(), 4, 16)
         {
+        }
+
+        public MyLittleArrayHeapPriorityQueue(IComparer<T> arg)
+        : this(new SysDefaultMap<T, int>(), 4, 16, arg)
+        { }
+
+        /// <summary>
+        /// it will use Floyd buildheap algorithm, it will not modify the inputs.
+        /// </summary>
+        /// <return>
+        /// A new heap that made from the Floyd Buildheap Algorithm.
+        /// </return>
+        public static MyLittleArrayHeapPriorityQueue<R> BuildHeap<R>(R[] arg)
+        where R : IComparable<R>
+        {
+            var res = new MyLittleArrayHeapPriorityQueue<R>();
+            R[] newarr = new R[arg.Length];
+            Copy(arg, 0, newarr, 0, arg.Length);
+            res.ArrayHeap = newarr;
+            res.size = arg.Length;
+            for (int i = res.Size - 1; i >= 0; i--)
+            {
+                res.PercolateDown(i);
+            }
+            
+            return res;
         }
 
         public static T1[] CreateGenericArray<T1>(int len)
@@ -66,7 +96,7 @@ namespace MyDatastructure
         /// null.
         /// </summary>
         /// <param name="arg"></param>
-        public void Equeue(T arg)
+        public void Enqueue(T arg)
         {
             if (object.ReferenceEquals(null, arg) || Indices.ContainsKey(arg))
             {
@@ -134,6 +164,20 @@ namespace MyDatastructure
             }
         }
 
+        /// <summary>
+        /// arg1.Compareto(arg2)
+        /// </summary>
+        /// <param name="arg1"></param>
+        /// <param name="arg2"></param>
+        /// <returns></returns>
+        protected int CallCompare(T arg1, T arg2)
+        {
+            if (CustomizedComparer is null)
+            {
+                return arg1.CompareTo(arg2);
+            }
+            return CustomizedComparer.Compare(arg1, arg2);
+        }
 
         protected int GetFirstChildIndex(int arg)
         {
@@ -194,13 +238,13 @@ namespace MyDatastructure
                     i++
                 )
             {
-                if (ArrayHeap[i].CompareTo(parent) < 0)
+                if (CallCompare(ArrayHeap[i], parent) < 0)
                 {
                     if (indextoswap == -1)
                     {
                         indextoswap = i;
                     }
-                    else if (ArrayHeap[i].CompareTo(ArrayHeap[indextoswap]) < 0)
+                    else if (CallCompare(ArrayHeap[i], ArrayHeap[indextoswap]) < 0)
                     {
                         indextoswap = i;
                     }
@@ -236,7 +280,7 @@ namespace MyDatastructure
             {
                 throw new Exception("Internal Error.");
             }
-            if (child.CompareTo(parent) < 0)
+            if (CallCompare(child, parent) < 0)
             {
                 Swap(parentindex, arg);
                 return PercolateUp(parentindex);
@@ -261,19 +305,6 @@ namespace MyDatastructure
             ArrayHeap[arg2] = firstthing;
             ArrayHeap[arg1] = secondthing;
         }
-
-        /// <summary>
-        /// it will use Floyd buildheap algorithm, it will not modify the inputs. 
-        /// </summary>
-        /// <return>
-        /// A new heap that made from the Floyd Buildheap Algorithm.
-        /// </return>
-        public static MyLittleArrayHeapPriorityQueue<R> BuildHeap<R> (R[] arg)
-        where R: IComparable<R> 
-        {
-            return null;
-        }
-
     }
 
     [Serializable]
@@ -295,5 +326,4 @@ namespace MyDatastructure
         {
         }
     }
-
 }
