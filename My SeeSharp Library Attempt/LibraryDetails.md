@@ -40,3 +40,40 @@
     - Floyd buildheap seems to work on non repeating elements.
 - Things that Changed: 
     - We will need 2 size parameters to take care of the size, of counts the number of unique element, used as a constraint for the heap array. The other one counts the number of total elements in the queue. 
+
+
+
+### Further Future Improvements
+- Deficiency of the previous way of tracking the frequencies of repeating elements. 
+    - Don't have to use a map that maps the elements to their frequencies. 
+    - Each element is mapped to an unique index in the array: 
+        - Make a new array with the same length where each element is an integer, representing the frequency of that 
+        element in that index. 
+- What will be Changed? 
+- When swapping the elements in the array, we swap the frequencies correspondingly!!!
+    - bool Contains(T arg): 
+        - No changes. 
+    - void Enqueue (T arg): 
+        - Increment the frequencies or initialize the frequencies as 1. 
+    - void Remove(T arg): 
+        - If the element is in the index map, remove the element and update the frequency
+        - If freq is 1, then remove the element in the index and freq map.
+    - MyLittleArrayHeapPriorityQueue<R> BuidHeap(R[] arg):
+        - This one is going to be a bit complicated as we need to extract on array into 2 array where one is the 
+        element array and the other one is the frequencies. So we need to rebuild it for that with a map. 
+    - protected bool Register(T arg): 
+        - This method is called whenever we try to add a new element into the queue. 
+        - Return true if the element is added into the queue and it is not present before. 
+        - When registering, it will attempt to modify both the Frequencies and Indices: 
+            - If the element is not presented in the index map, it will add the Freq to the end of the freq array, and return true. 
+            - If the element in already in the index map, find the index and increment freq. 
+    - protected bool Resign(T arg): 
+        - This method will temper with the indices and freq of element. 
+        - if the element is never registered, throw error. 
+        - Decrement the element frequency by 1. 
+        - If the element's frequencies is zero, return true 
+        - else returns false. 
+    - protected void AutomaticResize()
+        - Update the freq array and the heap elements array altogether. 
+    - protected Swap(int arg1, int arg2): 
+        - We are going to swap the element and its freq together.  

@@ -24,7 +24,7 @@ namespace MyDatastructure
         protected IComparer<T> CustomizedComparer;
         protected int HeapChildrenCount;
         protected IMap<T, int> Indices;
-        protected IMap<T, int> Frequencies;
+        protected int[] Frequencies;
         protected int UniqueElementCount = 0; // Unique elements count
         protected int ElementCount = 0; // The number of element in queue includes repetitions.
 
@@ -39,7 +39,6 @@ namespace MyDatastructure
         public MyLittleArrayHeapPriorityQueue
         (
             IMap<T, int> IndexMap,
-            IMap<T, int> FreqMap,
             int heapchildrecount,
             int initialHeapSize,
             IComparer<T> comparer = null
@@ -50,20 +49,20 @@ namespace MyDatastructure
                 throw new InvalidArgumentException();
             }
             Indices = IndexMap;
-            Frequencies = FreqMap;
             HeapChildrenCount = heapchildrecount;
             ArrayHeap = CreateGenericArray<T>(initialHeapSize);
+            Frequencies = new int[initialHeapSize];
             CustomizedComparer = comparer;
         }
 
         public MyLittleArrayHeapPriorityQueue(): 
-            this(new SysDefaultMap<T, int>(), new SysDefaultMap<T, int>(), 4, 16)
+            this(new SysDefaultMap<T, int>(), 4, 16)
         {
 
         }
 
         public MyLittleArrayHeapPriorityQueue(IComparer<T> arg):
-            this(new SysDefaultMap<T, int>(),new SysDefaultMap<T, int>(), 4, 16, arg)
+            this(new SysDefaultMap<T, int>(), 4, 16, arg)
         {
 
         }
@@ -77,22 +76,36 @@ namespace MyDatastructure
         public static MyLittleArrayHeapPriorityQueue<R> BuildHeap<R>(R[] arg)
         where R : IComparable<R>
         {
-            var res = new MyLittleArrayHeapPriorityQueue<R>();
-            R[] newarr = new R[arg.Length];
-            Copy(arg, 0, newarr, 0, arg.Length);
-            res.ArrayHeap = newarr;
-            res.UniqueElementCount = arg.Length;
-            for (int i = 0; i < newarr.Length; i++)
+            IMap<R, int> freqmap = new SysDefaultMap<R, int>();
+            for (
+                int i = -1;
+                ++i < arg.Length; 
+                freqmap[arg[i]] = freqmap.ContainsKey(arg[i]) ? freqmap[arg[i]] + 1 : 1
+                );
+
+            // Split it into 2 array; 
+            int elementcount = 0;
+            int[] freqtable = new int[freqmap.Size];
+            R[] contentatble = new R[freqmap.Size];
+            int uniquecount = 0;
+            foreach(KVP<R, int> kvp in freqmap)
             {
-                res.Indices[newarr[i]] = i;
-                res.Register(newarr[i]);
+                contentatble[uniquecount] = kvp.Key;
+                freqtable[uniquecount] = kvp.Value;
+                elementcount += kvp.Value;
+                uniquecount++;
             }
-            for (int i = res.Size - 1; i >= 0; i--)
+            MyLittleArrayHeapPriorityQueue<R> q = new MyLittleArrayHeapPriorityQueue<R>();
+            q.ArrayHeap = contentatble;
+            q.Frequencies = freqtable;
+            q.UniqueElementCount = uniquecount;
+            q.ElementCount = elementcount;
+            for (int i = q.ArrayHeap.Length - 1; i >= 0; i--)
             {
-                res.PercolateDown(i);
+                q.PercolateDown(i);
             }
-            
-            return res;
+
+            return q; 
         }
 
         public static T1[] CreateGenericArray<T1>(int len)
@@ -117,13 +130,13 @@ namespace MyDatastructure
                 throw new InvalidArgumentException();
             }
             AutomaticResize();
-            if (!Register(arg))
+            if (Register(arg))
             {
                 ArrayHeap[UniqueElementCount++] = arg;
                 Indices[arg] = UniqueElementCount - 1;
                 Percolate(UniqueElementCount - 1);
             }
-        }
+        } 
 
         public T Peek()
         {
@@ -175,9 +188,16 @@ namespace MyDatastructure
         {
             if (UniqueElementCount == ArrayHeap.Length - 1)
             {
-                T[] newarr = CreateGenericArray<T>(ArrayHeap.Length * 2);
-                Copy(ArrayHeap, 0, newarr, 0, ArrayHeap.Length);
-                this.ArrayHeap = newarr;
+                {
+                    T[] newarr = CreateGenericArray<T>(ArrayHeap.Length * 2);
+                    Copy(ArrayHeap, 0, newarr, 0, ArrayHeap.Length);
+                    this.ArrayHeap = newarr;
+                }
+                {
+                    int[] newarr = new int[ArrayHeap.Length * 2];
+                    Copy(Frequencies, 0, newarr, 0, Frequencies.Length);
+                    this.Frequencies = newarr;
+                }
             }
         }
 
@@ -318,29 +338,46 @@ namespace MyDatastructure
             T secondthing = ArrayHeap[arg2];
             Indices[firstthing] = arg2;
             Indices[secondthing] = arg1;
-            ArrayHeap[arg2] = firstthing;
-            ArrayHeap[arg1] = secondthing;
+            ArrayElementSwapHelper(arg1, arg2, ArrayHeap);
+            ArrayElementSwapHelper(arg1, arg2, Frequencies);
+
         }
+
+        /// <summary>
+        /// A helper methods that swaps any array. 
+        /// </summary>
+        /// <typeparam name="R"></typeparam>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="arr"></param>
+        public static void ArrayElementSwapHelper<R>(int a, int b, R[] arr)
+        {
+            R A = arr[a], B = arr[b];
+            arr[b] = A;
+            arr[a] = B;
+        }
+
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="arg"></param>
         /// <returns>
-        /// True if the element is already in the queue.
-        /// Else false.
+        /// True if the element is NEW! (Yes, percolate, add it to the index map! )
         /// </returns>
         protected bool Register(T arg)
         {
             ElementCount++;
-            if (Frequencies.ContainsKey(arg))
+            if (Indices.ContainsKey(arg))
             {
-                Frequencies[arg]++;
-                return true;
+                Frequencies[Indices[arg]]++;
+                return false;
             }
             else
-                Frequencies[arg] = 1;
-            return false;
+            { 
+                Frequencies[UniqueElementCount] = 1;
+            }
+            return true;
         }
 
        /// <summary>
@@ -353,15 +390,15 @@ namespace MyDatastructure
        /// </returns>
         protected bool Resign(T arg)
         {
-            if (!Frequencies.ContainsKey(arg))
+            if (!Indices.ContainsKey(arg))
             {
                 throw new InvalidArgumentException();
             }
-            Frequencies[arg]--;
+            int theindex = Indices[arg];
+            Frequencies[theindex]--;
             ElementCount--;
-            if (Frequencies[arg] == 0)
+            if (Frequencies[theindex] == 0)
             {
-                Frequencies.Remove(arg);
                 return true;
             }
             return false; 
