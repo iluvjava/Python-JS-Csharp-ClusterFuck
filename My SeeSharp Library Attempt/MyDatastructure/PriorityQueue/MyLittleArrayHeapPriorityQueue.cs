@@ -12,8 +12,7 @@ namespace MyDatastructure
     /// <summary>
     /// This is a min heap using 4 children heap structure.
     /// <para>
-    /// - Repeating elements are not allowed in this implementation. it cannot handle multiple 
-    /// of the same elements. 
+    /// - Null elements are not allowed in this datastructure.
     /// </para>
     /// </summary>
     /// <typeparam name="T">
