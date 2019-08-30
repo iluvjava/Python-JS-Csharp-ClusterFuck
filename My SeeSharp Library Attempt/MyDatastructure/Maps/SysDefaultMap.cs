@@ -57,7 +57,7 @@ namespace MyDatastructure.Maps
 
         public IEnumerator<KVP<K, V>> GetEnumerator()
         {
-            return null;
+            return new InternalIterator<KVP<K, V>>(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

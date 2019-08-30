@@ -2,40 +2,45 @@
 using MyDatastructure.Maps;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 using static System.Array;
 
 namespace MyDatastructure
 {
     
-
+    
     /// <summary>
     /// This is a min heap using 4 children heap structure.
     /// <para>
-    /// Whether repeating elements are allowed depends on specific implementations.
+    /// - Repeating elements are not allowed in this implementation. it cannot handle multiple 
+    /// of the same elements. 
     /// </para>
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">
+    /// T as a comparable Type for the class. 
+    /// </typeparam>
     public class MyLittleArrayHeapPriorityQueue<T> : IPriorityQ<T> where T : IComparable<T>
     {
         protected T[] ArrayHeap;
         protected IComparer<T> CustomizedComparer;
         protected int HeapChildrenCount;
         protected IMap<T, int> Indices;
-        protected int size = 0;
+        protected IMap<T, int> Frequencies;
+        protected int UniqueElementCount = 0; // Unique elements count
+        protected int ElementCount = 0; // The number of element in queue includes repetitions.
 
         public int Size
         {
             get
             {
-                return size;
+                return ElementCount;
             }
         }
 
         public MyLittleArrayHeapPriorityQueue
         (
             IMap<T, int> IndexMap,
+            IMap<T, int> FreqMap,
             int heapchildrecount,
             int initialHeapSize,
             IComparer<T> comparer = null
@@ -46,18 +51,23 @@ namespace MyDatastructure
                 throw new InvalidArgumentException();
             }
             Indices = IndexMap;
+            Frequencies = FreqMap;
             HeapChildrenCount = heapchildrecount;
             ArrayHeap = CreateGenericArray<T>(initialHeapSize);
             CustomizedComparer = comparer;
         }
 
-        public MyLittleArrayHeapPriorityQueue() : this(new SysDefaultMap<T, int>(), 4, 16)
+        public MyLittleArrayHeapPriorityQueue(): 
+            this(new SysDefaultMap<T, int>(), new SysDefaultMap<T, int>(), 4, 16)
         {
+
         }
 
-        public MyLittleArrayHeapPriorityQueue(IComparer<T> arg)
-        : this(new SysDefaultMap<T, int>(), 4, 16, arg)
-        { }
+        public MyLittleArrayHeapPriorityQueue(IComparer<T> arg):
+            this(new SysDefaultMap<T, int>(),new SysDefaultMap<T, int>(), 4, 16, arg)
+        {
+
+        }
 
         /// <summary>
         /// it will use Floyd buildheap algorithm, it will not modify the inputs.
@@ -72,7 +82,12 @@ namespace MyDatastructure
             R[] newarr = new R[arg.Length];
             Copy(arg, 0, newarr, 0, arg.Length);
             res.ArrayHeap = newarr;
-            res.size = arg.Length;
+            res.UniqueElementCount = arg.Length;
+            for (int i = 0; i < newarr.Length; i++)
+            {
+                res.Indices[newarr[i]] = i;
+                res.Register(newarr[i]);
+            }
             for (int i = res.Size - 1; i >= 0; i--)
             {
                 res.PercolateDown(i);
@@ -98,14 +113,17 @@ namespace MyDatastructure
         /// <param name="arg"></param>
         public void Enqueue(T arg)
         {
-            if (object.ReferenceEquals(null, arg) || Indices.ContainsKey(arg))
+            if (object.ReferenceEquals(null, arg))
             {
                 throw new InvalidArgumentException();
             }
             AutomaticResize();
-            ArrayHeap[size++] = arg;
-            Indices[arg] = size - 1;
-            Percolate(size - 1);
+            if (!Register(arg))
+            {
+                ArrayHeap[UniqueElementCount++] = arg;
+                Indices[arg] = UniqueElementCount - 1;
+                Percolate(UniqueElementCount - 1);
+            }
         }
 
         public T Peek()
@@ -114,7 +132,7 @@ namespace MyDatastructure
         }
 
         /// <summary>
-        ///
+        /// Null is not welcome in this queue. 
         /// </summary>
         /// <param name="arg"></param>
         /// <Exception>
@@ -127,11 +145,14 @@ namespace MyDatastructure
             {
                 throw new InvalidArgumentException();
             }
-            int elementindex = Indices[arg];
-            Swap(elementindex, size - 1);
-            Indices.Remove(ArrayHeap[size - 1]);
-            ArrayHeap[size--] = default;
-            Percolate(elementindex);
+            if (Resign(arg))
+            {
+                int elementindex = Indices[arg];
+                Swap(elementindex, UniqueElementCount - 1);
+                Indices.Remove(ArrayHeap[UniqueElementCount - 1]);
+                UniqueElementCount--;
+                Percolate(elementindex);
+            }
         }
 
         /// <summary>
@@ -142,11 +163,8 @@ namespace MyDatastructure
         /// </returns>
         public T RemoveMin()
         {
-            T res = ArrayHeap[0];
-            Swap(size - 1, 0);
-            Indices.Remove(ArrayHeap[size - 1]);
-            size--;
-            PercolateDown(0);
+            T res = Peek();
+            Remove(res);
             return res;
         }
 
@@ -156,7 +174,7 @@ namespace MyDatastructure
         /// </summary>
         protected void AutomaticResize()
         {
-            if (size == ArrayHeap.Length - 1)
+            if (UniqueElementCount == ArrayHeap.Length - 1)
             {
                 T[] newarr = CreateGenericArray<T>(ArrayHeap.Length * 2);
                 Copy(ArrayHeap, 0, newarr, 0, ArrayHeap.Length);
@@ -220,7 +238,7 @@ namespace MyDatastructure
         {
             int firstchildindex = GetFirstChildIndex(arg);
             // No children.
-            if (firstchildindex >= size)
+            if (firstchildindex >= UniqueElementCount)
             {
                 return arg;
             }
@@ -234,7 +252,7 @@ namespace MyDatastructure
             // Choose min child parent is larger than.
             for (
                     int i = firstchildindex;
-                    i < size && i < firstchildindex + HeapChildrenCount;
+                    i < UniqueElementCount && i < firstchildindex + HeapChildrenCount;
                     i++
                 )
             {
@@ -275,7 +293,7 @@ namespace MyDatastructure
             int parentindex = GetParentIndex(arg);
             T parent = ArrayHeap[parentindex];
             T child = ArrayHeap[arg];
-            //null internal check
+            // null internal check
             if (object.ReferenceEquals(parent, null))
             {
                 throw new Exception("Internal Error.");
@@ -297,7 +315,6 @@ namespace MyDatastructure
         {
             if (arg1 == arg2)
                 return;
-
             T firstthing = ArrayHeap[arg1];
             T secondthing = ArrayHeap[arg2];
             Indices[firstthing] = arg2;
@@ -305,25 +322,52 @@ namespace MyDatastructure
             ArrayHeap[arg2] = firstthing;
             ArrayHeap[arg1] = secondthing;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns>
+        /// True if the element is already in the queue.
+        /// Else false.
+        /// </returns>
+        protected bool Register(T arg)
+        {
+            ElementCount++;
+            if (Frequencies.ContainsKey(arg))
+            {
+                Frequencies[arg]++;
+                return true;
+            }
+            else
+                Frequencies[arg] = 1;
+            return false;
+        }
+
+       /// <summary>
+       /// remove or decrement the element from the Frequency map.
+       /// </summary>
+       /// <param name="arg"></param>
+       /// <returns>
+       /// True if the element should be removed from the index map too. 
+       /// Else false. 
+       /// </returns>
+        protected bool Resign(T arg)
+        {
+            if (!Frequencies.ContainsKey(arg))
+            {
+                throw new InvalidArgumentException();
+            }
+            Frequencies[arg]--;
+            ElementCount--;
+            if (Frequencies[arg] == 0)
+            {
+                Frequencies.Remove(arg);
+                return true;
+            }
+            return false; 
+        }
     }
 
-    [Serializable]
-    internal class InvalidArgumentException : Exception
-    {
-        public InvalidArgumentException()
-        {
-        }
-
-        public InvalidArgumentException(string message) : base(message)
-        {
-        }
-
-        public InvalidArgumentException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected InvalidArgumentException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
-    }
+   
 }

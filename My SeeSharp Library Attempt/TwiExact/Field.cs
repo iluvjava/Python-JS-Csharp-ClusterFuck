@@ -252,6 +252,7 @@ namespace TwiExact.Field
             return a.CompareTo(b) == 0;
         }
 
+
         public static bool operator >(OrderedField a, OrderedField b)
         {
             return a.CompareTo(b) > 0;
