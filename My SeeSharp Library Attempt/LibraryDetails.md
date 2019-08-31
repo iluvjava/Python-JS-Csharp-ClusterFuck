@@ -83,3 +83,14 @@
         - Update the freq array and the heap elements array altogether. 
     - protected Swap(int arg1, int arg2): 
         - We are going to swap the element and its freq together.  
+
+
+
+# Testing
+- The core tests from core functionalities are part of the class details 
+
+## Efficiency Testing 
+- DataStructureTests.StatisticalTools
+    - MyStopwatch 
+    - DataLogger
+        - Keeping track of the data's SD and average at REAL TIME, not computed afterwards. 

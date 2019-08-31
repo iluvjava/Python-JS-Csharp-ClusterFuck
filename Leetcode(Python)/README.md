@@ -1,7 +1,7 @@
 # Permutations.py
 - [Link to Leetcode](https://leetcode.com/problems/permutations-ii/)
 - The challenge is asking for a mutated kind of permutator
-- PSeudocode for a Injective Permutator: 
+- Pseudocode for a Bijective Permutator: 
     - 
     ```
         For each of the element in the array

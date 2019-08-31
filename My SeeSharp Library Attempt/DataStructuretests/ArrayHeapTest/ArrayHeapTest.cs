@@ -8,7 +8,7 @@ using static System.Console;
 using static System.Array;
 
 
-namespace DataStructureTests
+namespace DataStructureTests.ArrayHeapTest
 {
 
     public class TestsArrayHeap
