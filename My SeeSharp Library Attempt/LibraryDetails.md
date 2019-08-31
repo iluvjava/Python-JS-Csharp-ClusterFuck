@@ -37,7 +37,13 @@
         - Build the heap array, register all the elements in the indices and the frequencies map.
 - Testing Details:
     - Core functionalities of Equeuing elements with repetitions, removing min repeatedly on the queue is working properly.
-    - Floyd buildheap seems to work on non repeating elements.
+    - Floyd buildheap seems to work on non repeating elements. 
+    - TestArrayHeapPriorityQExceptionHandling
+        - Expected Behaviours: 
+            - Enqueuing null element will throw Invalidargument Exception. 
+            - Removing elements that are not presented in the queue will throw Invalid argument exception.
+    - Testing Duplicated elements involving frequent removal of elements: 
+        
 - Things that Changed: 
     - We will need 2 size parameters to take care of the size, of counts the number of unique element, used as a constraint for the heap array. The other one counts the number of total elements in the queue. 
 

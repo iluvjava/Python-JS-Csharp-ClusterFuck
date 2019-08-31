@@ -23,7 +23,7 @@ namespace MyDatastructure
         protected T[] ArrayHeap;
         protected IComparer<T> CustomizedComparer;
         protected int HeapChildrenCount;
-        protected IMap<T, int> Indices;
+        protected IMap<T, int> Indices; 
         protected int[] Frequencies;
         protected int UniqueElementCount = 0; // Unique elements count
         protected int ElementCount = 0; // The number of element in queue includes repetitions.

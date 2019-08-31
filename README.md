@@ -147,9 +147,14 @@ Python. C# and Node js.
 # 31/07/2019: 
 - Parser, Twiexact, OptBalance validation. 
 
-
 # 25/08/2019
 - Adding Priority queue implemented using heap into C# mydatastructue, it's useful. 
+
+# 31/08/2019
+- Finished implementing ArrayHeap in C# for PriorityQ
+    - More testing are still needed for the class. 
+- Starting to conceive details about sorting methods and helpers. 
+- Need some reorganization on the JSon serializations. 
 
 # Major Referece Materials
 - The Python Flask: 

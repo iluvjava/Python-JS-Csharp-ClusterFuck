@@ -3,7 +3,9 @@ using MyDatastructure.Maps;
 using MyDatastructure.PriorityQ;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using static System.Console;
+using static System.Array;
 
 
 namespace DataStructureTests
@@ -31,6 +33,18 @@ namespace DataStructureTests
                 elements[i] = elements[randomindex];
                 elements[randomindex] = temp;
             }
+        }
+
+
+        /// <summary>
+        /// Assert that a certain generic type of exception is thrown by the test delegate 
+        /// type. 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        public static void AssertThrow<T>(TestDelegate func) where T : Exception
+        {
+            Assert.Throws<T>(func);
         }
 
 
@@ -149,12 +163,60 @@ namespace DataStructureTests
                 );
         }
 
+        /// <summary>
+        /// Make use of the remove methods a lot more than the first basic test 1. 
+        /// </summary>
+        [Test]
+        public void TestDuplicateElementBasic2()
+        {
+            int range = (int)3e6;
+            int size = (int)3e5;
+            Random rd = new Random();
+            int[] randomarray = new int[size];
+            IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
+            WriteLine("Creating random array with range "+ range + " and size: "+ size);
+            for (int i = -1; ++i < size; randomarray[i] = (int)(rd.NextDouble() * range));
+            WriteLine("Flushing the elements into the array; ");
+            for (int i = -1; ++i < size; q.Enqueue(randomarray[i])) ;
+            WriteLine("Removing all the odd elements in the PriorityQ");
+            for (int i = 0; i < size; i++)
+            {
+                if (randomarray[i] % 2 == 1) q.Remove(randomarray[i]);
+            }
+            WriteLine("Constructing a reference list to verify the answers...");
+            IList<int> referencelist = new List<int>();
+            for 
+                (
+                    int i = 0;
+                    i < size;
+                    i++
+                )
+            {
+                if (randomarray[i] % 2 == 0) referencelist.Add(randomarray[i]);
+            };
+            int[] referencearray = new int[referencelist.Count];
+            referencelist.CopyTo(referencearray, 0);
+            Sort(referencearray);
+            PrintArray(referencearray);
+            WriteLine("Length of the reference array: "+ referencearray.Length);
+            WriteLine("Length of the queue: " + q.Size);
+            Assert.IsTrue(referencearray.Length == q.Size);
+            for (int i = 0; i < referencearray.Length; i++)
+            {
+                WriteLine("Comparing element at index: " + i);
+                int e1 = q.RemoveMin();
+                int e2 = referencearray[i];
+                Assert.IsTrue(e2 == e1);
+            }
+
+        }
+
         [Test]
         public void TestDuplicateElementStressed()
         {
             Random rd = new Random();
-            int size = (int)3e6;
-            int range = (int)3e4;
+            int size = (int)3e7;
+            int range = (int)3e6;
             int[] randomarray = new int[size];
             IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
             for (
@@ -188,6 +250,26 @@ namespace DataStructureTests
                 map[i] = i * i;
                 WriteLine(map[i]);
             }
+        }
+
+
+        /// <summary>
+        /// Testing if the correct exception are thrown for certain types of invalid inputs.
+        /// </summary>
+        [Test]
+        public void TestArrayHeapPriorityQExceptionHandling()
+        {
+            IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
+            q.Enqueue(2);
+            q.Enqueue(3);
+            q.Enqueue(2);
+
+            q.Remove(2);
+            AssertThrow<InvalidArgumentException>(() => { q.Remove(5);});
+            q.Remove(2);
+            AssertThrow<InvalidArgumentException>(() => { q.Remove(2);});
+
+
         }
     }
 }
