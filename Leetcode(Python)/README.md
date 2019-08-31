@@ -117,3 +117,5 @@ choosing one element.
 
 - Holy fuck this is long, but you get the idea.
 - Yep, this indeed works. 
+- If I sort the array, things will get even faster and simpler, because the 
+same integers are guaranteed to clustered together.

@@ -23,29 +23,24 @@ def permutation_search_helper(arr: list, indexchosen: list, permutations: list, 
     :param permutations: A queue that is the current permutations we are focusing on .
     :return:
     """
-
     if len(permutations) == len(arr):
         print(permutations)
         if result is not None:
             result.append(permutations[:])
         return
-
-    IndexCannotChoose = [False] * len(arr)
+    LastChosenElement = None
     for i in range(len(arr)):
         ElementLookingAt = arr[i]
-        for j in range(i + 1, len(arr)):
-            if arr[j] == ElementLookingAt:
-                IndexCannotChoose[j] = True
-            if arr[j] > ElementLookingAt:
-                break
-        if indexchosen[i] or IndexCannotChoose[i]:
+        if indexchosen[i]:
+            continue
+        if (LastChosenElement is not None) and (ElementLookingAt == LastChosenElement):
             continue
         indexchosen[i] = True
+        LastChosenElement = ElementLookingAt
         permutations.append(arr[i])
         permutation_search_helper(arr, indexchosen, permutations, result)
         indexchosen[i] = False
         permutations.pop()
-        IndexCannotChoose = [False] * len(arr)
     return
 
 
