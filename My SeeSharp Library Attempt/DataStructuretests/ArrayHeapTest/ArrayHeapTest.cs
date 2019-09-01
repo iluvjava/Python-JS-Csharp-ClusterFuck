@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using static System.Console;
 using static System.Array;
-
+using DataStructureTests.StatisticalTools;
 
 namespace DataStructureTests.ArrayHeapTest
 {
@@ -263,13 +263,12 @@ namespace DataStructureTests.ArrayHeapTest
             q.Enqueue(2);
             q.Enqueue(3);
             q.Enqueue(2);
-
             q.Remove(2);
             AssertThrow<InvalidArgumentException>(() => { q.Remove(5);});
             q.Remove(2);
-            AssertThrow<InvalidArgumentException>(() => { q.Remove(2);});
-
-
+            AssertThrow<InvalidArgumentException>(() => { q.Remove(2); });
         }
+
+        
     }
 }

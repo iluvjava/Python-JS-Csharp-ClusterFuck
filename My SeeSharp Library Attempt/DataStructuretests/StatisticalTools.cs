@@ -1,8 +1,67 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 namespace DataStructureTests.StatisticalTools
 {
+
+    /// <summary>
+    /// Log data into the class and it will keep track of the SD 
+    /// and the average, 
+    /// it's keeping track of them at runtime. 
+    /// </summary>
+    public class DataLogger
+    {
+        public double LastDataEntry;
+        long DataEntryCount;
+        double DataSquaredSum;
+        double DataSum;
+        public DataLogger()
+        {
+
+        }
+
+        /// <summary>
+        /// Get the Average for all the data you entered.
+        /// </summary>
+        /// <returns></returns>
+        public double GetAverage()
+        {
+            if (DataEntryCount == 0)
+            {
+                throw new Exception("No data entried. ");
+            }
+            return DataSum / DataEntryCount;
+        }
+
+        public double GetStanderedDeviation()
+        {
+            if (DataEntryCount == 0)
+                throw new Exception("No data has been entered. ");
+            double SquaredSumAverage = DataSquaredSum / DataEntryCount;
+            double SumAverage = GetAverage();
+            return Math.Sqrt(SquaredSumAverage - SumAverage * SumAverage);
+        }
+
+        public void Register(double data)
+        {
+            if (Double.IsNaN(data) || Double.IsInfinity(data))
+                throw new Exception("Don't Pollute The stats.");
+            LastDataEntry = data;
+            DataEntryCount++;
+            DataSum += data;
+            DataSquaredSum += data * data;
+        }
+
+        /// <summary>
+        /// You cannot register weird stuff to pollute the stats, 
+        /// Nan, inf and shit like that. 
+        /// </summary>
+        /// <param name="data"></param>
+        public void Register(long data)
+        {
+
+            Register((double)data);
+        }
+    }
 
     /// <summary>
     /// A Stopwatch with a statistiscal sense. 
@@ -18,33 +77,6 @@ namespace DataStructureTests.StatisticalTools
         }
 
         /// <summary>
-        /// It will just called the System.Stopwatch start()
-        /// </summary>
-        public void Start()
-        {
-            SysStopwatch.Start();
-        }
-
-
-        public void Reset()
-        {
-            SysStopwatch.Reset();
-        }
-
-
-        /// <summary>
-        /// Stops the stopwatch and it will register the data too. 
-        /// </summary>
-        /// <returns></returns>
-        public long Stop()
-        {
-            SysStopwatch.Stop();
-            long thetime = SysStopwatch.ElapsedMilliseconds;
-            TimeElapseDataLog.Register(thetime);
-            return thetime;
-        }
-
-        /// <summary>
         /// Get the everage elapsed time from all the stopping and starting.
         /// </summary>
         /// <returns></returns>
@@ -52,6 +84,7 @@ namespace DataStructureTests.StatisticalTools
         {
             return TimeElapseDataLog.GetAverage();
         }
+
         /// <summary>
         /// Geting the standard deviation for all the data point. 
         /// If there is only 1, or 2 events, it will just return 0.
@@ -61,63 +94,30 @@ namespace DataStructureTests.StatisticalTools
         {
             return TimeElapseDataLog.GetStanderedDeviation();
         }
-    }
 
-
-    /// <summary>
-    /// Log data into the class and it will keep track of the SD 
-    /// and the average, 
-    /// it's keeping track of them at runtime. 
-    /// </summary>
-    public class DataLogger 
-    {
-        public double LastDataEntry;
-        long DataEntryCount;
-        double DataSum;
-        double DataSquaredSum;
-
-        public DataLogger()
+        public void Reset()
         {
-
-        }
-
-        public void Register(double data)
-        {
-            LastDataEntry = data;
-            DataEntryCount++;
-            DataSum += data;
-            DataSquaredSum += data * data;
+            SysStopwatch.Reset();
         }
 
         /// <summary>
-        /// You cannot register weird stuff to pollute the stats, 
-        /// Nan, inf and shit like that. 
+        /// It will just called the System.Stopwatch start()
         /// </summary>
-        /// <param name="data"></param>
-        public void Register(long data)
+        public void Tick()
         {
-            if (Double.IsNaN(data) || Double.IsInfinity(data))
-                throw new Exception("Don't Pollute The stats.");
-            Register((double)data);
+            SysStopwatch.Start();
         }
-
-
         /// <summary>
-        /// Get the Average for all the data you entered.
+        /// Get the time interval since last time the tick() method is triggered. 
         /// </summary>
         /// <returns></returns>
-        public double GetAverage()
+        public long Tock()
         {
-            return DataSum / DataEntryCount;
+            SysStopwatch.Stop();
+            long thetime = SysStopwatch.ElapsedMilliseconds;
+            TimeElapseDataLog.Register(thetime);
+            SysStopwatch.Reset();
+            return thetime;
         }
-
-        public double GetStanderedDeviation()
-        {
-            double SquaredSumAverage = DataSquaredSum / DataEntryCount;
-            double SumAverage = GetAverage();
-            return Math.Sqrt(SquaredSumAverage - SumAverage);
-        }
-
     }
-    
 }

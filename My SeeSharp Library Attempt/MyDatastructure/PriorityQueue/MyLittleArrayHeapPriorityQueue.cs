@@ -62,7 +62,7 @@ namespace MyDatastructure
         }
 
         public MyLittleArrayHeapPriorityQueue(IComparer<T> arg):
-            this(new SysDefaultMap<T, int>(), 4, 16, arg)
+            this(new SysDefaultMap<T, int>(), 4, 2048, arg)
         {
 
         }
@@ -100,7 +100,7 @@ namespace MyDatastructure
             q.Frequencies = freqtable;
             q.UniqueElementCount = uniquecount;
             q.ElementCount = elementcount;
-            for (int i = q.ArrayHeap.Length - 1; i >= 0; i--)
+            for (int i = (q.ArrayHeap.Length/4)-1; i >= 0; i--)
             {
                 q.PercolateDown(i);
             }
