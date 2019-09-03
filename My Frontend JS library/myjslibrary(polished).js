@@ -11,6 +11,8 @@ function ()
             ,
             innertext: "yoyoyo there is some innertext for the div element."
             ,
+            classlist: "WTF rainbowdash" // so here are 2 classes. 
+            ,
             attributes: 
             { 
                 // ID is not supported. 
@@ -60,7 +62,7 @@ function ()
             ,
             (e)=>
             {
-
+                
             }
         ]
     }
@@ -119,6 +121,10 @@ function ()
             if ("innertext" in obj)
             {
                 NewDomMember.text(obj["innertext"]);
+            }
+            if ("classlist" in obj)
+            {
+                NewDomMember.addClass(obj["classlist"]);
             }
             if ("children" in obj)
             {

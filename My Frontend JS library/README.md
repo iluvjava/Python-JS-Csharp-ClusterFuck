@@ -13,7 +13,9 @@
 ## My JS Library
 - Because front end dev is hard and contains lots of bull shit, building a library of my own will be really helpful if I were to continue doing front end bullshit. 
 - This library is going to be based on Jquery. 
-
+- [Convert()](###-convert())
+- [prepareTheListeners()](###-prepareTheListeners)
+- [appplyClassSettings()](###-applyClassSettings())
 
 ### convert()
 - This is a function that converts Json object in certain grammatical syntax 
@@ -25,39 +27,93 @@ into visual elements on the page.
 - This is the syntax of the JSON representing the Dom Object is Chomsky Typ II Grammar. 
 - The below example is a input that is accepted by the function. 
 ```
-    const MYELEMENTS = 
-        [
-            {
-                element: "div" // element tag, <, > must be used. 
+    var MYELEMENTS = 
+    [
+        {
+            element: "div" // element tag, <, > must be used. 
+            , 
+            parent: "body" // The parent that this element will be appended to. 
+            ,
+            innertext: "yoyoyo there is some innertext for the div element."
+            ,
+            classlist: "WTF rainbowdash" // so here are 2 classes. 
+            ,
+            attributes: 
+            { 
+                // ID is not supported. 
+                alt: "TheAlText"
                 , 
-                parent: "body" // The parent that this element will be appended to. 
+                src: "/example.com"
+                , 
+                "somethingelse": "stuff"
                 ,
-                attributes: 
-                { 
-                    // ID is not supported. 
-                    alt: "TheAlText"
-                    , 
-                    src: "/example.com"
-                    , 
-                    "somethingelse": "stuff"
-                    ,
-                    "someattribues": "the key for that attributes."
-                    , 
-                    "somebooleanattribute": "" // use empty val for boolean attributes.  
-                }
-                ,
-                children:
-                [
-                    //recursion....
-                ]
+                "someattribues": "the key for that attributes."
+                , 
+                "somebooleanattribute": "" // use empty val for boolean attributes.  
             }
-        ]
+            ,
+            children:
+            [
+                {
+                    // recursion....
+                    // but the element can choose not to have the parent attribute.
+                    element: "a"
+                    , 
+                    attributes: 
+                    {
+                        href: "example.com"
+                        , 
+                        "yoyo-my-attribute": "attr-val" 
+                    }
+                }
+                
+            ]
+        }
+    ]
 ```
-- The input is a list of object. 
+- The input is a **list** of object. 
     - Each of the object represents elements which you want to add to other elements on the page: 
         - The keys are: "element, parent", which are required, lower case too. **Except** when the elements are defined under the recursive case, in that case, a css selector for the parent element is not really neccessary and it will automatically added to the element you want. 
         - The attributes is another object where the keys of the object are the key of the attributes and the values are the vals of the attributes. **ID attribute will be ignored** because it will be non-unique after feeding it into this function. 
 
+### prepareTheListeners()
+- This function prepares listeners using an JSON object.
+- Here is an example of the input it accepts: 
+```
+//This is just generally very useful for managing shits. 
+    var LISTENER = 
+    {
+        "li": 
+        [
+            "mouseover mouseout"
+            ,
+            (e)=>
+            {
+                // do whatever shit you want here.
+            }
+        ]
+    }
+
+```
+
+- It accepts one object. 
+    - the key of the object is css selector, where it can choose to selector multiple objects from the page. 
+    - the value is a list of **2 elements** where the first element is the string of events, separated by space and the second element is the handler, a function. 
+
+### applyClassSettings()
+- This function puts classes into the Dom elements. 
+- It accepts this kinds of inputs: 
+```
+    // This is really useful for bootstrap and shits. 
+    var SETTINGS = 
+    {
+        "body": ["class1", "class2"],
+        "body *": "class3 class4"
+    };
+
+```
+- It accepts an object where the keys of the objects are all css query selector and the values of the object is a list of classes to be added to the selected elements.
+- It makes the front end of dynamically changing the classes of tags a bit easier. 
 
 # About Some Technical Details
 ## Promises and Async Function

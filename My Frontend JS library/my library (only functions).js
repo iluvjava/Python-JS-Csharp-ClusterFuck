@@ -5,7 +5,7 @@
     /**
      *  Read the object and change the object to elements with classes. 
      */
-    function applyClassSettings(settings = SETTINGS)
+    function applyClassSettings(settings)
     {
         $.each(settings, function (idx, val) {
             $(idx).addClass(val);
@@ -15,7 +15,7 @@
     /**
      * Prepare listeners from a json object. 
      */
-    function prepareTheListeners(arg = LISTENER)
+    function prepareTheListeners(arg)
     {
         $.each
         (
@@ -34,7 +34,7 @@
      * @param {JQ DOM} parents  
      * It's for the recursion so that children know what their parents are. 
      */
-    function convert(arg = MYELEMENTS, parents = null)
+    function convert(arg, parents = null)
     {
         for(let i = 0; i < arg.length; i++)
         {
@@ -56,6 +56,10 @@
             if ("innertext" in obj)
             {
                 NewDomMember.text(obj["innertext"]);
+            }
+            if ("classlist" in obj)
+            {
+                NewDomMember.addClass(obj["classlist"]);
             }
             if ("children" in obj)
             {
@@ -103,4 +107,4 @@
     window["convert"] = convert;
 
     }
-)
+)();
