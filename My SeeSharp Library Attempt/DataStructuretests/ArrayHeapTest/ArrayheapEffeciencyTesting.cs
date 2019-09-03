@@ -4,7 +4,6 @@ using static DataStructureTests.ArrayHeapTest.TestsArrayHeap;
 using DataStructureTests.StatisticalTools;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using MyDatastructure.PriorityQ;
 using MyDatastructure;
 
@@ -25,8 +24,8 @@ namespace DataStructureTests.ArrayHeapTest
         [Test]
         public void MainTestingEffeciency()
         {
-            int size = (int)(1e6);
-            int TestNumber = 10;
+            int size = (int)(1e4);
+            int TestNumber = 100;
             WriteLine("Testing on array with size: " + size);
             WriteLine("The Array will be shuffled: " + TestNumber + " times.");
             {

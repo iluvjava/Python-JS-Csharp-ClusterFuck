@@ -1,14 +1,11 @@
-﻿using MyDatastructure.PriorityQ;
-using MyDatastructure.Maps;
+﻿using MyDatastructure.Maps;
+using MyDatastructure.PriorityQ;
 using System;
 using System.Collections.Generic;
-
 using static System.Array;
 
 namespace MyDatastructure
 {
-    
-    
     /// <summary>
     /// This is a min heap using 4 children heap structure.
     /// <para>
@@ -16,17 +13,18 @@ namespace MyDatastructure
     /// </para>
     /// </summary>
     /// <typeparam name="T">
-    /// T as a comparable Type for the class. 
+    /// T as a comparable Type for the class.
     /// </typeparam>
     public class MyLittleArrayHeapPriorityQueue<T> : IPriorityQ<T> where T : IComparable<T>
     {
         protected T[] ArrayHeap;
         protected IComparer<T> CustomizedComparer;
-        protected int HeapChildrenCount;
-        protected IMap<T, int> Indices; 
+        protected int ElementCount = 0;
         protected int[] Frequencies;
+        protected int HeapChildrenCount;
+        protected IMap<T, int> Indices;
         protected int UniqueElementCount = 0; // Unique elements count
-        protected int ElementCount = 0; // The number of element in queue includes repetitions.
+                                              // The number of element in queue includes repetitions.
 
         public int Size
         {
@@ -55,16 +53,28 @@ namespace MyDatastructure
             CustomizedComparer = comparer;
         }
 
-        public MyLittleArrayHeapPriorityQueue(): 
+        public MyLittleArrayHeapPriorityQueue() :
             this(new SysDefaultMap<T, int>(), 4, 16)
         {
-
         }
 
-        public MyLittleArrayHeapPriorityQueue(IComparer<T> arg):
+        public MyLittleArrayHeapPriorityQueue(IComparer<T> arg) :
             this(new SysDefaultMap<T, int>(), 4, 2048, arg)
         {
+        }
 
+        /// <summary>
+        /// A helper methods that swaps any array.
+        /// </summary>
+        /// <typeparam name="R"></typeparam>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="arr"></param>
+        public static void ArrayElementSwapHelper<R>(int a, int b, R[] arr)
+        {
+            R A = arr[a], B = arr[b];
+            arr[b] = A;
+            arr[a] = B;
         }
 
         /// <summary>
@@ -76,19 +86,19 @@ namespace MyDatastructure
         public static MyLittleArrayHeapPriorityQueue<R> BuildHeap<R>(R[] arg)
         where R : IComparable<R>
         {
-            IMap<R, int> freqmap = new SysDefaultMap<R, int>();
+            /*IMap<R, int> freqmap = new SysDefaultMap<R, int>();
             for (
                 int i = -1;
-                ++i < arg.Length; 
+                ++i < arg.Length;
                 freqmap[arg[i]] = freqmap.ContainsKey(arg[i]) ? freqmap[arg[i]] + 1 : 1
-                );
+                ) ;
 
-            // Split it into 2 array; 
+            // Split it into 2 array;
             int elementcount = 0;
             int[] freqtable = new int[freqmap.Size];
             R[] contentatble = new R[freqmap.Size];
             int uniquecount = 0;
-            foreach(KVP<R, int> kvp in freqmap)
+            foreach (KVP<R, int> kvp in freqmap)
             {
                 contentatble[uniquecount] = kvp.Key;
                 freqtable[uniquecount] = kvp.Value;
@@ -100,12 +110,42 @@ namespace MyDatastructure
             q.Frequencies = freqtable;
             q.UniqueElementCount = uniquecount;
             q.ElementCount = elementcount;
-            for (int i = (q.ArrayHeap.Length/4)-1; i >= 0; i--)
+            for (int i = (q.ArrayHeap.Length / 4) - 1; i >= 0; i--)
             {
                 q.PercolateDown(i);
             }
 
-            return q; 
+            return q;*/
+
+
+            MyLittleArrayHeapPriorityQueue<R> resultQ =
+                new MyLittleArrayHeapPriorityQueue<R>();
+            resultQ.ElementCount = arg.Length;
+            IMap<R, int> freqmap = new SysDefaultMap<R, int>();
+            for (
+                    int i = -1;
+                    ++i < arg.Length;
+                    freqmap[arg[i]] = freqmap.ContainsKey(arg[i]) ? freqmap[arg[i]] + 1 : 1
+                );
+            resultQ.ArrayHeap = new R[freqmap.Size];
+            resultQ.Frequencies = new int[freqmap.Size];
+            int uniquecount = 0;
+            foreach (KVP<R, int> kvp in freqmap)
+            {
+                resultQ.ArrayHeap[uniquecount] = kvp.Key;
+                uniquecount++;
+            }
+            resultQ.UniqueElementCount = uniquecount;
+            for (int i = uniquecount / 4; i >= 0; i--)
+            {
+                resultQ.PercolateDown(i, true);
+            }
+            for (int i = 0; i < uniquecount; i++)
+            {
+                resultQ.Frequencies[i] = freqmap[resultQ.ArrayHeap[i]];
+                resultQ.Indices[resultQ.ArrayHeap[i]] = i;
+            }
+            return resultQ; 
         }
 
         public static T1[] CreateGenericArray<T1>(int len)
@@ -136,7 +176,7 @@ namespace MyDatastructure
                 Indices[arg] = UniqueElementCount - 1;
                 Percolate(UniqueElementCount - 1);
             }
-        } 
+        }
 
         public T Peek()
         {
@@ -144,7 +184,7 @@ namespace MyDatastructure
         }
 
         /// <summary>
-        /// Null is not welcome in this queue. 
+        /// Null is not welcome in this queue.
         /// </summary>
         /// <param name="arg"></param>
         /// <Exception>
@@ -250,10 +290,13 @@ namespace MyDatastructure
         /// Percolate the element down and return the index that it ended up to.
         /// </summary>
         /// <param name="arg"></param>
+        /// <param name="heapbuilding">
+        /// True if the method is called under the context of floyd build heap. 
+        /// </param>
         /// <returns>
         /// The final place in the heap that the element ended up to.
         /// </returns>
-        protected int PercolateDown(int arg)
+        protected int PercolateDown(int arg, bool heapbuilding = false)
         {
             int firstchildindex = GetFirstChildIndex(arg);
             // No children.
@@ -292,8 +335,8 @@ namespace MyDatastructure
             {
                 return arg;
             }
-            Swap(arg, indextoswap);
-            return PercolateDown(indextoswap);
+            Swap(arg, indextoswap, heapbuilding);
+            return PercolateDown(indextoswap, heapbuilding);
         }
 
         /// <summary>
@@ -326,40 +369,7 @@ namespace MyDatastructure
         }
 
         /// <summary>
-        /// Swap 2 elements in the heap array. It will update all things.
-        /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name=""></param>
-        protected void Swap(int arg1, int arg2)
-        {
-            if (arg1 == arg2)
-                return;
-            T firstthing = ArrayHeap[arg1];
-            T secondthing = ArrayHeap[arg2];
-            Indices[firstthing] = arg2;
-            Indices[secondthing] = arg1;
-            ArrayElementSwapHelper(arg1, arg2, ArrayHeap);
-            ArrayElementSwapHelper(arg1, arg2, Frequencies);
-
-        }
-
-        /// <summary>
-        /// A helper methods that swaps any array. 
-        /// </summary>
-        /// <typeparam name="R"></typeparam>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <param name="arr"></param>
-        public static void ArrayElementSwapHelper<R>(int a, int b, R[] arr)
-        {
-            R A = arr[a], B = arr[b];
-            arr[b] = A;
-            arr[a] = B;
-        }
-
-
-        /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="arg"></param>
         /// <returns>
@@ -374,20 +384,20 @@ namespace MyDatastructure
                 return false;
             }
             else
-            { 
+            {
                 Frequencies[UniqueElementCount] = 1;
             }
             return true;
         }
 
-       /// <summary>
-       /// remove or decrement the element from the Frequency map.
-       /// </summary>
-       /// <param name="arg"></param>
-       /// <returns>
-       /// True if the element should be removed from the index map too. 
-       /// Else false. 
-       /// </returns>
+        /// <summary>
+        /// remove or decrement the element from the Frequency map.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns>
+        /// True if the element should be removed from the index map too.
+        /// Else false.
+        /// </returns>
         protected bool Resign(T arg)
         {
             if (!Indices.ContainsKey(arg))
@@ -401,9 +411,29 @@ namespace MyDatastructure
             {
                 return true;
             }
-            return false; 
+            return false;
+        }
+
+        /// <summary>
+        /// Swap 2 elements in the heap array. It will update all things.
+        /// </summary>
+        /// <param name="arg1"></param>
+        /// <param name="buildheapmode">
+        /// True if it's called by buildheap method
+        /// </param>
+        protected void Swap(int arg1, int arg2, bool buildheapmode = false)
+        {
+            if (arg1 == arg2)
+                return;
+            T firstthing = ArrayHeap[arg1];
+            T secondthing = ArrayHeap[arg2];
+            if (!buildheapmode)
+            {
+                Indices[firstthing] = arg2;
+                Indices[secondthing] = arg1;
+                 ArrayElementSwapHelper(arg1, arg2, Frequencies);
+            }
+           ArrayElementSwapHelper(arg1, arg2, ArrayHeap);
         }
     }
-
-   
 }

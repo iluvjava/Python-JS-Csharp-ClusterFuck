@@ -140,9 +140,17 @@ namespace DataStructureTests.ArrayHeapTest
             var q = MyLittleArrayHeapPriorityQueue<int>.BuildHeap(arr);
             for (int i = -1; ++i < arr.Length;)
             {
-                arr[i] = q.RemoveMin();
-                Assert.IsTrue(arr[i] == i + 1);
+                Assert.AreEqual(q.RemoveMin(), i + 1);
             }
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Test]
+        public void TestBuildHeapDuplicate()
+        {
 
         }
 
