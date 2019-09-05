@@ -68,6 +68,29 @@ function ()
     }
 
     /**
+     * Using a JSON to represents the object one the page that you want to 
+     * objectify:
+     */
+    var Objectification = 
+    {
+        cssselector: "#objectify",
+        handler: ["click", (e)=>{/* Codes handling events.  */}],
+        methods: 
+        {
+            "method 1": 
+            ()=>
+            {
+                // Do some kind of shits. 
+            },
+            "method 2": 
+            ()=>
+            {
+                //Other kinds of shits.
+            }
+        }
+    }
+
+    /**
      *  Read the object and change the object to elements with classes. 
      */
     function applyClassSettings(settings = SETTINGS)
@@ -150,10 +173,6 @@ function ()
         for (k in jobject)
         {
             let v = jobject[k];
-            if (k === "id")
-            {
-                continue;
-            }
             domelement.attr(k, v);
         }
     }
@@ -167,13 +186,80 @@ function ()
         return document.createElement(tagname);
     }
 
+
+    /**
+     * This function index all the children with a id. 
+     * If the given parent element already has an id, then 
+     * that id will be the prefix of its children.
+     * It will be done in a Non recursive fashion.
+     * @param {Dom Element} domelement 
+     * @parem {string} prefix
+     * the id will become prefix<index>, it's optional.
+     */
+    function indexChildrenWithId(domelement, prefix = null)
+    {
+        let JQDomElement = $(domelement);
+        if (prefix === null)
+        {
+            if (JQDomElement.attr("id") === undefined)
+                prefix = "";
+            else 
+                prefix = JQDomElement.attr("id");
+        }
+        {
+            let counter = 0;
+            for (let c of JQDomElement.children())
+            {
+                c = $(c);
+                c.attr("id", prefix + counter);
+                counter++;
+            }
+        }
+        return JQDomElement;
+    }
+
     window["applyClassSettings"] = applyClassSettings;
     window["prepareTheListeners"] = prepareTheListeners;
     window["convert"] = convert;
+    window["indexChildrenWithId"] = indexChildrenWithId;
 
     applyClassSettings();
     prepareTheListeners();
     convert();
 
+    console.log("Trying to apply all children of ul to be indexed.");
+    indexChildrenWithId($("ul"), "ulchildren");
+
+    console.log("Trying to add a new list of into the page.");
+    {
+        let itschildren = new Array();
+        for (let i = 0; i < 3; i++)
+        {
+            itschildren.push
+            (
+                {
+                    element: "li", 
+                    innertext: "this is my children, index: " + i,
+                }
+            )
+        }
+        let newlist =
+        [{
+            element:  "ul", 
+            parent: "body",
+            innertext: "yo this is a list",
+            children: itschildren, 
+            attributes: 
+            {
+                id: "ul_id"
+            }
+        }]
+        convert(newlist);
+    }
+    
+    console.log("indexing all the children of the new added ul list.");
+    indexChildrenWithId($("#ul_id"));
+
 });
+
 

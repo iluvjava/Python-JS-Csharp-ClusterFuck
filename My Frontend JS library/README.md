@@ -12,12 +12,16 @@
 
 ## My JS Library
 - Because front end dev is hard and contains lots of bull shit, building a library of my own will be really helpful if I were to continue doing front end bullshit. 
-- This library is going to be based on Jquery. 
-- [Convert()](###-convert())
-- [prepareTheListeners()](###-prepareTheListeners)
-- [appplyClassSettings()](###-applyClassSettings())
+- This library will use **Jquery**
+- [Convert](###-convert())
+- [prepareTheListeners](###-prepareTheListeners)
+- [appplyClassSettings](###-applyClassSettings)
+- [indexChildrenWithId](###-indexChildrenWithId)
 
 ### convert()
+- params: 
+    - arg, the JSON object
+    - parents, parents from recursive call
 - This is a function that converts Json object in certain grammatical syntax 
 into visual elements on the page. 
 - The helper functions for it includes: 
@@ -74,9 +78,12 @@ into visual elements on the page.
 - The input is a **list** of object. 
     - Each of the object represents elements which you want to add to other elements on the page: 
         - The keys are: "element, parent", which are required, lower case too. **Except** when the elements are defined under the recursive case, in that case, a css selector for the parent element is not really neccessary and it will automatically added to the element you want. 
-        - The attributes is another object where the keys of the object are the key of the attributes and the values are the vals of the attributes. **ID attribute will be ignored** because it will be non-unique after feeding it into this function. 
+        - The attributes is another object where the keys of the object are the key of the attributes and the values are the vals of the attributes. 
+        **Id can be added to the attribute**, but if the css query selected multiple parents then there will element with duplicated id on the page.
 
-### prepareTheListeners()
+### prepareTheListeners
+- params: 
+    - arg: A JSON object.
 - This function prepares listeners using an JSON object.
 - Here is an example of the input it accepts: 
 ```
@@ -100,7 +107,9 @@ into visual elements on the page.
     - the key of the object is css selector, where it can choose to selector multiple objects from the page. 
     - the value is a list of **2 elements** where the first element is the string of events, separated by space and the second element is the handler, a function. 
 
-### applyClassSettings()
+### applyClassSettings
+- params: 
+    - arg: a JSON object.
 - This function puts classes into the Dom elements. 
 - It accepts this kinds of inputs: 
 ```
@@ -115,6 +124,25 @@ into visual elements on the page.
 - It accepts an object where the keys of the objects are all css query selector and the values of the object is a list of classes to be added to the selected elements.
 - It makes the front end of dynamically changing the classes of tags a bit easier. 
 
+### indexChildrenWithId
+- params: 
+    - dome_element: a reference to an element on the page.
+    - prefix: null;
+- This method will index all the children of a elements on the page. 
+- **dom_element**
+    - A reference to Dom element. 
+- **Prefix (optional)**
+the prefix you want for you children's id.
+    - **Notice:**
+    if prefix is not specified, the id of the parent element will be the id, if parent doesn't have id, then the id prefix will be empty.
+    **Index starts at 0**
+
+### Objectification
+- parems: 
+    arg: JSON
+- This function will make a JSON object into actual javascript object the represents visual elements on the page. Making 
+the page more interactive.
+        
 # About Some Technical Details
 ## Promises and Async Function
 - [Link](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)

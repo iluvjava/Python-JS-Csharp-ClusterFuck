@@ -21,9 +21,19 @@ span.highlighted-phrase
     display: none;
 }
 
-.hidden-anwers
+.hidden-answers
 {
     display: none;
+}
+
+.pointable
+{
+    cursor: pointer;
+}
+
+.pointable:hover
+{
+    font-weight: bold !important; 
 }
 
 /*

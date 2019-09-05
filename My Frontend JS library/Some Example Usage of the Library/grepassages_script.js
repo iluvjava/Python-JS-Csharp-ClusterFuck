@@ -7,14 +7,16 @@
     // JQuery : Classes Added to All Selected Entities. 
     const BOOTSTRAPSETTINGS = 
     {
-        "ul.list-group":["w-75", "p-3"], 
+        "ul.list-group": ["w-75", "p-3"], 
+        "ul.list-group > *": ["pointable"],
         "div.card": ["w-100", "mx-auto","my-2", "align-items-center", "pt-4"],
-        "div.mydisplay": ["text-center", "bg-primary", "text-white"], 
+        "#mydisplay": ["text-center", "bg-info", "text-white", "container-fluid"], 
         "div.passage-entry":["container-fluid", "w-100"],
         "h3": ["my-3"], 
         "div.col": ["mx-0", "w-90"],
         "nav":["navbar-expand-lg", "navbar-light", "bg-light", "sticky-top"], 
-        ".passage-entry:not(.not-auto-hidden) *": ["auto-hidden"]
+        ".passage-entry:not(.not-auto-hidden) *": ["auto-hidden"],
+        ".list-group-item *": ["hidden-answers"]
     };
 
     //Listeners and their elements.
@@ -38,7 +40,6 @@
                 {
                     e.classList.add("auto-hidden");
                 }
-
                 let elements_to_show = $("#p" + id + " *");
                 for 
                 (  
@@ -56,10 +57,59 @@
             "mouseover mouseout",
             (e)=>
             {
-                console.log(e.type + "Event At: "+ e.target.innerText);
+                let AnswerString = $(e.target).children();
+                if(AnswerString.length !== 0)
+                {
+                    AnswerString = AnswerString[0].innerText;
+                }
+                else
+                {
+                    AnswerString = null;
+                }
+                if(e.type === "mouseover")
+                {
+                    MyFooterDisplay.showAnswers(AnswerString);
+                }
+                if(e.type === "mouseout")
+                {
+                    MyFooterDisplay.showAnswers();
+                }
             }
         ]
     }
+
+    /**
+     * A factory method that returns an instance of an object representing 
+     * the display at the bottom of the page. 
+     */
+    function MyDisplay()
+    {
+        this.DisplayAnswers = false; 
+        this.TargetElement = $("#myinnerdisplay");
+        this.showAnswers = 
+        (text = null) => 
+        {   
+            if(this.DisplayAnswers)
+            {
+                $(this.TargetElement.children()[0]).text( 
+                text===null?"All Sources are From Kaplan":text);
+            }
+            else
+            {
+                $(this.TargetElement.children()[0]).text( 
+                "All Sources are From Kaplan");
+            }
+        }
+        this.Handler = (e) =>
+        {
+console.log(e.type);
+            this.DisplayAnswers = !this.DisplayAnswers;
+console.log(this.DisplayAnswers?"Displaying Answers":"Hidding Answers");
+        }
+        this.TargetElement.on("change", this.Handler);
+    }
+
+    const MyFooterDisplay = new MyDisplay();
 
     /**
      * 
@@ -98,7 +148,11 @@
         }
         convert(DropDownItemsList);
     }
+
+
     applyClassSettings(BOOTSTRAPSETTINGS);
     prepareDropdownMenu();
     prepareTheListeners(ALLLISTENERS);
+
+
 })();

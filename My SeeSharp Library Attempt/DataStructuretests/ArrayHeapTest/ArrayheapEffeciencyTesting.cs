@@ -24,7 +24,7 @@ namespace DataStructureTests.ArrayHeapTest
         [Test]
         public void MainTestingEffeciency()
         {
-            int size = (int)(1e4);
+            int size = (int)(1e5);
             int TestNumber = 100;
             WriteLine("Testing on array with size: " + size);
             WriteLine("The Array will be shuffled: " + TestNumber + " times.");

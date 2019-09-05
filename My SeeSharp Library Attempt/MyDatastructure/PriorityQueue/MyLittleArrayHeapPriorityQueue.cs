@@ -86,7 +86,7 @@ namespace MyDatastructure
         public static MyLittleArrayHeapPriorityQueue<R> BuildHeap<R>(R[] arg)
         where R : IComparable<R>
         {
-            /*IMap<R, int> freqmap = new SysDefaultMap<R, int>();
+            IMap<R, int> freqmap = new SysDefaultMap<R, int>();
             for (
                 int i = -1;
                 ++i < arg.Length;
@@ -115,37 +115,37 @@ namespace MyDatastructure
                 q.PercolateDown(i);
             }
 
-            return q;*/
+            return q;
 
 
-            MyLittleArrayHeapPriorityQueue<R> resultQ =
-                new MyLittleArrayHeapPriorityQueue<R>();
-            resultQ.ElementCount = arg.Length;
-            IMap<R, int> freqmap = new SysDefaultMap<R, int>();
-            for (
-                    int i = -1;
-                    ++i < arg.Length;
-                    freqmap[arg[i]] = freqmap.ContainsKey(arg[i]) ? freqmap[arg[i]] + 1 : 1
-                );
-            resultQ.ArrayHeap = new R[freqmap.Size];
-            resultQ.Frequencies = new int[freqmap.Size];
-            int uniquecount = 0;
-            foreach (KVP<R, int> kvp in freqmap)
-            {
-                resultQ.ArrayHeap[uniquecount] = kvp.Key;
-                uniquecount++;
-            }
-            resultQ.UniqueElementCount = uniquecount;
-            for (int i = uniquecount / 4; i >= 0; i--)
-            {
-                resultQ.PercolateDown(i, true);
-            }
-            for (int i = 0; i < uniquecount; i++)
-            {
-                resultQ.Frequencies[i] = freqmap[resultQ.ArrayHeap[i]];
-                resultQ.Indices[resultQ.ArrayHeap[i]] = i;
-            }
-            return resultQ; 
+            /* MyLittleArrayHeapPriorityQueue<R> resultQ =
+                 new MyLittleArrayHeapPriorityQueue<R>();
+             resultQ.ElementCount = arg.Length;
+             IMap<R, int> freqmap = new SysDefaultMap<R, int>();
+             for (
+                     int i = -1;
+                     ++i < arg.Length;
+                     freqmap[arg[i]] = freqmap.ContainsKey(arg[i]) ? freqmap[arg[i]] + 1 : 1
+                 );
+             resultQ.ArrayHeap = new R[freqmap.Size];
+             resultQ.Frequencies = new int[freqmap.Size];
+             int uniquecount = 0;
+             foreach (KVP<R, int> kvp in freqmap)
+             {
+                 resultQ.ArrayHeap[uniquecount] = kvp.Key;
+                 uniquecount++;
+             }
+             resultQ.UniqueElementCount = uniquecount;
+             for (int i = uniquecount / 4; i >= 0; i--)
+             {
+                 resultQ.PercolateDown(i, true);
+             }
+             for (int i = 0; i < uniquecount; i++)
+             {
+                 resultQ.Frequencies[i] = freqmap[resultQ.ArrayHeap[i]];
+                 resultQ.Indices[resultQ.ArrayHeap[i]] = i;
+             }
+             return resultQ; */
         }
 
         public static T1[] CreateGenericArray<T1>(int len)
@@ -436,4 +436,5 @@ namespace MyDatastructure
            ArrayElementSwapHelper(arg1, arg2, ArrayHeap);
         }
     }
+
 }

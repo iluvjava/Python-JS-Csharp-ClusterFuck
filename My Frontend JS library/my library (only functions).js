@@ -5,7 +5,7 @@
     /**
      *  Read the object and change the object to elements with classes. 
      */
-    function applyClassSettings(settings)
+    function applyClassSettings(settings = SETTINGS)
     {
         $.each(settings, function (idx, val) {
             $(idx).addClass(val);
@@ -15,7 +15,7 @@
     /**
      * Prepare listeners from a json object. 
      */
-    function prepareTheListeners(arg)
+    function prepareTheListeners(arg = LISTENER)
     {
         $.each
         (
@@ -34,7 +34,7 @@
      * @param {JQ DOM} parents  
      * It's for the recursion so that children know what their parents are. 
      */
-    function convert(arg, parents = null)
+    function convert(arg = MYELEMENTS, parents = null)
     {
         for(let i = 0; i < arg.length; i++)
         {
@@ -85,10 +85,6 @@
         for (k in jobject)
         {
             let v = jobject[k];
-            if (k === "id")
-            {
-                continue;
-            }
             domelement.attr(k, v);
         }
     }
@@ -102,9 +98,42 @@
         return document.createElement(tagname);
     }
 
+
+    /**
+     * This function index all the children with a id. 
+     * If the given parent element already has an id, then 
+     * that id will be the prefix of its children.
+     * It will be done in a Non recursive fashion.
+     * @param {Dom Element} domelement 
+     * @parem {string} prefix
+     * the id will become prefix<index>, it's optional.
+     */
+    function indexChildrenWithId(domelement, prefix = null)
+    {
+        let JQDomElement = $(domelement);
+        if (prefix === null)
+        {
+            if (JQDomElement.attr("id") === undefined)
+                prefix = "";
+            else 
+                prefix = JQDomElement.attr("id");
+        }
+        {
+            let counter = 0;
+            for (let c of JQDomElement.children())
+            {
+                c = $(c);
+                c.attr("id", prefix + counter);
+                counter++;
+            }
+        }
+        return JQDomElement;
+    }   
+
     window["applyClassSettings"] = applyClassSettings;
     window["prepareTheListeners"] = prepareTheListeners;
     window["convert"] = convert;
+    window["indexChildrenWithId"] = indexChildrenWithId;
 
     }
 )();
