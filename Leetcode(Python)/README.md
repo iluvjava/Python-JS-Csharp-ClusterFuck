@@ -179,4 +179,22 @@ def permutation_search_helper(arr: list, indexchosen: list, permutations: list, 
 ## Summarizing the Rephrasing the Problem: 
 - Given a string of elements (Say A) and a set of string of elements (Say S), return true if there exists a partition of the A such that each sub string is in the set S. 
     - A string (finite) can be partitioned into limited number of cases, between the number of characters and 1, the whole string itself. 
-    - 
+
+- Assume a partially solved problem: 
+    - A:= "catsanddog", {cats, dogs, and, sands, cat}
+        - [(c,0), (a,1), (t,2), (s,3), (a,4), (n,5), (d,6), (d,7), (o,8), (g,9)]
+    - Given part[4,6] is a partition in the dictionary. 
+        - part[0,6] is a breakable(what the question is asking) if part[0,3] is in the dictionary set. 
+        - part[0, end] will be breakable if part[7,end] is in the dictionary. 
+
+- Generalized the concepts
+    - part[n, m] is either in the dict or not in it. 
+        - if not in it, then...
+        - if it is, then 
+            - if part[0, n - 1] is breakable, then part[0, m] is breakable
+                - if part[0, m] is breakable, then: 
+                    if part[m+1, end] is breakable then part[0, end] is breakable. 
+            - if not, then part[0, end] is not breakable.
+
+- So there is a recursive solution and dynamic programming is applicable. 
+
