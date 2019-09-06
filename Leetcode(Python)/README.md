@@ -172,6 +172,11 @@ def permutation_search_helper(arr: list, indexchosen: list, permutations: list, 
         indexchosen[i] = False
         permutations.pop()
     return
-
-
 ```
+
+# 139. Word Break (WordBreak.py)
+- Assuming you have read the problem, let's take a look at how the dynamic programming solution os formulated. 
+## Summarizing the Rephrasing the Problem: 
+- Given a string of elements (Say A) and a set of string of elements (Say S), return true if there exists a partition of the A such that each sub string is in the set S. 
+    - A string (finite) can be partitioned into limited number of cases, between the number of characters and 1, the whole string itself. 
+    - 
