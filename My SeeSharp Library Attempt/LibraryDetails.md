@@ -117,3 +117,6 @@
     - MyStopwatch 
     - DataLogger
         - Keeping track of the data's SD and average at REAL TIME, not computed afterwards. 
+
+
+## HybridComparer

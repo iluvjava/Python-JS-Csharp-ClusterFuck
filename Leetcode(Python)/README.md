@@ -1,4 +1,4 @@
-# Permutations.py
+# 47. Permutations II (Permutations.py)
 - [Link to Leetcode](https://leetcode.com/problems/permutations-ii/)
 - The challenge is asking for a mutated kind of permutator
 - Pseudocode for a Bijective Permutator: 
@@ -176,25 +176,86 @@ def permutation_search_helper(arr: list, indexchosen: list, permutations: list, 
 
 # 139. Word Break (WordBreak.py)
 - Assuming you have read the problem, let's take a look at how the dynamic programming solution os formulated. 
-## Summarizing the Rephrasing the Problem: 
+## Summarizing, Rephrasing and Explore the Problem: 
 - Given a string of elements (Say A) and a set of string of elements (Say S), return true if there exists a partition of the A such that each sub string is in the set S. 
     - A string (finite) can be partitioned into limited number of cases, between the number of characters and 1, the whole string itself. 
 
 - Assume a partially solved problem: 
     - A:= "catsanddog", {cats, dogs, and, sands, cat}
         - [(c,0), (a,1), (t,2), (s,3), (a,4), (n,5), (d,6), (d,7), (o,8), (g,9)]
-    - Given part[4,6] is a partition in the dictionary. 
-        - part[0,6] is a breakable(what the question is asking) if part[0,3] is in the dictionary set. 
-        - part[0, end] will be breakable if part[7,end] is in the dictionary. 
+    - Given s[4:6] is a partition in the dictionary. 
+        - s[0:6] is a breakable(what the question is asking) if s[0:3] is in the dictionary set. 
+        - s[0: end] will be breakable if s[7: end] is in the dictionary. 
 
 - Generalized the concepts
-    - part[n, m] is either in the dict or not in it. 
-        - if not in it, then...
+    - s[n, m] is either in the dict or not in it. 
+        - if not in it, then...huh... System.Exit(-1)?... No I am just kidding. 
         - if it is, then 
-            - if part[0, n - 1] is breakable, then part[0, m] is breakable
-                - if part[0, m] is breakable, then: 
-                    if part[m+1, end] is breakable then part[0, end] is breakable. 
-            - if not, then part[0, end] is not breakable.
+            - if s[0: n - 1] is breakable, then s[0: m] is breakable
+                - if s[0: m] is breakable, then: 
+                    if s[m+1, end] is breakable then s[0: end] is breakable. 
+            - if not, then s[0: end] is not breakable.
 
-- So there is a recursive solution and dynamic programming is applicable. 
+- Prompt; is there a recursive solution and dynamic programming is applicable? 
+- let's take a look at the recursive solution first and see if DP is actually reducing the run time. 
+    - let's define a function breakable(m), returns true if s[0:m] is breakable.
+        - add a moving curser i, for all i, if there exists i such that brekable(i) is true and s[i+1: m] is in dictionary, then breakable returns true. 
+        - if it doesn't exists, return false. 
+        - let's take a look at the recursion, say m = 4: 
+        ```
+            breakable(4):
+            return
+            breakable(3) and s[4:4] in dict
+            ||
+            breakable(2) and s[3:4] in dict
+            ||
+            breakable(1) and s[2:4] in dict
+                breakable(3): 
+                return 
+                breakable(2) and s[3:3] in dict   <= Repeats!, Dynamic programming. 
+                ||
+                breakable(1) and s[2:3] in dict   <= Repeats! 
+        ```
 
+        - now we have seen the the recursion repeats, that means we have a DP solution, for the recursive solution. 
+    - Making a Pseudo Codes for the function Breakable(m):
+        ```
+            check on a table if breakable(i) has been previously queried before. 
+
+            for each integer i in range from 0 to m: 
+                if breakable(i) and the substring from i+1 to m is in the dict
+                    return true;
+            return false;
+        ```
+    - One more things, if n < m and breakable(n) is always called before breakable(m), then we have a button up solution. 
+    - But in the recursive case, we have to still use None, True, and False to indicate the state of True, or False of the substring, and the state that where the function with that specified input is visited yet. 
+    - This is a working solution:
+    ```
+    def Breakable(
+                s: str,
+                m: int,
+                dict:list,
+                memo: list = None # only for recurstion.
+             ) -> bool:
+        memo = [None] * (len(s) + 1) if memo is None else memo
+        memo[0] = True
+        if memo[m] is not None:
+            return memo[m]
+        for i in range(m):
+            if (s[i:m] in dict) and (Breakable(s, i, dict, memo) is True):
+                memo[m] = True
+                return True
+        memo[m] = False
+        return False
+    ```
+- I am too lazy to look for a button up solution. 
+
+# 90.Subsets II (Subsets.py)
+
+
+    
+    
+
+
+
+    
