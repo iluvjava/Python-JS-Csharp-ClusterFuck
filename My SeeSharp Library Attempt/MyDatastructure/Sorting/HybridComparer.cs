@@ -53,16 +53,18 @@ namespace MyDatastructure.Sorting
     /// </summary>
     public class EquestriaCreatures
     {
+        public int Age { get; set; }
+
+        public Species CreatureSpecies { get; set; }
+
+        public string Name { get; set; }
+
         public EquestriaCreatures(string name, Species sp, int age)
         {
             this.Name = name;
             this.CreatureSpecies = sp;
             this.Age = age;
         }
-
-        public int Age { get; set; }
-        public Species CreatureSpecies { get; set; }
-        public string Name { get; set; }
 
         override
         public bool Equals(object o)
@@ -72,7 +74,7 @@ namespace MyDatastructure.Sorting
             {
                 EquestriaCreatures temp = o as EquestriaCreatures;
                 if (Age == this.Age
-                    && Name.Equals(temp.Name) 
+                    && Name.Equals(temp.Name)
                     && CreatureSpecies == temp.CreatureSpecies)
                     return true;
                 return false;
@@ -118,12 +120,23 @@ namespace MyDatastructure.Sorting
         /// <summary>
         /// Create an instance of the HybridComparer.
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">
+        /// A list of delegate, GenericCompare is defined in this name space. 
+        /// </param>
         public HybridComparer(params GenericCompare<T>[] args)
         {
             FuncComparers = args;
         }
 
+        /// <summary>
+        /// Compare 2 element of type T using the list of Delegates or the list 
+        /// of comparer defined by the client. 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>
+        /// 1 if a > b, 0 if a = b, else a < b which is -1. 
+        /// </returns>
         public int Compare(T a, T b)
         {
             if (Comparers != null)
@@ -148,14 +161,14 @@ namespace MyDatastructure.Sorting
             }
             return FuncComparers[FuncComparers.Length - 1](a, b);
         }
+
     }
 
     /// <summary>
-    /// This class takes into the the position of the element in the array into account. 
+    /// This class takes into the the position of the element in the array into account.
     /// </summary>
     public class HybridStableComparer<T> : IComparable<T>
     {
-
         public int CompareTo(T other)
         {
             throw new NotImplementedException();

@@ -17,14 +17,35 @@ namespace MyDatastructure
     /// </typeparam>
     public class MyLittleArrayHeapPriorityQueue<T> : IPriorityQ<T> where T : IComparable<T>
     {
+        /// <summary>
+        /// The array that stores the heap structure inside. 
+        /// </summary>
         protected T[] ArrayHeap;
+        /// <summary>
+        /// The comparer set by the client, null by default if client didn't set it. 
+        /// </summary>
         protected IComparer<T> CustomizedComparer;
+        /// <summary>
+        /// The number of elements in the heap, including the repetition.
+        /// </summary>
         protected int ElementCount = 0;
+        /// <summary>
+        /// A int[] where if the element in the array heap, then the same index in the Frequencies 
+        /// array is the frequencies of that element. 
+        /// </summary>
         protected int[] Frequencies;
+        /// <summary>
+        /// The number of children that each parent has in the heap. 
+        /// </summary>
         protected int HeapChildrenCount;
+        /// <summary>
+        /// A map that stores all the index of the element in the heap array. 
+        /// </summary>
         protected IMap<T, int> Indices;
-        protected int UniqueElementCount = 0; // Unique elements count
-                                              // The number of element in queue includes repetitions.
+        /// <summary>
+        /// The number of unique elements in the array, it's for manaing the heap. 
+        /// </summary>
+        protected int UniqueElementCount = 0; 
 
         public int Size
         {
@@ -33,7 +54,22 @@ namespace MyDatastructure
                 return ElementCount;
             }
         }
-
+        /// <summary>
+        /// Construct an istance of the The array Heap. 
+        /// </summary>
+        /// <param name="IndexMap">
+        /// The type of Maps inplementations you want for storing the 
+        /// index of element interally. This greatly affects speed. 
+        /// </param>
+        /// <param name="heapchildrecount">
+        /// Change the number of children each parent has. larger than 1.
+        /// </param>
+        /// <param name="initialHeapSize">
+        /// The initial size of the heap array. 
+        /// </param>
+        /// <param name="comparer">
+        /// The comparer you want to use for the element.
+        /// </param>
         public MyLittleArrayHeapPriorityQueue
         (
             IMap<T, int> IndexMap,
@@ -53,11 +89,21 @@ namespace MyDatastructure
             CustomizedComparer = comparer;
         }
 
+
+        /// <summary>
+        /// Construct an instance of the MyLittleArrayHeapPriorityQueue.
+        /// </summary>
         public MyLittleArrayHeapPriorityQueue() :
             this(new SysDefaultMap<T, int>(), 4, 16)
         {
         }
 
+        /// <summary>
+        /// Construct an instance of the MyLittleArrayHeapPriorityQueue.
+        /// </summary>
+        /// <param name="arg">
+        /// The Comparer you want to use for ordering elements. 
+        /// </param>
         public MyLittleArrayHeapPriorityQueue(IComparer<T> arg) :
             this(new SysDefaultMap<T, int>(), 4, 2048, arg)
         {
@@ -178,6 +224,12 @@ namespace MyDatastructure
             }
         }
 
+        /// <summary>
+        /// Get a reference for the first element in the queue. 
+        /// </summary>
+        /// <returns>
+        /// a reference for the first element in the queue. 
+        /// </returns>
         public T Peek()
         {
             return ArrayHeap[0];
@@ -256,6 +308,11 @@ namespace MyDatastructure
             return CustomizedComparer.Compare(arg1, arg2);
         }
 
+        /// <summary>
+        /// Get the first index of the heap. Internal use only. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
         protected int GetFirstChildIndex(int arg)
         {
             return arg * HeapChildrenCount + 1;
@@ -418,9 +475,10 @@ namespace MyDatastructure
         /// Swap 2 elements in the heap array. It will update all things.
         /// </summary>
         /// <param name="arg1"></param>
-        /// <param name="buildheapmode">
-        /// True if it's called by buildheap method
-        /// </param>
+        /// <param name="buildheapmode">True if it's called by buildheap method</param>
+        /// <param name="arg2"></param>
+        /// 
+        ///
         protected void Swap(int arg1, int arg2, bool buildheapmode = false)
         {
             if (arg1 == arg2)

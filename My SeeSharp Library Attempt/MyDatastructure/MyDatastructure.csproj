@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\Administrator\source\repos\FunWith-API-HTTP-HTML-and-C-\My SeeSharp Library Attempt\MyDatastructure\MyDatastructure.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Sorting\MultiHybridStableComparer\**" />
     <EmbeddedResource Remove="Sorting\MultiHybridStableComparer\**" />
