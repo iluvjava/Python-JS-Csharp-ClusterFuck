@@ -251,8 +251,8 @@ def permutation_search_helper(arr: list, indexchosen: list, permutations: list, 
 - I am too lazy to look for a button up solution. 
 
 # 90.Subsets II (Subsets.py)
-- This problem is a modification of the Powerset Recursive search, let's take a look at the solution for powerset. 
-- Let's take a look at the Qseudo code for the complete subset search.
+- This problem is a modification of the powerset Recursive search. 
+- Let's take a look at the qseudo code for the complete subset search.
 ```
     if we reached the end of the array
         process the obtained sub array. 
@@ -291,7 +291,7 @@ Output:
     [2,2]
 ]
 ```
-
+- Notice how I groped the elements in the second example.
 - Out puts from traditional Generating sets. 
 ```
 [
@@ -305,8 +305,61 @@ Output:
     []
 ]
 ```
-- The order of the output from leetcode suggested that they didn't use the Pseudo codes of generating subsets. I think they partition the set with the same elements into smaller subsets. 
+- The order of the output from leetcode suggested that they didn't use the Pseudo codes of generating subsets (The traditional version).
 - For a set with the same elements, the definition of power set is tweaked. For a set with elements N repeats M times, the power set is all sets with N repeats from 1 to M times, giving us a total of M sets. 
+    - It implies the following fact: 
+        - When there are equal elements, it recurs linearly. 
+        - That means the function calls it self only once. 
+        - That means after popping out the element, if the current chosen element is the same as the previous one, then we don't recurse the second time. 
+- Here is the modified search
+```
+    if we reach the end of the arrey:
+        process the stack
+    else
+        push in the current element into the stack;
+            recur 
+        if the current element is the same as the last popped in element
+            pop it out and -end-
+        pop current element out
+            recur 
+```
+- Here is a modified codes: 
+```
+    def GenerateSubsets_NonUnique(resultlist: list,
+                              arr: list,
+                              idx: int = 0,
+                              stck: list = None
+                            ):
+    """
+        This method only works for sorted integer array.
+        :param resultlist:
+        The result that stores all the smaller arrays of subsets.
+        :param arr:
+        The sorted arry with repeated elements.
+        :param idx:
+        The current index the recusive function is focusing on.
+        :param stck:
+        The stack that stored the generated subset.
+        :return:
+        """
+        if arr is None:
+            return resultlist
+        if idx == len(arr):
+            resultlist.append(stck[:])
+            return
+        stck = [] if stck is None else stck
+        LastAddedElement = None if len(stck) == 0 else stck[len(stck) - 1]
+        stck.append(arr[idx])
+        GenerateSubsets_NonUnique(resultlist, arr, idx + 1, stck)
+        if (LastAddedElement is not None) and (LastAddedElement == arr[idx]):
+            stck.pop()
+            return
+        stck.pop()
+        GenerateSubsets_NonUnique(resultlist, arr, idx + 1, stck)
+        return resultlist
+```
+- That is all you need for this problem, don't forget the sort the array before inputing it into the function, and don't forget about None input too. 
+Keep your 
 
 
 
