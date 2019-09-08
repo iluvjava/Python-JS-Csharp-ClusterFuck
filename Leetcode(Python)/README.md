@@ -1,4 +1,4 @@
-    # 47. Permutations II (Permutations.py)
+# 47. Permutations II (Permutations.py)
 - [Link to Leetcode](https://leetcode.com/problems/permutations-ii/)
 - The challenge is asking for a mutated kind of permutator
 - Pseudocode for a Bijective Permutator: 
@@ -359,7 +359,24 @@ Output:
         return resultlist
 ```
 - That is all you need for this problem, don't forget the sort the array before inputing it into the function, and don't forget about None input too. 
-Keep your 
+
+# 862. Shortest Subarray with Sum at Least K
+- [link](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/)
+- This kind of problem is called "Optimization problem with a constraint", Minimum optimization to be precise because it's asking for the "shortest subarray", the constraint is "With a sum at least K". 
+- K is larger than 1 as indicated in the notes of the problem, even if it isn't, I believe it can be reduced to this case.
+- If summing up all the **Positive elements** in the array gives a values less than K, then there is just no solution, return -1; 
+- Suppose we have an array that is **sorted**, with length L, and somewhere in the middle, at index M, the numbers changed to positive. 
+    - if there is never any positive elements, no solution exists, return  -1; 
+    - Now M must exist.
+        - sum(arr[M:-1]) gives the max possible sum, then it must be larger than, equal to, or less than K. 
+        - Equal to K => We are done. 
+        - Less than K => not possible return -1
+        - Larger than K=> Optimization is needed. 
+            - Assuming the arr looks somewhat normal where the integers are spread out in different ranges. 
+            - Moving the left end of the cursor will reduce the sum slightly, increasing the length of the subarray. 
+            - Moving the right end of the cursor will reduced the sum significantly, decreasing the length of the subarray. 
+
+
 
 
 
