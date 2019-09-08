@@ -1,9 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MyDatastructure.Sorting
 {
-
     public delegate int GenericCompare<T>(T ar1, T arg2);
+
+    public enum Gender
+    {
+        Male,
+        Female,
+        TransMaleToFemale,
+        TransFemaleToMale,
+        TransMultiple,
+        NonBinary,
+        GenderFluid,
+        Unidentifiable,
+        Unknown
+    }
 
     public enum Species
     {
@@ -17,6 +30,7 @@ namespace MyDatastructure.Sorting
         //-----------
         Griffon,
 
+        Changelling,
         Dragon,
         HippoGriff,
 
@@ -24,22 +38,10 @@ namespace MyDatastructure.Sorting
         Unknown
     }
 
-    public enum Gender
-    {
-        Male, 
-        Female,
-        TransMaleToFemale,
-        TransFemaleToMale,
-        TransMultiple,
-        NonBinary, 
-        GenderFluid,
-        Unidentifiable,
-        Unknown
-    }
-
     public class AgeComparer<T> : IComparer<T> where T : EquestriaCreatures
     {
         public bool DescendingOrder { get; set; } = false;
+
         public int Compare(T x, T y)
         {
             return x.CreatureSpecies.CompareTo(y.CreatureSpecies);
@@ -51,10 +53,6 @@ namespace MyDatastructure.Sorting
     /// </summary>
     public class EquestriaCreatures
     {
-        public int Age { get; set; }
-        public Species CreatureSpecies { get; set; }
-        public string Name { get; set; }
-
         public EquestriaCreatures(string name, Species sp, int age)
         {
             this.Name = name;
@@ -62,8 +60,32 @@ namespace MyDatastructure.Sorting
             this.Age = age;
         }
 
+        public int Age { get; set; }
+        public Species CreatureSpecies { get; set; }
+        public string Name { get; set; }
+
         override
-        public string ToString()
+        public bool Equals(object o)
+        {
+            if (o is null) return false;
+            if (o is EquestriaCreatures)
+            {
+                EquestriaCreatures temp = o as EquestriaCreatures;
+                if (Age == this.Age
+                    && Name.Equals(temp.Name) 
+                    && CreatureSpecies == temp.CreatureSpecies)
+                    return true;
+                return false;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Age, CreatureSpecies, Name);
+        }
+
+        override public string ToString()
         {
             var res = "{ ";
             res += "Name: " + Name + ", ";
@@ -71,66 +93,79 @@ namespace MyDatastructure.Sorting
             res += "age: " + this.Age;
             return res + " }";
         }
-        
-
-
-        
     }
 
     /// <summary>
     /// Takes in a list of unique comparers.
-    /// And compare then one by one。 
-    /// This is an OOP Approach for a robust Sorting system. 
+    /// And compare then one by one。
+    /// This is an OOP Approach for a robust Sorting system.
     /// </summary>
-    public class HybridComparer<T>: IComparer<T>
+    public class HybridComparer<T> : IComparer<T>
     {
-        private IComparer<T>[] ListOfComparers;
-        private GenericCompare<T>[] ListOfGenericCompareFunctions;
-
+        private IComparer<T>[] Comparers;
+        private GenericCompare<T>[] FuncComparers;
 
         /// <summary>
-        /// Create an instance of the hybrid comparer using other different kinds of IComparer 
-        /// of that type. 
+        /// Create an instance of the hybrid comparer using other different kinds of IComparer
+        /// of that type.
         /// </summary>
         /// <param name="args"></param>
         public HybridComparer(params IComparer<T>[] args)
         {
-            ListOfComparers = args;
+            Comparers = args;
         }
 
         /// <summary>
-        /// Create an instance of the HybridComparer. 
+        /// Create an instance of the HybridComparer.
         /// </summary>
         /// <param name="args"></param>
         public HybridComparer(params GenericCompare<T>[] args)
         {
-            ListOfGenericCompareFunctions = args;
+            FuncComparers = args;
         }
 
         public int Compare(T a, T b)
         {
-            if (ListOfComparers != null)
+            if (Comparers != null)
             {
-                for (int i = 0; i < ListOfComparers.Length - 1; i++)
+                for (int i = 0; i < Comparers.Length - 1; i++)
                 {
-                    int ComparedResult = ListOfComparers[i].Compare(a, b);
+                    int ComparedResult = Comparers[i].Compare(a, b);
                     if (ComparedResult != 0)
                     {
                         return ComparedResult;
                     }
                 }
-                return ListOfComparers[ListOfComparers.Length - 1].Compare(a, b);
+                return Comparers[Comparers.Length - 1].Compare(a, b);
             }
-            for (int i = 0; i < ListOfGenericCompareFunctions.Length; i++)
+            for (int i = 0; i < FuncComparers.Length - 1; i++)
             {
+                int ComparedResult = FuncComparers[i](a, b);
+                if (ComparedResult != 0)
+                {
+                    return ComparedResult;
+                }
             }
-            return 0;
+            return FuncComparers[FuncComparers.Length - 1](a, b);
+        }
+    }
+
+    /// <summary>
+    /// This class takes into the the position of the element in the array into account. 
+    /// </summary>
+    public class HybridStableComparer<T> : IComparable<T>
+    {
+
+        public int CompareTo(T other)
+        {
+            throw new NotImplementedException();
         }
     }
 
     public class NameComparer<T> : IComparer<T> where T : EquestriaCreatures
     {
-       public bool DescendingOrder { get; set; } = false; 
+        public bool DescendingOrder { get; set; } = false;
+
         public int Compare(T x, T y)
         {
             return x.Name.CompareTo(y.Name);
@@ -140,9 +175,10 @@ namespace MyDatastructure.Sorting
     public class SpeciesComparer<T> : IComparer<T> where T : EquestriaCreatures
     {
         public bool DescendingOrder { get; set; } = false;
+
         public int Compare(T x, T y)
         {
             return x.CreatureSpecies.CompareTo(y.CreatureSpecies);
-        } 
+        }
     }
 }

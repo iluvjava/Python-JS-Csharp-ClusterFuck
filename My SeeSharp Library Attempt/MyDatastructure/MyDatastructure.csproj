@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Sorting\MultiHybridStableComparer\" />
+    <Compile Remove="Sorting\MultiHybridStableComparer\**" />
+    <EmbeddedResource Remove="Sorting\MultiHybridStableComparer\**" />
+    <None Remove="Sorting\MultiHybridStableComparer\**" />
   </ItemGroup>
 
 </Project>

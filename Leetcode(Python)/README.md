@@ -1,4 +1,4 @@
-# 47. Permutations II (Permutations.py)
+    # 47. Permutations II (Permutations.py)
 - [Link to Leetcode](https://leetcode.com/problems/permutations-ii/)
 - The challenge is asking for a mutated kind of permutator
 - Pseudocode for a Bijective Permutator: 
@@ -251,11 +251,62 @@ def permutation_search_helper(arr: list, indexchosen: list, permutations: list, 
 - I am too lazy to look for a button up solution. 
 
 # 90.Subsets II (Subsets.py)
+- This problem is a modification of the Powerset Recursive search, let's take a look at the solution for powerset. 
+- Let's take a look at the Qseudo code for the complete subset search.
+```
+    if we reached the end of the array
+        process the obtained sub array. 
+    else
+        put current element in 
+        recursion...
+        pull it out
+        recursion... 
+```
+- However this problem is different as it's asking for to generate all subsets with repeated elements. Here is the given example: 
+```
+Input: [1,2,2]
+Output:
+[
+  [2], => Repetition
+  [1],
+  [1,2,2], 
+  [2,2], 
+  [1,2], => Repetition
+  []
+]
+Input [1,1,2,2]
+Output: 
+[
+    [],
+
+    [1], ----->[1,1]
+    [1,1],
+
+    [1,1,2],---->[1,2]
+    [1,1,2,2],
+    [1,2],
+    [1,2,2],
+
+    [2], -------[2,2]
+    [2,2]
+]
+```
+
+- Out puts from traditional Generating sets. 
+```
+[
+    [1, 2, 3],
+    [1, 2],
+    [1, 3],
+    [1],
+    [2, 3],
+    [2],
+    [3],
+    []
+]
+```
+- The order of the output from leetcode suggested that they didn't use the Pseudo codes of generating subsets. I think they partition the set with the same elements into smaller subsets. 
+- For a set with the same elements, the definition of power set is tweaked. For a set with elements N repeats M times, the power set is all sets with N repeats from 1 to M times, giving us a total of M sets. 
 
 
-    
-    
 
-
-
-    
