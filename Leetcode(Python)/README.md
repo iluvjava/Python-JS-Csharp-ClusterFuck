@@ -371,10 +371,14 @@ Output:
         - sum(arr[M:-1]) gives the max possible sum, then it must be larger than, equal to, or less than K. 
         - Equal to K => We are done. 
         - Less than K => not possible return -1
-        - Larger than K=> Optimization is needed. 
+        - Larger than K => Optimization is needed. 
+        - Let the left end pointer point at M and the right end point at -1. 
             - Assuming the arr looks somewhat normal where the integers are spread out in different ranges. 
-            - Moving the left end of the cursor will reduce the sum slightly, increasing the length of the subarray. 
-            - Moving the right end of the cursor will reduced the sum significantly, decreasing the length of the subarray. 
+            - Moving the left end of the pointer will reduce the sum slightly, increase of decreases the length. 
+            - Moving the right end of the pointer to left. will reduced the sum significantly, decreasing the length of the subarray.
+ - The greedy approach. Knowing what happen with moving the left and right pointer, let's see how we can move it such that we appoach the correct sum we want. 
+    - Move the right end pointer, keep the sum above K. There will be one point when moving it causes the sum to goes below K, stop just before that happens. 
+    - Move the left end pointer to slightly reduce the sum, moves to right because it reduces the length of subarray. 
 
 
 
