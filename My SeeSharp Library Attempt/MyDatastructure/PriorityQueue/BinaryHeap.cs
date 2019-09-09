@@ -1,44 +1,46 @@
 ﻿using MyDatastructure.PriorityQ;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using static System.Array;
 
 namespace MyDatastructure.PriorityQueue
 {
-
     /// <summary>
     /// This will be the simplest Binary Heap imaginable.
-    /// 0 index will be a dummy 
-    /// Null is not a accepted value. 
+    /// 0 index will be a dummy
+    /// Null is not a accepted value.
     /// </summary>
-    class BinaryHeap<T> : IPriorityQ<T> where T : IComparable<T>
+    internal class BinaryHeap<T> : IPriorityQ<T> where T : IComparable<T>
     {
-
         protected int ElementCount = 0;
+
         /// <summary>
-        /// index 0 is dummy. 
+        /// index 0 is dummy.
         /// </summary>
         protected T[] HeapArray;
 
-        public int Size
-        {
-            get
-            {
-                return ElementCount; 
-            }
-        }
-
         /// <summary>
-        /// Get an instance of the Binary Heap. 
+        /// Get an instance of the Binary Heap.
         /// </summary>
         public BinaryHeap()
         {
             HeapArray = new T[32];
         }
 
+        public int Size
+        {
+            get
+            {
+                return ElementCount;
+            }
+        }
+
+        public static bool IsNull(object o)
+        {
+            return object.Equals(o, null);
+        }
+
         /// <summary>
-        /// Not supported for this class. 
+        /// Not supported for this class.
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -48,7 +50,7 @@ namespace MyDatastructure.PriorityQueue
         }
 
         /// <summary>
-        /// add a new element into the queue. 
+        /// add a new element into the queue.
         /// </summary>
         /// <param name="arg"></param>
         public void Enqueue(T arg)
@@ -63,11 +65,11 @@ namespace MyDatastructure.PriorityQueue
 
         public T Peek()
         {
-            return HeapArray[1]; // 0 element is the dummy node. 
+            return HeapArray[1]; // 0 element is the dummy node.
         }
 
         /// <summary>
-        /// Not supported. 
+        /// Not supported.
         /// </summary>
         /// <param name="arg"></param>
         public void Remove(T arg)
@@ -76,7 +78,7 @@ namespace MyDatastructure.PriorityQueue
         }
 
         /// <summary>
-        /// Remove the minimum element from the queue. 
+        /// Remove the minimum element from the queue.
         /// </summary>
         /// <returns></returns>
         public T RemoveMin()
@@ -88,18 +90,12 @@ namespace MyDatastructure.PriorityQueue
             return res;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="arg"></param>
-        /// <returns></returns>
-        protected int GetParentIndex(int arg)
+        protected void AutomaticResize()
         {
-            if (arg <= 0)
+            if (ElementCount + 1 == HeapArray.Length)
             {
-                throw new InvalidArgumentException();
+                Resize(ref HeapArray, HeapArray.Length * 2);
             }
-            return arg/2;
         }
 
         protected int GetFirstChildIndex(int arg)
@@ -109,17 +105,23 @@ namespace MyDatastructure.PriorityQueue
             return 2 * arg;
         }
 
-        protected int PercolateUp(int arg)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        protected int GetParentIndex(int arg)
         {
-            int Pidx = GetParentIndex(arg);
-            T Parent = HeapArray[Pidx];
-            T Child = HeapArray[arg];
-            if (Child.CompareTo(Parent) < 0)
+            if (arg <= 0)
             {
-                Swap(Pidx, arg);
-                return PercolateUp(Pidx);
+                throw new InvalidArgumentException();
             }
-            return arg;
+            return arg / 2;
+        }
+
+        protected int Percolate(int arg)
+        {
+            return PercolateUp(PercolateDown(arg));
         }
 
         protected int PercolateDown(int arg)
@@ -132,7 +134,7 @@ namespace MyDatastructure.PriorityQueue
 
             if (RightChildIdx <= ElementCount)
             {
-                int TheSmallerChildIdx = LChild.CompareTo(RChild) < 0 ? LeftChildIdx: RightChildIdx;
+                int TheSmallerChildIdx = LChild.CompareTo(RChild) < 0 ? LeftChildIdx : RightChildIdx;
                 if (HeapArray[TheSmallerChildIdx].CompareTo(Parent) < 0)
                 {
                     Swap(TheSmallerChildIdx, arg);
@@ -153,14 +155,17 @@ namespace MyDatastructure.PriorityQueue
             return arg;
         }
 
-        public static bool IsNull(object o)
+        protected int PercolateUp(int arg)
         {
-            return object.Equals(o, null);
-        }
-
-        protected int Percolate(int arg)
-        {
-            return PercolateUp(PercolateDown(arg));
+            int Pidx = GetParentIndex(arg);
+            T Parent = HeapArray[Pidx];
+            T Child = HeapArray[arg];
+            if (Child.CompareTo(Parent) < 0)
+            {
+                Swap(Pidx, arg);
+                return PercolateUp(Pidx);
+            }
+            return arg;
         }
 
         protected void Swap(int arg1, int arg2)
@@ -170,20 +175,5 @@ namespace MyDatastructure.PriorityQueue
             HeapArray[arg1] = a;
             HeapArray[arg2] = b;
         }
-
-        protected void AutomaticResize()
-        {
-            if (ElementCount + 1 == HeapArray.Length)
-            {
-                Resize(ref HeapArray, HeapArray.Length * 2);
-            }
-        }
-
-
-
-
-
-        
-
     }
 }
