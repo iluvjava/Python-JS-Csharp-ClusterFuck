@@ -22,4 +22,10 @@ namespace MyDatastructure
         {
         }
     }
+
+    [Serializable]
+    public class UnsupportedOperation : Exception
+    {
+
+    }
 }

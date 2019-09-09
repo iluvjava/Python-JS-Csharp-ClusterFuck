@@ -9,7 +9,7 @@ namespace MyDatastructure.PriorityQueue
     /// 0 index will be a dummy
     /// Null is not a accepted value.
     /// </summary>
-    internal class BinaryHeap<T> : IPriorityQ<T> where T : IComparable<T>
+    public class SimpleBinaryHeap<T> : IPriorityQ<T> where T : IComparable<T>
     {
         protected int ElementCount = 0;
 
@@ -21,9 +21,41 @@ namespace MyDatastructure.PriorityQueue
         /// <summary>
         /// Get an instance of the Binary Heap.
         /// </summary>
-        public BinaryHeap()
+        public SimpleBinaryHeap()
         {
             HeapArray = new T[32];
+        }
+
+        /// <summary>
+        /// Give an array of element it will build the heap from it. 
+        /// It will copy the array. 
+        /// <remark>
+        /// It uses floyd build heap, good for partial sort. 
+        /// </remark>
+        /// </summary>
+        /// <param name="list">
+        /// The list should not comtain null, it will blows up if it contains
+        /// null.
+        /// <param name="offset">
+        /// Where you want to start add element from the array to the heap. 
+        /// Invalid argument will be set to 0. 
+        /// It's default to be 0. 
+        /// </param>
+        /// <param name="len">
+        /// The length you want off from the offset you set.  
+        /// </param>
+        public SimpleBinaryHeap(T[] source, int offset = 0, int len = -1)
+        {
+            len = (len == -1 || len + offset >= source.Length) ? source.Length - offset: len;
+            offset = (offset >= source.Length || offset < 0) ? 0 : offset;
+            HeapArray = new T[len*2];
+            Copy(source, offset, HeapArray, 1, len);
+            ElementCount = len;
+            for (int i = len / 2; i >= 1; i--)
+            {
+                PercolateDown(i);
+            }
+            
         }
 
         public int Size
@@ -46,7 +78,7 @@ namespace MyDatastructure.PriorityQueue
         /// <returns></returns>
         public bool Contains(T arg)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -58,8 +90,8 @@ namespace MyDatastructure.PriorityQueue
             if (IsNull(arg))
                 throw new InvalidArgumentException();
             AutomaticResize();
-            HeapArray[ElementCount] = arg;
-            PercolateUp(ElementCount);
+            HeapArray[ElementCount + 1] = arg;
+            PercolateUp(ElementCount+ 1);
             ElementCount++;
         }
 
@@ -74,15 +106,21 @@ namespace MyDatastructure.PriorityQueue
         /// <param name="arg"></param>
         public void Remove(T arg)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>
         /// Remove the minimum element from the queue.
         /// </summary>
+        /// <throw>
+        /// InvalidOperationException is the heap is empty when
+        /// trying to remove elements. 
+        /// </throw>
         /// <returns></returns>
         public T RemoveMin()
         {
+            if (ElementCount == 0)
+                throw new InvalidOperationException();
             T res = HeapArray[1];
             Swap(1, ElementCount);
             ElementCount--;
@@ -100,7 +138,7 @@ namespace MyDatastructure.PriorityQueue
 
         protected int GetFirstChildIndex(int arg)
         {
-            if (arg < 0)
+            if (arg < 1)
                 throw new InvalidArgumentException();
             return 2 * arg;
         }
@@ -112,9 +150,9 @@ namespace MyDatastructure.PriorityQueue
         /// <returns></returns>
         protected int GetParentIndex(int arg)
         {
-            if (arg <= 0)
+            if (arg <= 1)
             {
-                throw new InvalidArgumentException();
+                return 1;
             }
             return arg / 2;
         }
@@ -129,11 +167,11 @@ namespace MyDatastructure.PriorityQueue
             int LeftChildIdx = GetFirstChildIndex(arg);
             int RightChildIdx = LeftChildIdx + 1;
             T Parent = HeapArray[arg];
-            T LChild = HeapArray[LeftChildIdx];
-            T RChild = HeapArray[RightChildIdx];
 
             if (RightChildIdx <= ElementCount)
             {
+                T LChild = HeapArray[LeftChildIdx];
+                T RChild = HeapArray[RightChildIdx];
                 int TheSmallerChildIdx = LChild.CompareTo(RChild) < 0 ? LeftChildIdx : RightChildIdx;
                 if (HeapArray[TheSmallerChildIdx].CompareTo(Parent) < 0)
                 {
@@ -145,8 +183,10 @@ namespace MyDatastructure.PriorityQueue
             //Only one child
             if (LeftChildIdx <= ElementCount)
             {
+                T LChild = HeapArray[LeftChildIdx];
                 if (LChild.CompareTo(Parent) < 0)
                 {
+                    Swap(LeftChildIdx, arg);
                     return PercolateDown(LeftChildIdx);
                 }
                 return arg;
@@ -157,6 +197,8 @@ namespace MyDatastructure.PriorityQueue
 
         protected int PercolateUp(int arg)
         {
+            if (arg == 1)
+                return arg;
             int Pidx = GetParentIndex(arg);
             T Parent = HeapArray[Pidx];
             T Child = HeapArray[arg];
@@ -170,10 +212,17 @@ namespace MyDatastructure.PriorityQueue
 
         protected void Swap(int arg1, int arg2)
         {
+            if (arg1 == arg2)
+                return;
             T a = HeapArray[arg1];
             T b = HeapArray[arg2];
-            HeapArray[arg1] = a;
-            HeapArray[arg2] = b;
+            HeapArray[arg1] = b;
+            HeapArray[arg2] = a;
         }
+    }
+
+    public class BinaryHeap<T> : SimpleBinaryHeap<T> where T : IComparable<T>
+    {
+
     }
 }

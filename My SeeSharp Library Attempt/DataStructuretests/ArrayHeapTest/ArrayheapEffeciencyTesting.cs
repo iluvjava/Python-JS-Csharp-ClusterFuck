@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using MyDatastructure.PriorityQ;
 using MyDatastructure;
+using static DataStructureTests.GeneralTestingTools.ToolsCollection1;
 
 namespace DataStructureTests.ArrayHeapTest
 {

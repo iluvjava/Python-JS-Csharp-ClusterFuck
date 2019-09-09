@@ -4,49 +4,14 @@ using MyDatastructure.PriorityQ;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using static System.Console;
 using static System.Array;
-using DataStructureTests.StatisticalTools;
+using static System.Console;
+using static DataStructureTests.GeneralTestingTools.ToolsCollection1;
 
 namespace DataStructureTests.ArrayHeapTest
 {
-
     public class TestsArrayHeap
     {
-        public static void PrintArray<T>(T[] arg)
-        {
-            WriteLine("[" + string.Join(", ", arg) + "]");
-        }
-
-        /// <summary>
-        /// Useful for creating randomized list of elements. 
-        /// It will modify the input. 
-        /// </summary>
-        /// <returns></returns>
-        public static void Randomize<T>(T[] elements)
-        {
-            Random r = new Random();
-            for (int i = -1; ++i != elements.Length;)
-            {
-                var temp = elements[i];
-                int randomindex = (int)(r.NextDouble() * elements.Length);
-                elements[i] = elements[randomindex];
-                elements[randomindex] = temp;
-            }
-        }
-
-
-        /// <summary>
-        /// Assert that a certain generic type of exception is thrown by the test delegate 
-        /// type. 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="func"></param>
-        public static void AssertThrow<T>(TestDelegate func) where T : Exception
-        {
-            Assert.Throws<T>(func);
-        }
-
 
         [SetUp]
         public void Setup()
@@ -54,10 +19,10 @@ namespace DataStructureTests.ArrayHeapTest
         }
 
         /// <summary>
-        /// It tests the following features: 
-        /// - Remove. 
-        /// - Enqueue. 
-        /// Create an randomized array, remove all odd numbers after all elements are added. 
+        /// It tests the following features:
+        /// - Remove.
+        /// - Enqueue.
+        /// Create an randomized array, remove all odd numbers after all elements are added.
         /// </summary>
         [Test]
         public void TestArrayHeapImplementation2()
@@ -80,7 +45,6 @@ namespace DataStructureTests.ArrayHeapTest
             WriteLine("Removing all the odd elements. ");
             for (int i = 0; i < arr.Length; i += 2)
             {
-
                 q.Remove(i + 1);
             }
             for (int i = 1; i < arr.Length; i += 2)
@@ -92,11 +56,11 @@ namespace DataStructureTests.ArrayHeapTest
         }
 
         /// <summary>
-        /// Test the ArrayHeap implementation by using it to heap sort 
-        /// a list of random non repeating elements. 
-        /// it tests the following imethods: 
-        /// - Enqueue. 
-        /// - RemoveMin. 
+        /// Test the ArrayHeap implementation by using it to heap sort
+        /// a list of random non repeating elements.
+        /// it tests the following imethods:
+        /// - Enqueue.
+        /// - RemoveMin.
         /// </summary>
         [Test]
         public void TestArrayHeapImplementationBasic()
@@ -129,7 +93,23 @@ namespace DataStructureTests.ArrayHeapTest
         }
 
         /// <summary>
-        ///  Test if the Build Heap algorithm is correctly implemented. 
+        /// Testing if the correct exception are thrown for certain types of invalid inputs.
+        /// </summary>
+        [Test]
+        public void TestArrayHeapPriorityQExceptionHandling()
+        {
+            IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
+            q.Enqueue(2);
+            q.Enqueue(3);
+            q.Enqueue(2);
+            q.Remove(2);
+            AssertThrow<InvalidArgumentException>(() => { q.Remove(5); });
+            q.Remove(2);
+            AssertThrow<InvalidArgumentException>(() => { q.Remove(2); });
+        }
+
+        /// <summary>
+        ///  Test if the Build Heap algorithm is correctly implemented.
         /// </summary>
         [Test]
         public void TestBuildHeap()
@@ -142,37 +122,18 @@ namespace DataStructureTests.ArrayHeapTest
             {
                 Assert.AreEqual(q.RemoveMin(), i + 1);
             }
-
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [Test]
         public void TestBuildHeapDuplicate()
         {
-
         }
 
         /// <summary>
-        /// Testing basic stuff about add and removing deuplicating elements. 
-        /// </summary>
-        [Test]
-        public void TestDuplicateElementsBasic()
-        {
-            int[] testcase1 = new int[] { 5, 5, 6, 7, 9, 8, 2, 4, 5, 3, 1 };
-            int[] correct = new int[] {1, 2, 3, 4, 5, 5, 5, 6, 7, 8, 9 };
-            IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
-            for (int i = -1; ++i < testcase1.Length; q.Enqueue(testcase1[i]));
-            for (
-                int i = -1;
-                ++i < testcase1.Length;
-                Assert.IsTrue(q.RemoveMin() == correct[i])
-                );
-        }
-
-        /// <summary>
-        /// Make use of the remove methods a lot more than the first basic test 1. 
+        /// Make use of the remove methods a lot more than the first basic test 1.
         /// </summary>
         [Test]
         public void TestDuplicateElementBasic2()
@@ -182,8 +143,8 @@ namespace DataStructureTests.ArrayHeapTest
             Random rd = new Random();
             int[] randomarray = new int[size];
             IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
-            WriteLine("Creating random array with range "+ range + " and size: "+ size);
-            for (int i = -1; ++i < size; randomarray[i] = (int)(rd.NextDouble() * range));
+            WriteLine("Creating random array with range " + range + " and size: " + size);
+            for (int i = -1; ++i < size; randomarray[i] = (int)(rd.NextDouble() * range)) ;
             WriteLine("Flushing the elements into the array; ");
             for (int i = -1; ++i < size; q.Enqueue(randomarray[i])) ;
             WriteLine("Removing all the odd elements in the PriorityQ");
@@ -193,7 +154,7 @@ namespace DataStructureTests.ArrayHeapTest
             }
             WriteLine("Constructing a reference list to verify the answers...");
             IList<int> referencelist = new List<int>();
-            for 
+            for
                 (
                     int i = 0;
                     i < size;
@@ -206,7 +167,7 @@ namespace DataStructureTests.ArrayHeapTest
             referencelist.CopyTo(referencearray, 0);
             Sort(referencearray);
             PrintArray(referencearray);
-            WriteLine("Length of the reference array: "+ referencearray.Length);
+            WriteLine("Length of the reference array: " + referencearray.Length);
             WriteLine("Length of the queue: " + q.Size);
             Assert.IsTrue(referencearray.Length == q.Size);
             for (int i = 0; i < referencearray.Length; i++)
@@ -216,7 +177,23 @@ namespace DataStructureTests.ArrayHeapTest
                 int e2 = referencearray[i];
                 Assert.IsTrue(e2 == e1);
             }
+        }
 
+        /// <summary>
+        /// Testing basic stuff about add and removing deuplicating elements.
+        /// </summary>
+        [Test]
+        public void TestDuplicateElementsBasic()
+        {
+            int[] testcase1 = new int[] { 5, 5, 6, 7, 9, 8, 2, 4, 5, 3, 1 };
+            int[] correct = new int[] { 1, 2, 3, 4, 5, 5, 5, 6, 7, 8, 9 };
+            IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
+            for (int i = -1; ++i < testcase1.Length; q.Enqueue(testcase1[i])) ;
+            for (
+                int i = -1;
+                ++i < testcase1.Length;
+                Assert.IsTrue(q.RemoveMin() == correct[i])
+                ) ;
         }
 
         [Test]
@@ -228,10 +205,10 @@ namespace DataStructureTests.ArrayHeapTest
             int[] randomarray = new int[size];
             IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
             for (
-                int i = -1; 
-                ++i < size; 
-                randomarray[i] = (int) (rd.NextDouble() * range)
-                );
+                int i = -1;
+                ++i < size;
+                randomarray[i] = (int)(rd.NextDouble() * range)
+                ) ;
             WriteLine("Array is randomized.");
             // PrintArray(randomarray);
             for (int i = 0; i < randomarray.Length; i++)
@@ -245,7 +222,6 @@ namespace DataStructureTests.ArrayHeapTest
             {
                 Assert.IsTrue(randomarray[i] == q.RemoveMin());
             }
-
         }
 
         [Test]
@@ -260,23 +236,32 @@ namespace DataStructureTests.ArrayHeapTest
             }
         }
 
-
         /// <summary>
-        /// Testing if the correct exception are thrown for certain types of invalid inputs.
+        /// Construct a Heap with 3 children and see if it's working properly.
         /// </summary>
         [Test]
-        public void TestArrayHeapPriorityQExceptionHandling()
+        public void TestTrinaryArrayHeap()
         {
-            IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
-            q.Enqueue(2);
-            q.Enqueue(3);
-            q.Enqueue(2);
-            q.Remove(2);
-            AssertThrow<InvalidArgumentException>(() => { q.Remove(5);});
-            q.Remove(2);
-            AssertThrow<InvalidArgumentException>(() => { q.Remove(2); });
-        }
+            {
+                IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>(null, 3);
+                int[] simplearray = new int[]
+                {
+                    1,0,4,9,2,6,7,5,3,8
+                };
 
-        
+                for (int i = 0; i < simplearray.Length; q.Enqueue(simplearray[i]), i++) ;
+                for (int i = 0; i < 10; Assert.AreEqual(q.RemoveMin(), i), i++) ;
+            }
+            WriteLine("Simple Trinary heap test passed. ");
+            {
+            }
+
+            {
+                int[] RandomizedArray = GetRandomizedIntSequence(100);
+                IPriorityQ<int> q = new MyLittleArrayHeapPriorityQueue<int>();
+                for (int i = 0; i < RandomizedArray.Length; q.Enqueue(RandomizedArray[i]), i++) ;
+                for (int i = 1; i <= 100; Assert.AreEqual(i, q.RemoveMin()), i++) ;
+            }
+        }
     }
 }

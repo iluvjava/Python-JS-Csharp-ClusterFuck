@@ -45,7 +45,7 @@ namespace MyDatastructure
         /// <summary>
         /// The number of unique elements in the array, it's for manaing the heap. 
         /// </summary>
-        protected int UniqueElementCount = 0; 
+        protected int UniqueElementCount = 0;
 
         public int Size
         {
@@ -72,9 +72,9 @@ namespace MyDatastructure
         /// </param>
         public MyLittleArrayHeapPriorityQueue
         (
-            IMap<T, int> IndexMap,
-            int heapchildrecount,
-            int initialHeapSize,
+            IMap<T, int> IndexMap = null,
+            int heapchildrecount = 4,
+            int initialHeapSize = 1024,
             IComparer<T> comparer = null
         )
         {
@@ -82,7 +82,7 @@ namespace MyDatastructure
             {
                 throw new InvalidArgumentException();
             }
-            Indices = IndexMap;
+            Indices = IndexMap?? new SysDefaultMap<T, int>();
             HeapChildrenCount = heapchildrecount;
             ArrayHeap = CreateGenericArray<T>(initialHeapSize);
             Frequencies = new int[initialHeapSize];
@@ -108,6 +108,8 @@ namespace MyDatastructure
             this(new SysDefaultMap<T, int>(), 4, 2048, arg)
         {
         }
+
+
 
         /// <summary>
         /// A helper methods that swaps any array.
@@ -367,6 +369,7 @@ namespace MyDatastructure
             {
                 throw new Exception("Internal Error.");
             }
+
             int indextoswap = -1;
             // Choose min child parent is larger than.
             for (
