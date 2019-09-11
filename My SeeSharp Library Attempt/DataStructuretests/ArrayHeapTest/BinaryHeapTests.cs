@@ -123,7 +123,15 @@ namespace DataStructureTests.ArrayHeapTest
             if (k <= 0 || arr == null || arr.Length == 0) return null;
             k = k >= arr.Length ? arr.Length : k;
             SortedSet<T> Sorter = new SortedSet<T>();
-            for (int i = 0; i < arr.Length; Sorter.Add(arr[i]), i++);
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (Sorter.Count == k && Sorter.Min.CompareTo(arr[i]) < 0)
+                {
+                    Sorter.Add(arr[i]);
+                    continue;
+                }
+                Sorter.Add(arr[i]);
+            }
             T[] Res = new T[k];
             for (int i = k-1; i >= 0; i--)
             {
@@ -157,6 +165,7 @@ namespace DataStructureTests.ArrayHeapTest
                 TopKSortDoubleArrayUsingBinaryHeap(RandomArr, k):
                 TopKSortDoubleArrayUsingSortedSet(RandomArr, k);
             msw.Tock();
+
             // Quick Varify
             for (int i = 1; i < sorted.Length; i++)
             {
@@ -174,13 +183,43 @@ namespace DataStructureTests.ArrayHeapTest
         /// <param name="repetition">
         /// 
         /// </param>
-        [Test]
+        [TestCase(1000000, 10)]
+        [TestCase(100000, 20)]
+        [TestCase(9999999, 10)]
         public static void QuickMedianEfficiency(int size, int repetition)
         {
             WriteLine
                 ("Testing the speed for looking for median in a ranmized " +
-                "double array.");
-            
+                "double array; using Top K Sort.");
+            WriteLine($"Using Sorted set to look for it, array size: " +
+                $"{size}, repeat {repetition} times.");
+            WriteLine("here is the result of using SortedSet implemened" +
+                " using Red Black Tree:");
+            {
+                MyStopwatch msw = new MyStopwatch();
+                for (int i = repetition; --i >= 0;)
+                {
+                    TimedTopKSort(size, size / 2 + 1, msw, false);
+                }
+                WriteLine("Done! Here is that speed data: ");
+                WriteLine($"The average time took is: " +
+                    $"{msw.GetAverageTimeElapse()} ms");
+                WriteLine($"The standard Deviation is: " +
+                    $"{msw.GetStandardDeviation()} ms");
+            }
+            WriteLine("Here is the Result using Binary Heap: ");
+            {
+                MyStopwatch msw = new MyStopwatch();
+                for (int i = repetition; --i >= 0;)
+                {
+                    TimedTopKSort(size, size / 2 + 1, msw, true);
+                }
+                WriteLine("Done! Here is that speed data: ");
+                WriteLine($"The average time took is: " +
+                    $"{msw.GetAverageTimeElapse()} ms");
+                WriteLine($"The standard Deviation is: " +
+                    $"{msw.GetStandardDeviation()} ms");
+            }
 
         }
 

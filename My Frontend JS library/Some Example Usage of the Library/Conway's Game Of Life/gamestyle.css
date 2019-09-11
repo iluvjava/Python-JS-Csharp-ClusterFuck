@@ -17,4 +17,15 @@
 #GameContainer
 {
     align-content: center;
+    margin-top: 30px;
 }
+
+#GameControlPanelForm
+{
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+

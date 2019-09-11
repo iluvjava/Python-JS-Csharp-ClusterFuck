@@ -364,7 +364,27 @@ Output:
 - [link](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/)
 - This kind of problem is called "Optimization problem with a constraint", Minimum optimization to be precise because it's asking for the "shortest subarray", the constraint is "With a sum at least K". 
 - The subarray must be a continous subarray, hence, sliding window or dynamic programming might be the best idea, LeetCode might not accepts a O(N^2) solution. 
-- 
+- The Windows method uses 2 pointers as index of the array and keeping track of the sum of the continuous sub array. 
+- Let i, j be the left right pointer, i inclusive, j exclusive, let s denotes sum(arr[i:j]), the sum of the sub array, let's take a look at the Pseudo code:
+```
+for all j going from 1 to len(s): 
+    if the sum(s[i:j]) is larger than K, then remember the legngth of the subsarray
+        increment i and remember minimum length 
+        stops if the sum gets smaller than K.
+    else
+        don't move the pointer left pointer, continue the loop. 
+``` 
+- Some details about the Pseudo code: 
+    - we keep track of the sum using this formula: 
+        - sum(arr[i+1:j]) = sum(arr[i:j]) - arr[i]
+    - Week keep track of the min length of the subarray. 
+- What if there doesn't exists a subarray sum up to K? 
+    - It implies that pointer j will move to the end of the arrray while i still stay at 0. 
+    - It also implies that we never try to remember the minimum Length of the subarray. 
+        - That means we can initiate the min Length of the subarray to be -1 to indicate this. 
+ - This code is better written in c# than python, because python doesn't have the kind of for loop. 
+
+    
 
 
 
