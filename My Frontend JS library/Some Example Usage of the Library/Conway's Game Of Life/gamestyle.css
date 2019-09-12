@@ -1,31 +1,26 @@
-#MyCanvas
-{
-    padding-left: 0;
-    padding-right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    width: 800px;
-    height: 600px;
-
-    border-style: solid;
-    border-color: gray;
-    border-width: 30px 30px;
-    border-radius: 10px;
+#MyCanvas {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  width: 800px;
+  height: 600px;
+  border-style: solid;
+  border-color: gray;
+  border-width: 30px 30px;
+  border-radius: 10px;
 }
 
-#GameContainer
-{
-    align-content: center;
-    margin-top: 30px;
+#GameContainer {
+  align-content: center;
+  margin-top: 30px;
 }
 
-#GameControlPanelForm
-{
-    margin-left: auto;
-    margin-right: auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+#GameControlPanelForm {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
-
