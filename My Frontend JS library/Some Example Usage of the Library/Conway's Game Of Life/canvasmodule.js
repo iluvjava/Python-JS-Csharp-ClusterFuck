@@ -7,14 +7,16 @@ $(document).ready(() => {
   "usestrict";
   /**
    * A constructor function for the view of the view of the simulation board of the game.
+   * - It get the size information from the canvas on the page. 
+   * - It gets the size of the grid from the constructor. 
    */
-  function getGameOfLifeView() {
+  function getGameOfLifeView(PxH = 10) {
     this.TheCanvas = $("#MyCanvas")[0];
     this.Context = this.TheCanvas.getContext("2d");
     this.Height = this.TheCanvas.height;
     this.Width = this.TheCanvas.width;
     //Pixel is square, so only one dimension.
-    this.PixelHeight = 10;
+    this.PixelHeight = PxH;
     this.GridHeight = this.Height / this.PixelHeight;
     this.GridWidth = this.Width / this.PixelHeight;
 
@@ -72,6 +74,12 @@ $(document).ready(() => {
         this.CssSelect.addClass("is-invalid");
       };
 
+    this.IsValid =
+      () => {
+        return Fxn(this.CssSelect[0].value);
+      }
+      ;
+
     this.CheckInput =
       () => {
         if (Fxn(this.CssSelect[0].value)) {
@@ -81,6 +89,10 @@ $(document).ready(() => {
         }
         this.SetInvalid();
       };
+    this.GetValue =
+      () => {
+        return this.CssSelect[0].value;
+      }
 
     this.CssSelect.on("change", this.CheckInput);
   }
@@ -94,14 +106,14 @@ $(document).ready(() => {
    * @param {input} input
    */
   function VerifyCanvasDimension(input) {
-    if (input <= 3000 && input >= 10) {
+    if (input <= 3000 && input >= 100) {
       return true;
     }
     return false;
   }
 
   const CANVASWINPUT = new FormInputElement("#CanvasW", VerifyCanvasDimension);
-  const CANVASHINPUT = FormInputElement("#CanvasH", VerifyCanvasDimension);
+  const CANVASHINPUT = new FormInputElement("#CanvasH", VerifyCanvasDimension);
 
 
   /**
@@ -112,18 +124,42 @@ $(document).ready(() => {
   class RunningGame {
 
     constructor() {
-      this.Model;
-      this.View;
+      this.Model = null;
+      this.View = null;
+      this.PrepareListener();
     }
 
     ReadAndSetupInputs() {
+      if (!(CANVASHINPUT.IsValid() && CANVASWINPUT.IsValid()))
+        return;
+      // Setup the canvas dimensions: 
+      let CanvasWidth = $("#CanvasW")[0].value;
+      let CanvasHeight = $("#CanvasH")[0].value;
+      let GridSize = $("#GridSize")[0].value;
+      $("#MyCanvas")[0].width = ApproxUsing(CanvasWidth, GridSize);
+      $("#MyCanvas")[0].height = ApproxUsing(CanvasHeight, GridSize);
+      $("#MyCanvas").css("width", CanvasWidth + "px");
+      $("#MyCanvas").css("height", CanvasHeight + "px");
+
 
     }
 
     PrepareListener() {
-      $("#SimulationStart")[0].on("click", this.ReadAndSetupInputs);
+      $("#SimulationStart").on("click", this.ReadAndSetupInputs);
     }
+  }
+  window["RunningGame"] = new RunningGame();
 
+  /**
+   * Approximate the Val using the a delta value. 
+   * @param {int} Val
+   * The value you want to divided by.  
+   * @param {int} Delta 
+   * The value you want to measure in. 
+   * 
+   */
+  function ApproxUsing(Val, Delta) {
+    return (~~(Val / Delta)) * Delta;
   }
 
 
