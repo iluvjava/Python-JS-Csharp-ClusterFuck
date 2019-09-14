@@ -94,9 +94,6 @@ class GameOfLifeLogic {
     this.CurrentFrame = array; // The current frame we are looking at.
     this._H = array.getWidth();
     this._W = array.getHeight();
-    this._Tensor = new Array(); // Stores all the board in sequence.
-    print("GameOfLifeLogic constructor: ");
-    print(this);
   }
 
   /**
@@ -147,31 +144,22 @@ class GameOfLifeLogic {
   /**
    * This function push the frames of the game model in the list. It does the
    * following things:
-   * *1. Render then pushes frames into the tensor.
-   * *2. All the frames are in reverse order.
+   * * 1. Render then pushes frames into the tensor.
+   * * 2. All the frames are in reverse order.
    *
    * @param {Integer} frames
    * @returns {Array}
    * An array of my2darray containing all the rendered frames.
    */
   update(frames = 1) {
-    for (let i = 0; i < frames; i++) {
-      this._updateOneFrame();
-    }
-    //all new rendered frames.
-    let allframes = new Array();
-    for (
-      let i = this._Tensor.length - 1, j = 0; j < frames; i--, j++
-    ) {
-      allframes.push(this._Tensor[i]);
-    }
-    return allframes;
+    this._updateOneFrame();
+    return [this.CurrentFrame];  
   }
 
   /**
-   * Retrive the most recent matrix and then update the matrix.
+   * retrive the most recent matrix and then update the matrix.
    *  * it will pushes the new frame into the current model array.
-   *  * it will refer the current frame to the newly redered frame.
+   *  * it will refer the current frame to the newly rendered frame.
    */
   _updateOneFrame() {
     let newframe = new My2DArray(this._H, this._W);
@@ -180,8 +168,7 @@ class GameOfLifeLogic {
         newframe.set(i, j, this.should_live(i, j));
       }
     this.CurrentFrame = newframe;
-    print(this.CurrentFrame);
-    this._Tensor.push(newframe);
+    
   }
 
 }
