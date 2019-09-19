@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+  <title>
+    Hongda Li - About Me
+  </title>
   <!--Loads Jquery-->
   <script src="../../jq.js">
   </script>
@@ -22,50 +25,66 @@
 </head>
 
 <body>
-  <nav class="navbar bg-light">
-    <a class="navbar-brand" href="index.html">Hongda Li</a>
-    <ul class="navbar-nav mr-auto">
-      <li>
-        <span class="navbar-text">
-            Welcome
-          </span>
-      </li>
-    </ul>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <span class="nav-brand">Hongda Li</span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon">
+      </span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="https://github.com/iluvjava">
+            <img width="30" height="30" src="giticon.svg" alt="Github link">
+          </a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="https://www.linkedin.com/in/hongda-li-32b9b117a/">
+            <img width="30" height="30" src="linkedinicon.png" alt="Github link">
+          </a>
+        </li>
+      </ul>
+    </div>
   </nav>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg">
-        <div id="carouselExampleSlidesOnly" class="carousel slide w-50 mx-auto" data-ride="carousel">
-          <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active">stuff1</li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1">stuff2</li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2">stuff3</li>
-          </ol>
-          <div class="carousel-inner ">
-            <div class="carousel-item active">
-              <img class="d-block w-100" src="img1.png" alt="First slide">
-            </div>
-            <div class="carousel-item">
-              <img class="d-block w-100" src="..." alt="Second slide">
-            </div>
-            <div class="carousel-item">
-              <img class="d-block w-100" src="..." alt="Third slide">
-            </div>
-          </div>
-          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-          </a>
-          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-          </a>
-        </div>
-      </div>
+  </nav>
+  <h1 class="display-3 text-center" id="MyTitle">
+    This is The Big Title
+  </h1>
+
+  <div class="card">
+    <div class="card-header">
+      Whatever
+    </div>
+    <div class="card-body">
+      <blockquote class="blockquote mb-0">
+        <p>
+          Some kind of long ass paragraph over here.
+        </p>
+        <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+      </blockquote>
     </div>
   </div>
+
+
+  <div class="card">
+    <div class="card-header">
+      Bio
+    </div>
+    <div class="card-body">
+      <blockquote class="blockquote mb-0">
+        <p>
+          Some other shit over here.
+        </p>
+        <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+      </blockquote>
+    </div>
+  </div>
+
   <div id="MyDisplay">
     <div class="row align-items-center" id="MyDisplayRow">
+      <div class="col">
+        Welcome to my webpage
+      </div>
       <div class="custom-control custom-switch col">
         <input type="checkbox" class="custom-control-input" id="customSwitch1">
         <label class="custom-control-label" for="customSwitch1">
