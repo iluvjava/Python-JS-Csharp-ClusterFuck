@@ -26,7 +26,7 @@ $(() => {
   };
 
   applyClassSettings(BOOTSTRAP_SETTINGS);
-
+ 
   /**
    * An function for loading ponies into the page.
    */
@@ -68,12 +68,17 @@ $(() => {
 
   /**
    * Function that creates an instance that model action of title animation.
+   * * Remember the current color for each letter for quick interpolation.
+   * TODO: 
+   *   * Prepare a initial color for the each letters in the title. 
+   *   * 
    * @param {String} arg
    * A css selector that points to the element.
    */
   function TitleAnimation(arg) {
     this.Css = $($(arg)[0]);
-
+    this.PreviousColor = null;
+    this.ColorTemplate = null;
     /**
      * Display the string from the input argument, where
      * each letter of the title will be in random color.
@@ -86,6 +91,8 @@ $(() => {
         this.Css.append(NewLetter);
       }
     };
+
+
   }
 
   /**
@@ -130,26 +137,36 @@ $(() => {
   let AnimationID1 = setupTitleAnimation();
 
   /**
-   * By default, it interprets the color code as Decimal, 0 -> 255
-   * * Just set the fields to decimals and it will be good. 
-   */
+  * By default, it interprets the color code as Decimal, 0 -> 255
+  * * Just set the fields to decimals and it will be good.
+  */
   class ColorCoordinator {
-    constructor() {
-      this.TargetR;
-      this.TargetG;
-      this.TargetB;
-      this.InitialR;
-      this.InitialG;
-      this.InitialB;
-      this.BufferedData; 
+
+    /**
+     * Instantiate the class with a Json object containing all the 
+     * elements needed
+     * for transitioning from one color to another color. 
+     * Input is in the format of : 
+     * {
+     *  R:[initial, final], 
+     *  G:[initial, final],
+     *  B:[initial, final]
+     * }
+     * 
+     */
+    constructor(arg) {
+      this.setInitialRGB(arg["R"][0], arg["G"][0], arg["B"][0]);
+      this.setTargetRGB(arg["R"][1], arg["G"][1], arg["B"][1]);
+      this.BufferedData;
     }
 
     /**
-     * Set the starting points for the interpolations, 
-     * Everything is in decimals. 
-     * @param {int} r 
-     * @param {int} g 
-     * @param {int} b 
+     * Set the starting points for the interpolations,
+     * Everything is in decimals.
+     * ! Error will be thrown if the RGB data is invalid.
+     * @param {int} r
+     * @param {int} g
+     * @param {int} b
      */
     setInitialRGB(r, g, b) {
       if (!(
@@ -167,10 +184,11 @@ $(() => {
     }
 
     /**
-     * Set the end point of the interpolation, in decimals. 
-     * @param {int} r 
-     * @param {int} g 
-     * @param {int} b 
+     * Set the end point of the interpolation, in decimals.
+     * ! Error will be thrown if there are invalid parameters.
+     * @param {int} r
+     * @param {int} g
+     * @param {int} b
      */
     setTargetRGB(r, g, b) {
       if (!(
@@ -189,10 +207,30 @@ $(() => {
 
     /**
      * Given the number of points of linear interpolations
-     * you want for the data. 
-     * @param {int} deltaCount 
+     * you want for the data.
+     * ! Error will be thrown if any of the data is invalid. 
+     * @param {int} deltaCount
      */
     interpolate(deltaCount) {
+      // * Verify if all the things are correctly setup
+      let PropsList = [
+        "TargetR",
+        "TargetG",
+        "TargetB",
+        "InitialR",
+        "InitialG",
+        "InitialB",
+      ];
+      for (let stuff of PropsList) {
+        stuff = this[stuff];
+        if (stuff < 0 || stuff > 255) {
+          throw new Error("The color is not in the correct range.");
+        }
+      }
+      if (typeof (deltaCount) !== "number") {
+        throw new Error("deltaCount Parameter must be a number.");
+      }
+      // * end
       let RH = (this.TargetR - this.InitialR) / deltaCount;
       let GH = (this.TargetG - this.InitialG) / deltaCount;
       let BH = (this.TargetB - this.InitialB) / deltaCount;
@@ -216,18 +254,53 @@ $(() => {
         }
         Res[element] = Values;
       }
-      this.BufferedData = Res; 
+      this.BufferedData = Res;
       return Res;
     }
 
-    
     /**
-     * Returns a list of css color strings for 
-     * displaying colors styles 
+     * Returns a list of css color strings for
+     * displaying colors style, like ["rgb(255,255,255)", "rgb(244,244,244)"]
      */
-    getCssColorList() {
+    getCssColorList_RGB(deltaCount) {
+      this.BufferedData = this.BufferedData || this.interpolate(deltaCount);
+      let RGBStr = [];
+      for (let i = 0; i < this.BufferedData["R"].length; i++) {
+        RGBStr.push(`rgb(${this.BufferedData["R"][i]},` +
+          `${this.BufferedData["G"][i]}, ${this.BufferedData["B"][i]})`);
+      }
+      return RGBStr;
+    }
 
+    /**
+     * Convert a decimal with range 0 -> 255 to a hex string with length 2
+     */
+    static DecToHex(dec) {
+      if (typeof (dec) !== "number") {
+        throw new Error("It's not a number.");
+      }
+      let Res = dec.toString(16);
+      if (Res.length === 1) {
+        Res = "0" + Res;
+      }
+      return Res
+    }
+
+    /**
+     * Given a valid integer, it will return at list of hex for the 
+     * css color style. 
+     * @param {Int} deltaCount 
+     */
+    getCssColorList_Hex(deltaCount) {
+      let DecToHex = ColorCoordinator.DecToHex;
+      this.BufferedData = this.BufferedData || this.interpolate(deltaCount);
+      let RGBStr = [];
+      for (let i = 0; i < this.BufferedData["R"].length; i++) {
+        RGBStr.push(`#${DecToHex(this.BufferedData["R"][i])}` +
+          `${DecToHex(this.BufferedData["G"][i])}` +
+          `${DecToHex(this.BufferedData["B"][i])}`);
+      }
+      return RGBStr;
     }
   }
-
 });
