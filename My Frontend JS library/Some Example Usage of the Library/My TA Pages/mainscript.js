@@ -71,14 +71,35 @@ $(() => {
    * * Remember the current color for each letter for quick interpolation.
    * TODO: 
    *   * Prepare a initial color for the each letters in the title. 
-   *   * 
+   *   * When displaying the text, it create a new color template for the
+   *   * text, then interpolate it, then display the animation. 
+   *   * Lastly, it stores the new color as "PreviousColor". 
    * @param {String} arg
    * A css selector that points to the element.
    */
   function TitleAnimation(arg) {
     this.Css = $($(arg)[0]);
-    this.PreviousColor = null;
-    this.ColorTemplate = null;
+    
+    let textLen = this.Css.text().length;
+
+    // A list of RBG HexCode for each letters in the text. 
+    this.PreviousColor = getRandomColors(textLen);
+
+    //The next color the title is going to be mapped to. 
+    this.NextColor = getRandomColors(testLen);
+
+    /**
+     * The length string. 
+     * @param {int} textLen 
+     */
+    let getRandomColors = (textLen)=> {
+      let Res = new Array();
+      for (let i = 0; i < textLen; i++) {
+        Res.push(random_ColorPresets());
+      }
+      return res;
+    }
+
     /**
      * Display the string from the input argument, where
      * each letter of the title will be in random color.
@@ -92,6 +113,13 @@ $(() => {
       }
     };
 
+    /**
+     * For each of the letters, get the list of interpolated 
+     * color values and display then on the screen. 
+     */
+    this.PlayColorAnimation = ()=> {
+      
+    }
 
   }
 
@@ -153,12 +181,26 @@ $(() => {
      *  B:[initial, final]
      * }
      * 
+     * TODO: Implement this shit, then go to implement details in 
+     * TODO: the animationtitle details. 
+     * for Hex code: 
+     * Input is in the format of : 
+     * {
+     *    "#000000":"#FFFFFF"
+     *    "Hex":true
+     * }
      */
     constructor(arg) {
+      if (arg["Hex"])
+      {
+        return;
+      }
       this.setInitialRGB(arg["R"][0], arg["G"][0], arg["B"][0]);
       this.setTargetRGB(arg["R"][1], arg["G"][1], arg["B"][1]);
       this.BufferedData;
     }
+
+
 
     /**
      * Set the starting points for the interpolations,
@@ -174,8 +216,7 @@ $(() => {
         &&
         r <= 255 && r >= 0
         &&
-        r <= 255 && r >= 0
-      )) {
+        r <= 255 && r >= 0)) {
         throw new Error("Color out of range.");
       }
       this.InitialR = r;
@@ -196,8 +237,7 @@ $(() => {
         &&
         r <= 255 && r >= 0
         &&
-        r <= 255 && r >= 0
-      )) {
+        r <= 255 && r >= 0)) {
         throw new Error("Color our of range.");
       }
       this.TargetB = b;
