@@ -26,7 +26,7 @@ $(() => {
   };
 
   applyClassSettings(BOOTSTRAP_SETTINGS);
- 
+
   /**
    * An function for loading ponies into the page.
    */
@@ -69,30 +69,30 @@ $(() => {
   /**
    * Function that creates an instance that model action of title animation.
    * * Remember the current color for each letter for quick interpolation.
-   * TODO: 
-   *   * Prepare a initial color for the each letters in the title. 
+   * TODO Using the ColorCoordinator to animate the color on the title:
+   *   * Prepare a initial color for the each letters in the title.
    *   * When displaying the text, it create a new color template for the
-   *   * text, then interpolate it, then display the animation. 
-   *   * Lastly, it stores the new color as "PreviousColor". 
+   *   * text, then interpolate it, then display the animation.
+   *   * Lastly, it stores the new color as "PreviousColor".
    * @param {String} arg
    * A css selector that points to the element.
    */
   function TitleAnimation(arg) {
     this.Css = $($(arg)[0]);
-    
+
     let textLen = this.Css.text().length;
 
-    // A list of RBG HexCode for each letters in the text. 
+    // A list of RBG HexCode for each letters in the text.
     this.PreviousColor = getRandomColors(textLen);
 
-    //The next color the title is going to be mapped to. 
+    //The next color the title is going to be mapped to.
     this.NextColor = getRandomColors(testLen);
 
     /**
-     * The length string. 
-     * @param {int} textLen 
+     * The length string.
+     * @param {int} textLen
      */
-    let getRandomColors = (textLen)=> {
+    let getRandomColors = (textLen) => {
       let Res = new Array();
       for (let i = 0; i < textLen; i++) {
         Res.push(random_ColorPresets());
@@ -114,11 +114,11 @@ $(() => {
     };
 
     /**
-     * For each of the letters, get the list of interpolated 
-     * color values and display then on the screen. 
+     * For each of the letters, get the list of interpolated
+     * color values and display then on the screen.
      */
-    this.PlayColorAnimation = ()=> {
-      
+    this.PlayColorAnimation = () => {
+
     }
 
   }
@@ -165,42 +165,53 @@ $(() => {
   let AnimationID1 = setupTitleAnimation();
 
   /**
-  * By default, it interprets the color code as Decimal, 0 -> 255
-  * * Just set the fields to decimals and it will be good.
-  */
+   * By default, it interprets the color code as Decimal, 0 -> 255
+   * * Just set the fields to decimals and it will be good.
+   */
   class ColorCoordinator {
 
     /**
-     * Instantiate the class with a Json object containing all the 
+     * Instantiate the class with a Json object containing all the
      * elements needed
-     * for transitioning from one color to another color. 
-     * Input is in the format of : 
+     * for transitioning from one color to another color.
+     * Input is in the format of :
      * {
-     *  R:[initial, final], 
+     *  R:[initial, final],
      *  G:[initial, final],
      *  B:[initial, final]
      * }
-     * 
-     * TODO: Implement this shit, then go to implement details in 
-     * TODO: the animationtitle details. 
-     * for Hex code: 
-     * Input is in the format of : 
+     *
+     * for Hex code:
+     * Input is in the format of :
      * {
-     *    "#000000":"#FFFFFF"
+     *    "initial": "#000000",
+     *    "final": "#FFFFFF",
      *    "Hex":true
      * }
      */
     constructor(arg) {
-      if (arg["Hex"])
-      {
-        return;
+      if (arg["Hex"]) {
+        let InitialHexStr = arg["initial"];
+        let FinalHexStr = arg["final"];
+        if (!(InitialHexStr.match("^#[a-fA-F0-9]+$")
+          && FinalHexStr.match("^#[a-fA-F0-9]+$"))) {
+          throw new Error("Invalid color HexCode.");
+        }
+        InitialHexStr = InitialHexStr.substring(1, InitialHexStr.length);
+        FinalHexStr = FinalHexStr.substring(1, FinalHexStr.length);
+        arg = {
+          "R": [parseInt(InitialHexStr.substring(0, 2), 16)
+            , parseInt(FinalHexStr.substring(0, 2), 16)],
+          "G": [parseInt(InitialHexStr.substring(2, 4), 16)
+            , parseInt(FinalHexStr.substring(2, 4), 16)],
+          "B": [parseInt(InitialHexStr.substring(4, 6), 16)
+            , parseInt(FinalHexStr.substring(4, 6), 16)]
+        }
       }
       this.setInitialRGB(arg["R"][0], arg["G"][0], arg["B"][0]);
       this.setTargetRGB(arg["R"][1], arg["G"][1], arg["B"][1]);
       this.BufferedData;
     }
-
-
 
     /**
      * Set the starting points for the interpolations,
@@ -248,7 +259,7 @@ $(() => {
     /**
      * Given the number of points of linear interpolations
      * you want for the data.
-     * ! Error will be thrown if any of the data is invalid. 
+     * ! Error will be thrown if any of the data is invalid.
      * @param {int} deltaCount
      */
     interpolate(deltaCount) {
@@ -327,9 +338,9 @@ $(() => {
     }
 
     /**
-     * Given a valid integer, it will return at list of hex for the 
-     * css color style. 
-     * @param {Int} deltaCount 
+     * Given a valid integer, it will return at list of hex for the
+     * css color style.
+     * @param {Int} deltaCount
      */
     getCssColorList_Hex(deltaCount) {
       let DecToHex = ColorCoordinator.DecToHex;
@@ -343,4 +354,5 @@ $(() => {
       return RGBStr;
     }
   }
+
 });

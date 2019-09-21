@@ -1,26 +1,55 @@
-/**
+ /**
   * By default, it interprets the color code as Decimal, 0 -> 255
   * * Just set the fields to decimals and it will be good.
-  * 
   */
-class ColorCoordinator {
+ class ColorCoordinator {
+
   /**
-   * Instanciate the class with a Json object containing all the 
+   * Instantiate the class with a Json object containing all the
    * elements needed
-   * for transitioning from one color to another color. 
-   * Input is in the format of : 
+   * for transitioning from one color to another color.
+   * Input is in the format of :
    * {
-   *  R:[initial, final], 
+   *  R:[initial, final],
    *  G:[initial, final],
    *  B:[initial, final]
    * }
-   * 
+   *
+   * TODO: Implement this shit, then go to implement details in
+   * TODO: the animationtitle details.
+   * for Hex code:
+   * Input is in the format of :
+   * {
+   *    "initial": "#000000",
+   *    "final": "#FFFFFF",
+   *    "Hex":true
+   * }
    */
   constructor(arg) {
+    if (arg["Hex"]) {
+      let InitialHexStr = arg["initial"];
+      let FinalHexStr = arg["final"];
+      if (!(InitialHexStr.match("^#[a-fA-F0-9]+$")
+          && FinalHexStr.match("^#[a-fA-F0-9]+$"))) {
+        throw new Error("Invalid color HexCode.");
+      }
+      InitialHexStr = InitialHexStr.substring(1, InitialHexStr.length);
+      FinalHexStr = FinalHexStr.substring(1, FinalHexStr.length);
+      arg = {
+        "R": [parseInt(InitialHexStr.substring(0,2), 16)
+           ,parseInt(FinalHexStr.substring(0,2), 16)],
+        "G":[parseInt(InitialHexStr.substring(2,4), 16)
+          ,parseInt(FinalHexStr.substring(2,4), 16)],
+        "B":[parseInt(InitialHexStr.substring(4,6), 16)
+          ,parseInt(FinalHexStr.substring(4,6), 16)]
+      }
+    }
     this.setInitialRGB(arg["R"][0], arg["G"][0], arg["B"][0]);
     this.setTargetRGB(arg["R"][1], arg["G"][1], arg["B"][1]);
     this.BufferedData;
   }
+
+
 
   /**
    * Set the starting points for the interpolations,
@@ -36,8 +65,7 @@ class ColorCoordinator {
       &&
       r <= 255 && r >= 0
       &&
-      r <= 255 && r >= 0
-    )) {
+      r <= 255 && r >= 0)) {
       throw new Error("Color out of range.");
     }
     this.InitialR = r;
@@ -58,8 +86,7 @@ class ColorCoordinator {
       &&
       r <= 255 && r >= 0
       &&
-      r <= 255 && r >= 0
-    )) {
+      r <= 255 && r >= 0)) {
       throw new Error("Color our of range.");
     }
     this.TargetB = b;
@@ -70,7 +97,7 @@ class ColorCoordinator {
   /**
    * Given the number of points of linear interpolations
    * you want for the data.
-   * ! Error will be thrown if any of the data is invalid. 
+   * ! Error will be thrown if any of the data is invalid.
    * @param {int} deltaCount
    */
   interpolate(deltaCount) {
@@ -149,9 +176,9 @@ class ColorCoordinator {
   }
 
   /**
-   * Given a valid integer, it will return at list of hex for the 
-   * css color style. 
-   * @param {Int} deltaCount 
+   * Given a valid integer, it will return at list of hex for the
+   * css color style.
+   * @param {Int} deltaCount
    */
   getCssColorList_Hex(deltaCount) {
     let DecToHex = ColorCoordinator.DecToHex;
@@ -166,6 +193,7 @@ class ColorCoordinator {
   }
 }
 
+
 //! Export the module for interactive testing
 module.exports = {
   "ColorCoordinator": ColorCoordinator
@@ -178,4 +206,12 @@ let subject = new ColorCoordinator({
   "B": [0, 255]});
 let stringList = subject.getCssColorList_Hex(10);
 for (let v of stringList) console.log(v);
+//! Test Hex 
+console.log("Interpolating: '#00ff00' to '#ff00ff'");
+subject = new ColorCoordinator({
+  "initial":"#00ff00", 
+  "final":"#ff00ff", "Hex":true})
+stringList = subject.getCssColorList_Hex(10);
+for (let v of stringList) console.log(v);
 debugger;
+
