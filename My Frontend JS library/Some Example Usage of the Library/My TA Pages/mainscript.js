@@ -38,7 +38,7 @@ $(() => {
           "speakProbability": 0.1,
           "spawn": {
             "applejack": 1, "fluttershy": 1, "pinkie pie": 1,
-            "rainbow   dash": 1,
+            "rainbow dash": 1,
             "rarity": 1, "twilight sparkle": 1
           }, "autostart": true
         }); /* ]]> */
@@ -58,7 +58,7 @@ $(() => {
     });
   }
 
-  const PONIES = new PoniesToggler();
+  new PoniesToggler();
 
   /**
    * Function that creates an instance that model action of title animation.
@@ -77,18 +77,18 @@ $(() => {
     this.Css = $($(arg)[0]);
     let TheText = this.Css.text();
 
-    /**
-     * Display the string from the input argument, where
-     * each letter of the title will be in random color.
-     */
-    this.DisplayString = (str) => {
-      this.Css.text("");
-      for (let l of str) {
-        let NewLetter = createElement("span", l);
-        NewLetter.css("color", random_ColorPresets());
-        this.Css.append(NewLetter);
-      }
-    };
+    // /**
+    //  * Display the string from the input argument, where
+    //  * each letter of the title will be in random color.
+    //  */
+    // this.DisplayString = (str) => {
+    //   this.Css.text("");
+    //   for (let l of str) {
+    //     let NewLetter = createElement("span", l);
+    //     NewLetter.css("color", random_ColorPresets());
+    //     this.Css.append(NewLetter);
+    //   }
+    // };
 
     this.PlayColorAnimation = () => {
       this.Css.text("");
@@ -98,7 +98,7 @@ $(() => {
         this.Css.append(spanL);
       }
       for (let i = 0; i < TheText.length; i++) {
-        if (TheText.substring(i,i+1) === " ") {
+        if (TheText.substring(i, i + 1) === " ") {
           continue;
         }
         TitleAnimationEachLetter(i);
@@ -118,13 +118,26 @@ $(() => {
    */
   function TitleAnimationEachLetter(LetterIndex, TitleId = "#MyTitle") {
     let SelectedElement = $($(TitleId)[0].childNodes[LetterIndex]);
-    let PreviousColor = "#ffffff";
+    let PreviousColor = "#000000";
     let BigInterval = 2100;
     let DeltaCount = 40;
     let SmallInterval = 50;
 
     /**
+     * It's for the shadow of each letter in the title.
+     * @param {Array} hexStr 
+     */
+    function ReverseHexToTriplets(hexStr) {
+      return {
+        "R": 255 - parseInt(hexStr.substring(1,3), 16),
+        "G": 255 - parseInt(hexStr.substring(3,5), 16),
+        "B": 255 - parseInt(hexStr.substring(5,7), 16),
+      };
+    }
+
+    /**
      * Display the list of color gradient immediately after deployment. 
+     * ! function will skip if page not focused. 
      * @param {JQ DOM} element
      * JQ instance of a DOM element  
      * @param {string} colors
@@ -132,17 +145,29 @@ $(() => {
      * @param {int} index
      * The index of the color currently at. 
      */
-    function setColor(colors, index = 0){
-      // console.log("Set Color for "+ this.SelectedElement);
-      // console.log("Index:" + index);
+    function setColor(colors, index = 0) {
       if (index >= colors.length) {
         return;
       }
-      SelectedElement.css("color", colors[index]);
-      setTimeout(setColor, SmallInterval, colors, index + 1);
+      if (document.hasFocus()) {
+        SelectedElement.css("color", colors[index]);
+        let oppositeColor = ReverseHexToTriplets(colors[index]);
+        SelectedElement.css("text-shadow", "0px 5px 8px rgba("+oppositeColor["R"] +
+        ", " + oppositeColor["G"] + ", " + oppositeColor["B"] + ", 0.8)");
+        setTimeout(setColor, SmallInterval, colors, index + 1);
+      }
+      else {
+        return;
+      }
     };
 
-    let TimeoutID = setInterval(() => {
+
+    /**
+     * InterpolateColor Function, it sets the initial color and final 
+     * color on a big interval and call setColor function to interpolate then 
+     * display all the transient color in between.
+     */
+    let TimeoutID = setInterval(function InterpolateColor() {
       let NextColor = random_ColorPresets();
       let CC = new ColorCoordinator({
         "initial": PreviousColor,
@@ -364,9 +389,27 @@ $(() => {
     }
 
     /**
+     * Return a list of inner list with 3 elements which has 3 RGB color info in it. 
+     * @param {int} deltaCount
+     * The number of steps to reach from initial color to the final color. 
+     * @return {Array} 
+     * an array of stirng contains all the css color values in the format of : 
+     * [[0, 0, 0], [1, 1, 1]... ]
+     */
+    getCssColorList_Triplets(deltaCount) {
+      this.BufferedData = this.BufferedData || this.interpolate(deltaCount);
+      let RGBStr = [];
+      for (let i = 0; i < this.BufferedData["R"].length; i++) {
+        RGBStr.push([this.BufferedData["R"][i],
+          this.BufferedData["G"][i], this.BufferedData["B"][i]]);
+      }
+      return RGBStr;
+    }
+
+    /**
      * Convert a decimal with range 0 -> 255 to a hex string with length 2
      * @param {int} dec
-     * A decimal numnuer in between 0 -> 255
+     * A decimal integer in between 0 -> 255
      * @return
      * A Hex color that always has the lenghth of 2. 
      */
