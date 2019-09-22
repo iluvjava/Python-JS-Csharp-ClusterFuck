@@ -13,16 +13,10 @@ $(() => {
 
   const BOOTSTRAP_SETTINGS =
   {
-    //".navbar-text": "text-center",
     "#MyDisplay": "bg-info text-center fixed-bottom text-light",
-    //".navbar":"fixed-top",
-    // "#MyCarousel":"w-100 mx-auto",
-    // "#MyCarousel .card":"w-75 mx-auto",
-    // ".carousel-control-prev-icon":"bg-secondary",
-    // ".carousel-control-next-icon":"bg-secondary",
-    // "#MyCarouselContainer": "my-5"
-    ".card": "w-75 my-5 mx-auto shadow-lg",
-    "marquee": "mx-auto"
+    ".card": "w-75 my-5 mx-auto shadow-lg border-primary",
+    ".card-body": "text-primary",
+    ".card-header": "border-primary text-primary bg-transparent",
   };
 
   applyClassSettings(BOOTSTRAP_SETTINGS);
@@ -74,31 +68,14 @@ $(() => {
    *   * When displaying the text, it create a new color template for the
    *   * text, then interpolate it, then display the animation.
    *   * Lastly, it stores the new color as "PreviousColor".
+   * ! Keep track of the letter using their perspective index position. 
    * @param {String} arg
-   * A css selector that points to the element.
+   * A css selector that points to the element, default is set. 
    */
-  function TitleAnimation(arg) {
+  function TitleAnimation(arg = "#MyTitle") {
+
     this.Css = $($(arg)[0]);
-
-    let textLen = this.Css.text().length;
-
-    // A list of RBG HexCode for each letters in the text.
-    this.PreviousColor = getRandomColors(textLen);
-
-    //The next color the title is going to be mapped to.
-    this.NextColor = getRandomColors(testLen);
-
-    /**
-     * The length string.
-     * @param {int} textLen
-     */
-    let getRandomColors = (textLen) => {
-      let Res = new Array();
-      for (let i = 0; i < textLen; i++) {
-        Res.push(random_ColorPresets());
-      }
-      return res;
-    }
+    let TheText = this.Css.text();
 
     /**
      * Display the string from the input argument, where
@@ -113,14 +90,70 @@ $(() => {
       }
     };
 
-    /**
-     * For each of the letters, get the list of interpolated
-     * color values and display then on the screen.
-     */
     this.PlayColorAnimation = () => {
-
+      this.Css.text("");
+      // Add all span element
+      for (let l of TheText) {
+        let spanL = createElement("span", l);
+        this.Css.append(spanL);
+      }
+      for (let i = 0; i < TheText.length; i++) {
+        if (TheText.substring(i,i+1) === " ") {
+          continue;
+        }
+        TitleAnimationEachLetter(i);
+      }
     }
+    this.PlayColorAnimation();
+  }
 
+  /**
+   * A normal function that models each individual 
+   * letters in the title, given the index of the letter in the title. 
+   * @param {int} LetterIndex
+   * The index of the letter in that that the instance of the function is 
+   * modeling. 
+   * @param {string} TitleId
+   * The id of the title element in the html.
+   */
+  function TitleAnimationEachLetter(LetterIndex, TitleId = "#MyTitle") {
+    let SelectedElement = $($(TitleId)[0].childNodes[LetterIndex]);
+    let PreviousColor = "#ffffff";
+    let BigInterval = 2100;
+    let DeltaCount = 40;
+    let SmallInterval = 50;
+
+    /**
+     * Display the list of color gradient immediately after deployment. 
+     * @param {JQ DOM} element
+     * JQ instance of a DOM element  
+     * @param {string} colors
+     * List of String css values. 
+     * @param {int} index
+     * The index of the color currently at. 
+     */
+    function setColor(colors, index = 0){
+      // console.log("Set Color for "+ this.SelectedElement);
+      // console.log("Index:" + index);
+      if (index >= colors.length) {
+        return;
+      }
+      SelectedElement.css("color", colors[index]);
+      setTimeout(setColor, SmallInterval, colors, index + 1);
+    };
+
+    let TimeoutID = setInterval(() => {
+      let NextColor = random_ColorPresets();
+      let CC = new ColorCoordinator({
+        "initial": PreviousColor,
+        "final": NextColor,
+        "Hex": true
+      });
+      let ColorList = CC.getCssColorList_Hex(DeltaCount - 1);
+      setColor(ColorList);
+      PreviousColor = NextColor;
+    }, BigInterval);
+    return TimeoutID;
   }
 
   /**
@@ -148,21 +181,17 @@ $(() => {
     return Choices[~~(Math.random() * Choices.length)];
   }
 
-
-
   /**
    * Function setup the colorful text in the title on the page.
    */
   function setupTitleAnimation() {
-    let TheText = $("#MyTitle").text();
-    let AnimationInstance = new TitleAnimation("#MyTitle");
-    let AnimationID = setInterval(() => {
-      AnimationInstance.DisplayString(TheText);
-    }, 2000);
-    return AnimationID;
+    new TitleAnimation();
+    // let AnimationID = setInterval(() => {
+    //   AnimationInstance.DisplayString(TheText);
+    // }, 2000);
   }
 
-  let AnimationID1 = setupTitleAnimation();
+  setupTitleAnimation();
 
   /**
    * By default, it interprets the color code as Decimal, 0 -> 255
@@ -260,7 +289,12 @@ $(() => {
      * Given the number of points of linear interpolations
      * you want for the data.
      * ! Error will be thrown if any of the data is invalid.
+     * * It will establish the BufferedData in the field. 
      * @param {int} deltaCount
+     * The number of steps to reach from intial color to the final color. 
+     * @returns {Array} 
+     * A object representing all the trasient color from 
+     * the initial color to the final color. 
      */
     interpolate(deltaCount) {
       // * Verify if all the things are correctly setup
@@ -312,6 +346,12 @@ $(() => {
     /**
      * Returns a list of css color strings for
      * displaying colors style, like ["rgb(255,255,255)", "rgb(244,244,244)"]
+     * 
+     * @param {int} deltaCount
+     * The number of steps to reach from intial color to the final color. 
+     * @returm {Array} 
+     * an array of stirng contains all the css color values in the fomat of : 
+     * ["rgb(0, 255,0)", "rgb(1, 254,1)"...]
      */
     getCssColorList_RGB(deltaCount) {
       this.BufferedData = this.BufferedData || this.interpolate(deltaCount);
@@ -325,6 +365,10 @@ $(() => {
 
     /**
      * Convert a decimal with range 0 -> 255 to a hex string with length 2
+     * @param {int} dec
+     * A decimal numnuer in between 0 -> 255
+     * @return
+     * A Hex color that always has the lenghth of 2. 
      */
     static DecToHex(dec) {
       if (typeof (dec) !== "number") {
@@ -341,6 +385,9 @@ $(() => {
      * Given a valid integer, it will return at list of hex for the
      * css color style.
      * @param {Int} deltaCount
+     * The number of color transitioning from initial color to final color. 
+     * @return
+     * A list of hex string containing all the intermediate color. 
      */
     getCssColorList_Hex(deltaCount) {
       let DecToHex = ColorCoordinator.DecToHex;
@@ -354,5 +401,4 @@ $(() => {
       return RGBStr;
     }
   }
-
 });
