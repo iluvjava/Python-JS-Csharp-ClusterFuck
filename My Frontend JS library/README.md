@@ -137,11 +137,11 @@ the prefix you want for you children's id.
     if prefix is not specified, the id of the parent element will be the id, if parent doesn't have id, then the id prefix will be empty.
     **Index starts at 0**
 
-### Objectification
-- parems: 
-    arg: JSON
-- This function will make a JSON object into actual javascript object the represents visual elements on the page. Making 
-the page more interactive.
+### Promisify
+- params: 
+    - Synchronous function
+- returns: 
+    - function but encapsulated in a promise, similar to the promisify in node js. 
         
 # About Some Technical Details
 ## Promises and Async Function
