@@ -3,45 +3,44 @@
  */
 
 
-
+"use strict";
 /**
  * Global Module pattern with JQ
  */
-$(() => {
-  console.log("Loading this shit. ");
-  "use strict";
+$(function() {
 
-  const BOOTSTRAP_SETTINGS =
+  const SETTINGS =
   {
     "#MyDisplay": "bg-info text-center fixed-bottom text-light",
     ".card": "w-75 my-5 mx-auto shadow-lg border-primary",
-    ".card-body": "text-primary",
-    ".card-header": "border-primary text-primary bg-transparent",
+    ".card-body": "text-primary BiggerText",
+    ".card-header": "border-primary text-primary bg-transparent BiggerText",
+    ".carousel-control-prev-icon": "bg-dark",
+    ".carousel-control-next-icon": "bg-dark",
   };
 
-  applyClassSettings(BOOTSTRAP_SETTINGS);
+  applyClassSettings(SETTINGS);
 
   /**
    * An function for loading ponies into the page.
    */
   function LoadBrowserPonies() {
-  /* <![CDATA[ */ (function (cfg) {
+  /* <![CDATA[ */ (function(cfg) {
       BrowserPonies.setBaseUrl(cfg.baseurl);
       BrowserPonies.loadConfig(BrowserPoniesBaseConfig);
       BrowserPonies.loadConfig(cfg);
     })
-      (
-        {
-          "baseurl": "https://panzi.github.io/Browser-Ponies/",
-          "fadeDuration": 500, "volume": 1, "fps": 25, "speed": 3,
-          "audioEnabled": false, "showFps": false, "showLoadProgress": true,
-          "speakProbability": 0.1,
-          "spawn": {
-            "applejack": 1, "fluttershy": 1, "pinkie pie": 1,
-            "rainbow dash": 1,
-            "rarity": 1, "twilight sparkle": 1
-          }, "autostart": true
-        }); /* ]]> */
+      ({ 
+      "baseurl": "https://panzi.github.io/Browser-Ponies/",
+      "fadeDuration": 500, "volume": 1, "fps": 25, "speed": 3,
+      "audioEnabled": false, "showFps": false, "showLoadProgress": true,
+      "speakProbability": 0.1,
+      "spawn": {
+        "applejack": 1, "fluttershy": 1, "pinkie pie": 1,
+        "rainbow dash": 1,
+        "rarity": 1, "twilight sparkle": 1
+      }, "autostart": true
+    }); /* ]]> */
   }
 
   /**
@@ -51,7 +50,8 @@ $(() => {
     this.Target = $($("#customSwitch1")[0]);
     this.Target.on("change", (e) => {
       let checked = e.target.checked;
-      if (checked) LoadBrowserPonies();
+      if (checked) {
+        LoadBrowserPonies();}
       else {
         BrowserPonies.clear();
       }
@@ -68,9 +68,9 @@ $(() => {
    *   * When displaying the text, it create a new color template for the
    *   * text, then interpolate it, then display the animation.
    *   * Lastly, it stores the new color as "PreviousColor".
-   * ! Keep track of the letter using their perspective index position. 
+   * ! Keep track of the letter using their perspective index position.
    * @param {String} arg
-   * A css selector that points to the element, default is set. 
+   * A css selector that points to the element, default is set.
    */
   function TitleAnimation(arg = "#MyTitle") {
 
@@ -108,11 +108,11 @@ $(() => {
   }
 
   /**
-   * A normal function that models each individual 
-   * letters in the title, given the index of the letter in the title. 
+   * A normal function that models each individual
+   * letters in the title, given the index of the letter in the title.
    * @param {int} LetterIndex
-   * The index of the letter in that that the instance of the function is 
-   * modeling. 
+   * The index of the letter in that that the instance of the function is
+   * modeling.
    * @param {string} TitleId
    * The id of the title element in the html.
    */
@@ -125,7 +125,7 @@ $(() => {
 
     /**
      * It's for the shadow of each letter in the title.
-     * @param {Array} hexStr 
+     * @param {Array} hexStr
      */
     function ReverseHexToTriplets(hexStr) {
       return {
@@ -136,14 +136,14 @@ $(() => {
     }
 
     /**
-     * Display the list of color gradient immediately after deployment. 
-     * ! function will skip if page not focused. 
+     * Display the list of color gradient immediately after deployment.
+     * ! function will skip if page not focused.
      * @param {JQ DOM} element
-     * JQ instance of a DOM element  
+     * JQ instance of a DOM element
      * @param {string} colors
-     * List of String css values. 
+     * List of String css values.
      * @param {int} index
-     * The index of the color currently at. 
+     * The index of the color currently at.
      */
     function setColor(colors, index = 0) {
       if (index >= colors.length) {
@@ -163,8 +163,8 @@ $(() => {
 
 
     /**
-     * InterpolateColor Function, it sets the initial color and final 
-     * color on a big interval and call setColor function to interpolate then 
+     * InterpolateColor Function, it sets the initial color and final
+     * color on a big interval and call setColor function to interpolate then
      * display all the transient color in between.
      */
     let TimeoutID = setInterval(function InterpolateColor() {
@@ -314,12 +314,12 @@ $(() => {
      * Given the number of points of linear interpolations
      * you want for the data.
      * ! Error will be thrown if any of the data is invalid.
-     * * It will establish the BufferedData in the field. 
+     * * It will establish the BufferedData in the field.
      * @param {int} deltaCount
-     * The number of steps to reach from intial color to the final color. 
-     * @returns {Array} 
-     * A object representing all the trasient color from 
-     * the initial color to the final color. 
+     * The number of steps to reach from intial color to the final color.
+     * @returns {Array}
+     * A object representing all the trasient color from
+     * the initial color to the final color.
      */
     interpolate(deltaCount) {
       // * Verify if all the things are correctly setup
@@ -371,11 +371,11 @@ $(() => {
     /**
      * Returns a list of css color strings for
      * displaying colors style, like ["rgb(255,255,255)", "rgb(244,244,244)"]
-     * 
+     *
      * @param {int} deltaCount
-     * The number of steps to reach from intial color to the final color. 
-     * @returm {Array} 
-     * an array of stirng contains all the css color values in the fomat of : 
+     * The number of steps to reach from intial color to the final color.
+     * @returm {Array}
+     * an array of stirng contains all the css color values in the fomat of :
      * ["rgb(0, 255,0)", "rgb(1, 254,1)"...]
      */
     getCssColorList_RGB(deltaCount) {
@@ -389,11 +389,11 @@ $(() => {
     }
 
     /**
-     * Return a list of inner list with 3 elements which has 3 RGB color info in it. 
+     * Return a list of inner list with 3 elements which has 3 RGB color info in it.
      * @param {int} deltaCount
-     * The number of steps to reach from initial color to the final color. 
-     * @return {Array} 
-     * an array of stirng contains all the css color values in the format of : 
+     * The number of steps to reach from initial color to the final color.
+     * @return {Array}
+     * an array of stirng contains all the css color values in the format of :
      * [[0, 0, 0], [1, 1, 1]... ]
      */
     getCssColorList_Triplets(deltaCount) {
@@ -411,7 +411,7 @@ $(() => {
      * @param {int} dec
      * A decimal integer in between 0 -> 255
      * @return
-     * A Hex color that always has the lenghth of 2. 
+     * A Hex color that always has the lenghth of 2.
      */
     static DecToHex(dec) {
       if (typeof (dec) !== "number") {
@@ -428,9 +428,9 @@ $(() => {
      * Given a valid integer, it will return at list of hex for the
      * css color style.
      * @param {Int} deltaCount
-     * The number of color transitioning from initial color to final color. 
+     * The number of color transitioning from initial color to final color.
      * @return
-     * A list of hex string containing all the intermediate color. 
+     * A list of hex string containing all the intermediate color.
      */
     getCssColorList_Hex(deltaCount) {
       let DecToHex = ColorCoordinator.DecToHex;

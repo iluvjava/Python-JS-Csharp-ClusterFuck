@@ -10,3 +10,7 @@ End
 .BiggerText {
     font-size: 16pt;
 }
+
+.SecretHide {
+  display: none;
+}
