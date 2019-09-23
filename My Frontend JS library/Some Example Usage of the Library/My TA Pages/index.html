@@ -5,7 +5,7 @@
     Hongda Li - About Me
   </title>
   <!--Loads Jquery-->
-  <script src="../../jq.js">
+  <script src="jq.js">
   </script>
   <!--Loads BootStrap-->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -16,7 +16,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
   </script>
   <!--Loads Misc Things-->
-  <script src="../../my library (only functions).js"></script>
+  <script src="my library (only functions).js"></script>
   <script src="mainscript.js"></script>
   <script type="text/javascript" src="https://panzi.github.io/Browser-Ponies/basecfg.js" id="browser-ponies-config"></script>
   <script type="text/javascript" src="https://panzi.github.io/Browser-Ponies/browserponies.js" id="browser-ponies-script"></script>
@@ -78,8 +78,7 @@
       Things I Love
     </div>
     <div class="card-body">
-      <blockquote class="blockquote">
-        <ol class="BiggerText">
+        <ol>
           <li>
             Doing LeetCode Problems, especially problems with a good recursive solution.
           </li>
@@ -92,8 +91,10 @@
           <li>
             Reading fictions, especially fan fictions, attempting to write them too.
           </li>
+          <li class="HideSecret">
+            I am a huge huge fan of the TV show My Little Pony: Friendship is Magic
+          </li>
         </ol>
-      </blockquote>
     </div>
   </div>
 
@@ -102,8 +103,7 @@
       Classes I Am Taking in Fall
     </div>
     <div class="card-body">
-      <blockquote class="blockquote">
-        <ol class="BiggerText">
+        <ol>
           <li>
             Math 464, it's about analyzing numerical solutions to math problems
           </li>
@@ -114,7 +114,94 @@
             Engl 197, it's musical writing, so basically listen to musical excerpts and write about it.
           </li>
         </ol>
-      </blockquote>
+    </div>
+  </div>
+
+  <div id="CarouselTips" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#CarouselTips" data-slide-to="0" class="active"></li>
+      <li data-target="#CarouselTips" data-slide-to="1"></li>
+      <li data-target="#CarouselTips" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="card">
+          <div class="card-header">
+           Tips for This Class
+          </div>
+          <div class="card-body">
+            Remember the easiest credit to get for HW is the style, just put then into the linter or validator,
+            and fix the problem. 
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="card">
+          <div class="card-header">
+            Tips for This Class
+          </div>
+          <div class="card-body">
+            Go to the WPL office hour for help or ask questions on piazza when you need help. 
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="card">
+          <div class="card-header">
+            Tips for This Class
+          </div>
+          <div class="card-body">
+            There is a lot of materials in this class, so is the amount of homework, start it early. The homework is also
+            tightly connected to the contents learn in the class and sections, so remember to do it whenever you learned it. 
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="card">
+          <div class="card-header">
+            Tips for This Class
+          </div>
+          <div class="card-body">
+            Use resources from the class and outside of the class to strengthen your understanding of the materials.
+            I personally recommend MDN we docs, and documentation for node JS and their module. Do remember W3C 
+            provides materials that are different from the course, read the code style guide of the course to make sure 
+            you are doing things correctly.
+          </div>
+        </div>
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#CarouselTips" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#CarouselTips" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+
+  <div class="card">
+    <a href="https://iluvjava.github.io/gameoflife/Game.html" target="_blank">
+      <img class="card-img-top" src="slider_gun.gif" alt="Conway's Game of Life Slider_gun mechanic gif">
+    </a>
+    <div class="card-body">
+      <h5 class="card-title">My Project: Conway's Game of Life in Javascript</h5>
+      <p class="card-text">
+        Conway's game of life is cellular automation, slight perturbations in initial condition lead to completely 
+        different outcomes. It can have finite state oscillators, still lifes, and glider, which usually appear when it reaches
+        equilibrium state. 
+        The above gif is a device call Slider Gun, and it's a very fascinating device in the game. 
+      </p>
+      <p class="card-text">
+        At first glance it might seems to be in O(MN) where M,N is the sides of the grid of simulation, but I found a 
+        O(N) in-place algorithm with the help with internet and some thinking. The N represents the number of cells that 
+        are right next to a living cell or a living cell at each time frame. 
+      </p>
+      <p>
+        People make turing machine in Conway's Game of Life.  
+      </p>
+    </div>
+    <div class="card-body">
     </div>
   </div>
   
