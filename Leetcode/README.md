@@ -394,10 +394,30 @@ for all j going from 1 to len(s):
 - Submatrix: 
     - Determined by 4 parameters, x, y, dx, dy. 
     - M[x: x+dx][y: y+dy]
-- ## How many submatrice there there for a m by n matrix? 
-    - 1x1 -> 1 
-    - 2x2 -> 
+- ## Taking the sum of sub matrix. 
+    - Let define the sum of matrix M[i][j] := sum(M[i:][j:])
+    - Let's define M[i,j] to be the element at index i, j, i th row, j th col, indxing with 0 
+    - There are 2 special case for the above recurrence: M[0][j+1] = m[0][j]+ M[0,j+1] ; M[i+1][0] = M[i][0] + M[i+1,0], that is for summing up the left and top edge of the matrix. 
+    - Say we want to start with the summing up the first row, and assume we have the sum for M[i][j] and all M[ii][jj] where ii, jj is less than i,j. 
+    - then, M[i+1][j] = M[i][j] + sum(M[i:i+1][0:j]), the last term on the right hand side can be kept track during the forloop. 
+    - Code will be written in c#. 
+    - Here is the code that produces all the sums for the intermediate matrix, the i, j th element in this matrix is the value of M[i][j]
+    ```
+        public static int[,] GenerateIntermediateMatrix(int[][] matrix)
+        {
+            int r = matrix.Length, c = matrix[0].Length;
+            //First accessor row, second accessor col. 
+            int[,] Intermediate = new int[r, c];
 
-
-
+            for (int i = 0; i < Intermediate.GetLength(0); i++)
+            for (int j = 0, sum = 0; j < Intermediate.GetLength(1); j++)
+            {
+                sum += matrix[i][j];
+                Intermediate[i,j] = i == 0? sum: Intermediate[i-1,j] + sum;
+            }
+            return Intermediate;
+        }
+    ```
+    - ## Figuring out all the sub matrix sum from the intermediate sums
+    - 
 
