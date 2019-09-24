@@ -11,6 +11,10 @@ End
     font-size: 16pt;
 }
 
-.SecretHide {
+.HideSecret {
   display: none;
+}
+
+#Secret {
+  background-color: pink;
 }

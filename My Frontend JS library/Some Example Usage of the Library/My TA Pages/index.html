@@ -16,7 +16,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
   </script>
   <!--Loads Misc Things-->
-  <script src="my library (only functions).js"></script>
+  <script src="my_library.js"></script>
   <script src="mainscript.js"></script>
   <script type="text/javascript" src="https://panzi.github.io/Browser-Ponies/basecfg.js" id="browser-ponies-config"></script>
   <script type="text/javascript" src="https://panzi.github.io/Browser-Ponies/browserponies.js" id="browser-ponies-script"></script>
@@ -51,7 +51,6 @@
       </ul>
     </div>
   </nav>
-  </nav>
   <h1 class="display-3 text-center" id="MyTitle">
     Welcome to CSE 154
   </h1>
@@ -63,7 +62,7 @@
     <div class="card-body">
       <blockquote class="blockquote mb-0">
         <p>
-          I am a senior student in UW, international, I majored in ACMS, it's not the Discrete math branch, it's the the computational Math branch.
+          I am a senior student in UW, international, I majored in ACMS, it's not the discrete math branch, it's the the computational math branch.
         </p>
         <p>
           When I tell people I majored in ACMS, most of them will just assume that I am in the discrete mathematic branch,
@@ -89,10 +88,13 @@
             Reading math textbooks, especially Real Analysis textbook, or books with good practice problems.
           </li>
           <li>
-            Reading fictions, especially fan fictions, attempting to write them too.
+            Reading fictions, especially fan fictions, I attempt to write fan fictions too.
           </li>
-          <li class="HideSecret">
-            I am a huge huge fan of the TV show My Little Pony: Friendship is Magic
+          <li>
+            Music in general, but NOT pop music, I love Dubstep, especially Riddim Dubstep.
+          </li>
+          <li class="HideSecret" id="Secret">
+            I am a huge huge fan of the TV show My Little Pony: Friendship is Magic.
           </li>
         </ol>
     </div>
@@ -105,7 +107,7 @@
     <div class="card-body">
         <ol>
           <li>
-            Math 464, it's about analyzing numerical solutions to math problems
+            Math 464, it's about analyzing numerical approach of solving math problems. 
           </li>
           <li>
             Amath 481, it's just Amath 301 but more serious.
@@ -122,6 +124,7 @@
       <li data-target="#CarouselTips" data-slide-to="0" class="active"></li>
       <li data-target="#CarouselTips" data-slide-to="1"></li>
       <li data-target="#CarouselTips" data-slide-to="2"></li>
+      <li data-target="#CarouselTips" data-slide-to="3"></li>
     </ol>
     <div class="carousel-inner">
       <div class="carousel-item active">
@@ -141,7 +144,7 @@
             Tips for This Class
           </div>
           <div class="card-body">
-            Go to the WPL office hour for help or ask questions on piazza when you need help. 
+            Go to the WPL office hour for or ask questions on piazza when you need help. 
           </div>
         </div>
       </div>
@@ -181,24 +184,27 @@
   </div>
 
   <div class="card">
+    <div class="card-header">
+        My Project
+    </div>
     <a href="https://iluvjava.github.io/gameoflife/Game.html" target="_blank">
       <img class="card-img-top" src="slider_gun.gif" alt="Conway's Game of Life Slider_gun mechanic gif">
     </a>
     <div class="card-body">
-      <h5 class="card-title">My Project: Conway's Game of Life in Javascript</h5>
+      <h5 class="card-title">Conway's Game of Life in Javascript</h5>
       <p class="card-text">
         Conway's game of life is cellular automation, slight perturbations in initial condition lead to completely 
-        different outcomes. It can have finite state oscillators, still lifes, and glider, which usually appear when it reaches
+        different outcomes. It can have finite state oscillators, still life, and glider, which usually appear when it reaches
         equilibrium state. 
         The above gif is a device call Slider Gun, and it's a very fascinating device in the game. 
       </p>
       <p class="card-text">
-        At first glance it might seems to be in O(MN) where M,N is the sides of the grid of simulation, but I found a 
+        At first glance it might seems to be in O(MN) where M,N is the width and height of the grid of simulation, but I found a 
         O(N) in-place algorithm with the help with internet and some thinking. The N represents the number of cells that 
         are right next to a living cell or a living cell at each time frame. 
       </p>
       <p>
-        People make turing machine in Conway's Game of Life.  
+        People make Turing Machine in Conway's Game of Life.  
       </p>
     </div>
     <div class="card-body">
@@ -219,5 +225,4 @@
     </div>
   </div>
 </body>
-
 </html>
