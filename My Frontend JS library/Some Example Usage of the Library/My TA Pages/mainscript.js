@@ -1,13 +1,7 @@
-/**
- * The main script for setting up the TA page.
- */
-
 
 "use strict";
-/**
- * Global Module pattern with JQ
- */
-$(function() {
+
+$(function () {
 
   const SETTINGS =
   {
@@ -16,7 +10,7 @@ $(function() {
     ".card-body": "text-primary BiggerText",
     ".card-header": "border-primary text-primary bg-transparent BiggerText",
     ".carousel-control-prev-icon": "bg-dark",
-    ".carousel-control-next-icon": "bg-dark",
+    ".carousel-control-next-icon": "bg-dark"
   };
 
   applyClassSettings(SETTINGS);
@@ -25,12 +19,11 @@ $(function() {
    * An function for loading ponies into the page.
    */
   function LoadBrowserPonies() {
-  /* <![CDATA[ */ (function(cfg) {
+    (function (cfg) {
       BrowserPonies.setBaseUrl(cfg.baseurl);
       BrowserPonies.loadConfig(BrowserPoniesBaseConfig);
       BrowserPonies.loadConfig(cfg);
-    })
-      ({ 
+    })({
       "baseurl": "https://panzi.github.io/Browser-Ponies/",
       "fadeDuration": 500, "volume": 1, "fps": 25, "speed": 3,
       "audioEnabled": false, "showFps": false, "showLoadProgress": true,
@@ -40,7 +33,7 @@ $(function() {
         "rainbow dash": 1,
         "rarity": 1, "twilight sparkle": 1
       }, "autostart": true
-    }); /* ]]> */
+    });
   }
 
   /**
@@ -51,9 +44,12 @@ $(function() {
     this.Target.on("change", (e) => {
       let checked = e.target.checked;
       if (checked) {
-        LoadBrowserPonies();}
+        LoadBrowserPonies();
+        $("#Secret")[0].classList.remove("HideSecret");
+      }
       else {
         BrowserPonies.clear();
+        $("#Secret")[0].classList.add("HideSecret");
       }
     });
   }
@@ -73,26 +69,11 @@ $(function() {
    * A css selector that points to the element, default is set.
    */
   function TitleAnimation(arg = "#MyTitle") {
-
     this.Css = $($(arg)[0]);
     let TheText = this.Css.text();
 
-    // /**
-    //  * Display the string from the input argument, where
-    //  * each letter of the title will be in random color.
-    //  */
-    // this.DisplayString = (str) => {
-    //   this.Css.text("");
-    //   for (let l of str) {
-    //     let NewLetter = createElement("span", l);
-    //     NewLetter.css("color", random_ColorPresets());
-    //     this.Css.append(NewLetter);
-    //   }
-    // };
-
     this.PlayColorAnimation = () => {
       this.Css.text("");
-      // Add all span element
       for (let l of TheText) {
         let spanL = createElement("span", l);
         this.Css.append(spanL);
@@ -115,6 +96,8 @@ $(function() {
    * modeling.
    * @param {string} TitleId
    * The id of the title element in the html.
+   * @return {undefined}
+   * return the instance it self.
    */
   function TitleAnimationEachLetter(LetterIndex, TitleId = "#MyTitle") {
     let SelectedElement = $($(TitleId)[0].childNodes[LetterIndex]);
@@ -126,20 +109,22 @@ $(function() {
     /**
      * It's for the shadow of each letter in the title.
      * @param {Array} hexStr
+     * A string representing color value for css, like: #ffffff
+     * @returns {object}
+     * An RGB object containing decimal value, use R, G, B to access the
+     * values.
      */
     function ReverseHexToTriplets(hexStr) {
       return {
-        "R": 255 - parseInt(hexStr.substring(1,3), 16),
-        "G": 255 - parseInt(hexStr.substring(3,5), 16),
-        "B": 255 - parseInt(hexStr.substring(5,7), 16),
+        "R": 255 - parseInt(hexStr.substring(1, 3), 16),
+        "G": 255 - parseInt(hexStr.substring(3, 5), 16),
+        "B": 255 - parseInt(hexStr.substring(5, 7), 16)
       };
     }
 
     /**
      * Display the list of color gradient immediately after deployment.
      * ! function will skip if page not focused.
-     * @param {JQ DOM} element
-     * JQ instance of a DOM element
      * @param {string} colors
      * List of String css values.
      * @param {int} index
@@ -152,29 +137,22 @@ $(function() {
       if (document.hasFocus()) {
         SelectedElement.css("color", colors[index]);
         let oppositeColor = ReverseHexToTriplets(colors[index]);
-        SelectedElement.css("text-shadow", "0px 5px 8px rgba("+oppositeColor["R"] +
-        ", " + oppositeColor["G"] + ", " + oppositeColor["B"] + ", 0.8)");
+        SelectedElement.css("text-shadow", "0px 5px 8px rgba(" + oppositeColor["R"] +
+          ", " + oppositeColor["G"] + ", " + oppositeColor["B"] + ", 0.8)");
         setTimeout(setColor, SmallInterval, colors, index + 1);
       }
       else {
-        return;
       }
     };
 
-
-    /**
-     * InterpolateColor Function, it sets the initial color and final
-     * color on a big interval and call setColor function to interpolate then
-     * display all the transient color in between.
-     */
     let TimeoutID = setInterval(function InterpolateColor() {
-      let NextColor = random_ColorPresets();
+      let NextColor = randomColorPresets();
       let CC = new ColorCoordinator({
         "initial": PreviousColor,
         "final": NextColor,
         "Hex": true
       });
-      let ColorList = CC.getCssColorList_Hex(DeltaCount - 1);
+      let ColorList = CC.getCssColorListHex(DeltaCount - 1);
       setColor(ColorList);
       PreviousColor = NextColor;
     }, BigInterval);
@@ -183,7 +161,11 @@ $(function() {
 
   /**
    * Given the string of tag, it creates a DOM element.
-   * @return {JQ DOM}
+   * @param {string} arg
+   * The inner text you want to display for insdie the element.
+   * @param {string} text
+   * A string representing the tag name of the element you want to create.
+   * @returns {JQDOM}
    * The JQ encapsulated Dom element.
    */
   function createElement(arg, text = null) {
@@ -199,11 +181,13 @@ $(function() {
 
   /**
    * Returns a word representing a randomly chosen color for css style.
+   * @returns {string}
+   * A string of hex representing the color.
    */
-  function random_ColorPresets() {
+  function randomColorPresets() {
     let Choices = ["#9EDBF9", "#88C4EB", "#F7B9D4", "#D9559F", "#C6006F",
       "#EE4144", "#F37033", "#FDF6AF", "#62BC4D", "#1E98D3", "#672F89"];
-    return Choices[~~(Math.random() * Choices.length)];
+    return Choices[~(~(Math.random() * Choices.length))];
   }
 
   /**
@@ -228,6 +212,7 @@ $(function() {
      * Instantiate the class with a Json object containing all the
      * elements needed
      * for transitioning from one color to another color.
+     * @param {object} arg
      * Input is in the format of :
      * {
      *  R:[initial, final],
@@ -247,20 +232,20 @@ $(function() {
       if (arg["Hex"]) {
         let InitialHexStr = arg["initial"];
         let FinalHexStr = arg["final"];
-        if (!(InitialHexStr.match("^#[a-fA-F0-9]+$")
-          && FinalHexStr.match("^#[a-fA-F0-9]+$"))) {
+        if (!(InitialHexStr.match("^#[a-fA-F0-9]+$") &&
+          FinalHexStr.match("^#[a-fA-F0-9]+$"))) {
           throw new Error("Invalid color HexCode.");
         }
         InitialHexStr = InitialHexStr.substring(1, InitialHexStr.length);
         FinalHexStr = FinalHexStr.substring(1, FinalHexStr.length);
         arg = {
-          "R": [parseInt(InitialHexStr.substring(0, 2), 16)
-            , parseInt(FinalHexStr.substring(0, 2), 16)],
-          "G": [parseInt(InitialHexStr.substring(2, 4), 16)
-            , parseInt(FinalHexStr.substring(2, 4), 16)],
-          "B": [parseInt(InitialHexStr.substring(4, 6), 16)
-            , parseInt(FinalHexStr.substring(4, 6), 16)]
-        }
+          "R": [parseInt(InitialHexStr.substring(0, 2), 16),
+          parseInt(FinalHexStr.substring(0, 2), 16)],
+          "G": [parseInt(InitialHexStr.substring(2, 4), 16),
+          parseInt(FinalHexStr.substring(2, 4), 16)],
+          "B": [parseInt(InitialHexStr.substring(4, 6), 16),
+          parseInt(FinalHexStr.substring(4, 6), 16)]
+        };
       }
       this.setInitialRGB(arg["R"][0], arg["G"][0], arg["B"][0]);
       this.setTargetRGB(arg["R"][1], arg["G"][1], arg["B"][1]);
@@ -272,37 +257,35 @@ $(function() {
      * Everything is in decimals.
      * ! Error will be thrown if the RGB data is invalid.
      * @param {int} r
+     * Decimal value for red
      * @param {int} g
+     * Decimal value for green
      * @param {int} b
+     * Decimal value for blue
      */
     setInitialRGB(r, g, b) {
       if (!(
-        r <= 255 && r >= 0
-        &&
-        r <= 255 && r >= 0
-        &&
-        r <= 255 && r >= 0)) {
+        r <= 255 && r >= 0 && r <= 255 && r >= 0 && r <= 255 && r >= 0)) {
         throw new Error("Color out of range.");
       }
       this.InitialR = r;
       this.InitialB = b;
-      this.InitialG = g
+      this.InitialG = g;
     }
 
     /**
      * Set the end point of the interpolation, in decimals.
      * ! Error will be thrown if there are invalid parameters.
      * @param {int} r
+     * Decimal value for red
      * @param {int} g
+     * Decimal value for green
      * @param {int} b
+     * Decimal value for blue
      */
     setTargetRGB(r, g, b) {
       if (!(
-        r <= 255 && r >= 0
-        &&
-        r <= 255 && r >= 0
-        &&
-        r <= 255 && r >= 0)) {
+        r <= 255 && r >= 0 && r <= 255 && r >= 0 && r <= 255 && r >= 0)) {
         throw new Error("Color our of range.");
       }
       this.TargetB = b;
@@ -316,9 +299,9 @@ $(function() {
      * ! Error will be thrown if any of the data is invalid.
      * * It will establish the BufferedData in the field.
      * @param {int} deltaCount
-     * The number of steps to reach from intial color to the final color.
+     * The number of steps to reach from initial color to the final color.
      * @returns {Array}
-     * A object representing all the trasient color from
+     * A object representing all the transient color from
      * the initial color to the final color.
      */
     interpolate(deltaCount) {
@@ -351,14 +334,12 @@ $(function() {
         let delta = null;
         if (element === "R") {
           delta = RH;
-        }
-        else if (element === "G") {
+        } else if (element === "G") {
           delta = GH;
-        }
-        else {
+        } else {
           delta = BH;
         }
-        let Values = new Array();
+        let Values = [];
         for (let i = 0; i <= deltaCount; i++) {
           Values.push(~~(i * delta + initial));
         }
@@ -374,11 +355,11 @@ $(function() {
      *
      * @param {int} deltaCount
      * The number of steps to reach from intial color to the final color.
-     * @returm {Array}
+     * @return {Array}
      * an array of stirng contains all the css color values in the fomat of :
      * ["rgb(0, 255,0)", "rgb(1, 254,1)"...]
      */
-    getCssColorList_RGB(deltaCount) {
+    getCssColorListRGB(deltaCount) {
       this.BufferedData = this.BufferedData || this.interpolate(deltaCount);
       let RGBStr = [];
       for (let i = 0; i < this.BufferedData["R"].length; i++) {
@@ -396,12 +377,12 @@ $(function() {
      * an array of stirng contains all the css color values in the format of :
      * [[0, 0, 0], [1, 1, 1]... ]
      */
-    getCssColorList_Triplets(deltaCount) {
+    getCssColorListTriplets(deltaCount) {
       this.BufferedData = this.BufferedData || this.interpolate(deltaCount);
       let RGBStr = [];
       for (let i = 0; i < this.BufferedData["R"].length; i++) {
         RGBStr.push([this.BufferedData["R"][i],
-          this.BufferedData["G"][i], this.BufferedData["B"][i]]);
+        this.BufferedData["G"][i], this.BufferedData["B"][i]]);
       }
       return RGBStr;
     }
@@ -410,10 +391,10 @@ $(function() {
      * Convert a decimal with range 0 -> 255 to a hex string with length 2
      * @param {int} dec
      * A decimal integer in between 0 -> 255
-     * @return
+     * @return {string}
      * A Hex color that always has the lenghth of 2.
      */
-    static DecToHex(dec) {
+    static decToHex(dec) {
       if (typeof (dec) !== "number") {
         throw new Error("It's not a number.");
       }
@@ -429,17 +410,17 @@ $(function() {
      * css color style.
      * @param {Int} deltaCount
      * The number of color transitioning from initial color to final color.
-     * @return
+     * @return {Array}
      * A list of hex string containing all the intermediate color.
      */
-    getCssColorList_Hex(deltaCount) {
-      let DecToHex = ColorCoordinator.DecToHex;
+    getCssColorListHex(deltaCount) {
+      let decToHex = ColorCoordinator.decToHex;
       this.BufferedData = this.BufferedData || this.interpolate(deltaCount);
       let RGBStr = [];
       for (let i = 0; i < this.BufferedData["R"].length; i++) {
-        RGBStr.push(`#${DecToHex(this.BufferedData["R"][i])}` +
-          `${DecToHex(this.BufferedData["G"][i])}` +
-          `${DecToHex(this.BufferedData["B"][i])}`);
+        RGBStr.push(`#${decToHex(this.BufferedData["R"][i])}` +
+          `${decToHex(this.BufferedData["G"][i])}` +
+          `${decToHex(this.BufferedData["B"][i])}`);
       }
       return RGBStr;
     }

@@ -20,11 +20,10 @@ const OBJECTIFICATION = {
  * @param {JSON} arg 
  */
 function Objectify(arg) {
-  if(!("css" in arg))throw new Error();
+  if (!("css" in arg)) throw new Error();
   let TargetsList = $(arg["css"]);
   let Res = new Array();
-  for (let Element of TargetsList)
-  {
+  for (let Element of TargetsList) {
     let NewElement = new Encapsulate(Element, arg)
     Res.push(NewElement);
   }
@@ -39,21 +38,17 @@ function Objectify(arg) {
  * @param {JQ DOM Element} element
  * A particular element selected by Jqery from the page.   
  */
-function Encapsulate(element, rules)
-{
+function Encapsulate(element, rules) {
   this.css = $(element);
-  for(let key in rules)
-  {
-    if(key === "css")continue;
+  for (let key in rules) {
+    if (key === "css") continue;
 
-    if(key === "on")
-    {
+    if (key === "on") {
       this.css.on(rules["on"][0], rules["on"][1]);
       continue;
     }
 
-    if(typeof(key) === "function")
-    {
+    if (typeof (key) === "function") {
       continue; //! Skip, this needs to be done on the outside. 
     }
 
@@ -70,29 +65,29 @@ function Encapsulate(element, rules)
  */
 
 
-$(()=>{
-/**
- * This is the block that test the codes of the thing
- */
+$(() => {
+  /**
+   * This is the block that test the codes of the thing
+   */
   "use strict";
- let stuff = {
-   css:"#thelist>li", 
-   on: ["click", 
-   (e)=>{
-     let TargetedElement = e.target;
-     $(TargetedElement).css("background-color", "black");
-   }], 
-   changeInnerText : (text)=> {
-    console.log("changeInnerText invoked");
-    console.log(this);
-   }
- };
+  let stuff = {
+    css: "#thelist>li",
+    on: ["click",
+      (e) => {
+        let TargetedElement = e.target;
+        $(TargetedElement).css("background-color", "black");
+      }],
+    changeInnerText: (text) => {
+      console.log("changeInnerText invoked");
+      console.log(this);
+    }
+  };
 
- window["THESTUFF"] = Objectify(stuff);
+  window["THESTUFF"] = Objectify(stuff);
 });
 
 
 /**
- * I think this is generally a bad idea, and it is not really 
- * simplifying things significantly. 
+ * I think this is generally a bad idea, and it is not really
+ * simplifying things significantly.
  */
