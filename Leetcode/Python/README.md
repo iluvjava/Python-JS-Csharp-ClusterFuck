@@ -360,7 +360,7 @@ Output:
 ```
 - That is all you need for this problem, don't forget the sort the array before inputing it into the function, and don't forget about None input too. 
 
-# 862. Shortest Subarray with Sum at Least K
+# 862. Shortest Subarray with Sum at Least K (Unsolved)
 - [link](https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/)
 - This kind of problem is called "Optimization problem with a constraint", Minimum optimization to be precise because it's asking for the "shortest subarray", the constraint is "With a sum at least K". 
 - The subarray must be a continous subarray, hence, sliding window or dynamic programming might be the best idea, LeetCode might not accepts a O(N^2) solution. 
@@ -384,7 +384,19 @@ for all j going from 1 to len(s):
         - That means we can initiate the min Length of the subarray to be -1 to indicate this. 
  - This code is better written in c# than python, because python doesn't have the kind of for loop. 
 
-    
+# 1074. Number of Submatrices That Sum to Target
+- Given: 
+    - A matrix-> 2D array
+    - A target, integer
+- Looking for: 
+    - Number of non empty sub matrix that such that all its elements sum up to 
+    the target number. 
+- Submatrix: 
+    - Determined by 4 parameters, x, y, dx, dy. 
+    - M[x: x+dx][y: y+dy]
+- ## How many submatrice there there for a m by n matrix? 
+    - 1x1 -> 1 
+    - 2x2 -> 
 
 
 
