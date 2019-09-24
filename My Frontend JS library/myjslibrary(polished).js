@@ -1,88 +1,67 @@
 $(
-  function () {
+  function() {
 
-    var MYELEMENTS =
-      [
-        {
-          element: "div" // element tag, <, > must be used. 
-          ,
-          parent: "body" // The parent that this element will be appended to. 
-          ,
-          innertext: "yoyoyo there is some innertext for the div element."
-          ,
-          classlist: "WTF rainbowdash" // so here are 2 classes. 
-          ,
-          attributes:
-          {
-            // ID is not supported. 
-            alt: "TheAlText"
-            ,
-            src: "/example.com"
-            ,
-            "somethingelse": "stuff"
-            ,
-            "someattribues": "the key for that attributes."
-            ,
-            "somebooleanattribute": "" // use empty val for boolean attributes.  
+    var MYELEMENTS = [{
+      element: "div" // element tag, <, > must be used.
+        ,
+      parent: "body" // The parent that this element will be appended to.
+        ,
+      innertext: "yoyoyo there is some innertext for the div element.",
+      classlist: "WTF rainbowdash" // so here are 2 classes.
+        ,
+      attributes: {
+        // ID is not supported.
+        alt: "TheAlText",
+        src: "/example.com",
+        "somethingelse": "stuff",
+        "someattribues": "the key for that attributes.",
+        "somebooleanattribute": "" // use empty val for boolean attributes.
+      },
+      children: [{
+          // recursion....
+          // but the element can choose not to have the parent attribute.
+          element: "a",
+          attributes: {
+            href: "example.com",
+            "yoyo-my-attribute": "attr-val"
           }
-          ,
-          children:
-            [
-              {
-                // recursion....
-                // but the element can choose not to have the parent attribute.
-                element: "a"
-                ,
-                attributes:
-                {
-                  href: "example.com"
-                  ,
-                  "yoyo-my-attribute": "attr-val"
-                }
-              }
-
-            ]
         }
-      ]
 
-    // This is really useful for bootstrap and shits. 
-    var SETTINGS =
-    {
+      ]
+    }]
+
+    // This is really useful for bootstrap and shits.
+    var SETTINGS = {
       "body": ["class1", "class2"],
       "body *": "class3 class4"
     };
 
-    //This is just generally very useful for managing shits. 
-    var LISTENER =
-    {
-      "li":
-        [
-          "mouseover mouseout"
-          ,
-          (e) => {
+    //This is just generally very useful for managing shits.
+    var LISTENER = {
+      "li": [
+        "mouseover mouseout",
+        (e) => {
 
-          }
-        ]
+        }
+      ]
     }
 
     /**
      * Using a JSON to represents the object one the page that you want to
      * objectify:
      */
-    var Objectification =
-    {
+    var Objectification = {
       cssselector: "#objectify",
-      handler: ["click", (e) => {/* Codes handling events.  */ }],
-      methods:
-      {
-        "method 1":
-          () => {
-            // Do some kind of shits. 
-          },
-        "method 2":
-          () => {
-            //Other kinds of shits.
-          }
+      handler: ["click", (e) => {
+        /* Codes handling events.  */
+      }],
+      methods: {
+        "method 1": () => {
+          // Do some kind of shits.
+        },
+        "method 2": () => {
+          //Other kinds of shits.
+        }
       }
     }
 
@@ -90,7 +69,7 @@ $(
      *  Read the object and change the object to elements with classes.
      */
     function applyClassSettings(settings = SETTINGS) {
-      $.each(settings, function (idx, val) {
+      $.each(settings, function(idx, val) {
         $(idx).addClass(val);
       });
     }
@@ -99,13 +78,12 @@ $(
      * Prepare listeners from a json object.
      */
     function prepareTheListeners(arg = LISTENER) {
-      $.each
-        (
-          arg,
-          function (k, v) {
-            $(k).on(v[0], v[1]);
-          }
-        )
+      $.each(
+        arg,
+        function(k, v) {
+          $(k).on(v[0], v[1]);
+        }
+      )
     }
 
     /**
@@ -120,8 +98,7 @@ $(
         let obj = arg[i];
         let NewDomMember;
         if (
-          !("element" in obj)
-          ||
+          !("element" in obj) ||
           (parents === null && !("parent" in obj))
         ) {
           throw new Error("Invalid Json");
@@ -186,8 +163,7 @@ $(
           prefix = "";
         else
           prefix = JQDomElement.attr("id");
-      }
-      {
+      } {
         let counter = 0;
         for (let c of JQDomElement.children()) {
           c = $(c);
@@ -210,29 +186,23 @@ $(
     console.log("Trying to apply all children of ul to be indexed.");
     indexChildrenWithId($("ul"), "ulchildren");
 
-    console.log("Trying to add a new list of into the page.");
-    {
+    console.log("Trying to add a new list of into the page."); {
       let itschildren = new Array();
       for (let i = 0; i < 3; i++) {
-        itschildren.push
-          (
-            {
-              element: "li",
-              innertext: "this is my children, index: " + i,
-            }
-          )
+        itschildren.push({
+          element: "li",
+          innertext: "this is my children, index: " + i,
+        })
       }
-      let newlist =
-        [{
-          element: "ul",
-          parent: "body",
-          innertext: "yo this is a list",
-          children: itschildren,
-          attributes:
-          {
-            id: "ul_id"
-          }
-        }]
+      let newlist = [{
+        element: "ul",
+        parent: "body",
+        innertext: "yo this is a list",
+        children: itschildren,
+        attributes: {
+          id: "ul_id"
+        }
+      }]
       convert(newlist);
     }
 
@@ -240,5 +210,3 @@ $(
     indexChildrenWithId($("#ul_id"));
 
   });
-
-

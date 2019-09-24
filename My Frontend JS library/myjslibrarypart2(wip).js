@@ -1,23 +1,27 @@
 /**
- * make the library into different parts to make the development earsier for the future. 
+ * make the library into different parts to make the development earsier for the future.
  */
 
 
 /**
- * Let's create a general syntax for the JSON object representing visual elements 
- * that is on the page: 
+ * Let's create a general syntax for the JSON object representing visual elements
+ * that is on the page:
  * * Jquery is needed
  */
 const OBJECTIFICATION = {
   "css": "#objectification", // ! Required
-  "on": ["click change", (e) => { console.log(e.type); }], // Optional // !format is strict
+  "on": ["click change", (e) => {
+    console.log(e.type);
+  }], // Optional // !format is strict
   "prop": "val",
-  "fxn": (input) => { console.log(input); }
+  "fxn": (input) => {
+    console.log(input);
+  }
 }
 
 /**
- * Function takes in JSON of a certain format. 
- * @param {JSON} arg 
+ * Function takes in JSON of a certain format.
+ * @param {JSON} arg
  */
 function Objectify(arg) {
   if (!("css" in arg)) throw new Error();
@@ -31,12 +35,12 @@ function Objectify(arg) {
 }
 
 /**
- * This function uses the rules from the objectification object and convert 
- * then to the an instance of object in js, it's a constructor. 
+ * This function uses the rules from the objectification object and convert
+ * then to the an instance of object in js, it's a constructor.
  * @param {JSON} rules
  * The same input argtument as the objectify function
  * @param {JQ DOM Element} element
- * A particular element selected by Jqery from the page.   
+ * A particular element selected by Jqery from the page.
  */
 function Encapsulate(element, rules) {
   this.css = $(element);
@@ -48,8 +52,8 @@ function Encapsulate(element, rules) {
       continue;
     }
 
-    if (typeof (key) === "function") {
-      continue; //! Skip, this needs to be done on the outside. 
+    if (typeof(key) === "function") {
+      continue; //! Skip, this needs to be done on the outside.
     }
 
     this[key] = rules[key];
@@ -58,10 +62,10 @@ function Encapsulate(element, rules) {
 
 
 /**
- * ! Problems need to investigate: 
- * ? What does this keyword refers to in the JSON object? 
+ * ! Problems need to investigate:
+ * ? What does this keyword refers to in the JSON object?
  *  * The Keyword is refered to the window object.
- * ? How can we have access to the object itself in the JSON? 
+ * ? How can we have access to the object itself in the JSON?
  */
 
 
@@ -76,7 +80,8 @@ $(() => {
       (e) => {
         let TargetedElement = e.target;
         $(TargetedElement).css("background-color", "black");
-      }],
+      }
+    ],
     changeInnerText: (text) => {
       console.log("changeInnerText invoked");
       console.log(this);

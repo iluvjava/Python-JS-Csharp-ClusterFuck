@@ -5,7 +5,7 @@
      *  Read the object and change the object to elements with classes.
      */
     function applyClassSettings(settings = SETTINGS) {
-      $.each(settings, function (idx, val) {
+      $.each(settings, function(idx, val) {
         $(idx).addClass(val);
       });
     }
@@ -14,13 +14,12 @@
      * Prepare listeners from a json object.
      */
     function prepareTheListeners(arg = LISTENER) {
-      $.each
-        (
-          arg,
-          function (k, v) {
-            $(k).on(v[0], v[1]);
-          }
-        )
+      $.each(
+        arg,
+        function(k, v) {
+          $(k).on(v[0], v[1]);
+        }
+      )
     }
 
     /**
@@ -35,8 +34,7 @@
         let obj = arg[i];
         let NewDomMember;
         if (
-          !("element" in obj)
-          ||
+          !("element" in obj) ||
           (parents === null && !("parent" in obj))
         ) {
           throw new Error("Invalid Json");
@@ -101,8 +99,7 @@
           prefix = "";
         else
           prefix = JQDomElement.attr("id");
-      }
-      {
+      } {
         let counter = 0;
         for (let c of JQDomElement.children()) {
           c = $(c);
