@@ -1,0 +1,16 @@
+{
+  "name": "node_js_example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "m.js",
+  "scripts": {
+    "nodemon": "nodemon m.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "multer": "^1.4.2",
+    "nodemon": "^1.19.4"
+  }
+}
