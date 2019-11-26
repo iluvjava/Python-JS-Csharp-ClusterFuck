@@ -2,12 +2,15 @@
 
 const express = require('express');
 const app = express();
-
+const util = require("util");
+const fs = require("fs");
 // ! Load in router middleware.   
-const multer = require("multer"); // ! multi form parser. 
-
+const multer = require("multer");
 const PORT = process.env.PORT || 8000
-app.listen(PORT);
+
+// ! Promisifying async modules. 
+
+
 
 /**
  * The end point exam all the params and just return it back to the client. 
@@ -19,12 +22,11 @@ app.get('/:param1', function (req, res) {
   return res.json(reply);
 });
 
-
 /**
  * A post requestion end point: 
  * 
  */
-app.post('/post', multer().any(), // ! Multer middleware for parsing. 
+app.post('/post', multer().none(), // ! Multer middleware for parsing. 
 function (req, res) {
   let reply = req.body;
   console.log(reply);
@@ -33,19 +35,13 @@ function (req, res) {
 })
 
 /**
- * Cookie api
- * 
- */
-
- 
-
-
-/**
- * The end point is a an example of the post request. 
+ * Endpoint takes in a string from post, represeting the a gloab paths, 
+ * it returns a list of paths to those files. 
  */
 
 // ----------------------------------------------------------------------------
-// Some kind of other unrelated shit: 
+// 
 
 const MYMODULE = require("./n");
+app.listen(PORT);
 console.log(MYMODULE);

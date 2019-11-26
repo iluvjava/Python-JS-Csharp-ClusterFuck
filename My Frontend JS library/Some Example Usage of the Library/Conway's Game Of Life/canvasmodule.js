@@ -45,15 +45,11 @@ $(document).ready(() => {
           }
         }
     }
-
     this.Clear = ()=> {
       this.Context.fillStyle = "#ffffff";
       this.DrawRect(0,0, this.Width, this.Height);
       this.Context.fillStyle = "#000000";
     }
-
-
-
   }
 
   window["GameView"] = GameView;

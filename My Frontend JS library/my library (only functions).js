@@ -109,7 +109,6 @@
       }
       return JQDomElement;
     }
-
     window["applyClassSettings"] = applyClassSettings;
     window["prepareTheListeners"] = prepareTheListeners;
     window["convert"] = convert;

@@ -1,0 +1,60 @@
+id,name,category,subcategory,price,cost
+1,Blueberry Scone,Bakery,Scones,3.50,0.75
+2,Blueberry Scone (Vegan),Bakery,Scones,3.50,0.85
+3,Chocolate Chip Scone,Bakery,Scones,3.70,0.75
+4,Cinnamon Sugar Scone,Bakery,Scones,3.00,0.75
+5,Espresso Mocha Scone,Bakery,Scones,3.50,0.95
+6,Plain Bagel,Bakery,Bagels,3.50,0.85
+7,Blueberry Bagel,Bakery,Bagels,4.00,1.05
+8,Cinnamon Sugar Bagel,Bakery,Bagels,4.00,0.90
+9,Everything Bagel,Bakery,Bagels,4.00,1.15
+10,Chocolate Chip Cookie,Bakery,Cookies,1.25,0.50
+11,Chocolate Chip Cookie (Gluten-Free),Bakery,Cookies,1.25,0.60
+12,Oatmeal Cookie,Bakery,Cookies,1.25,0.40
+13,Snickerdoodle,Bakery,Cookies,1.25,0.50
+14,Snickerdoodle (Gluten-Free),Bakery,Cookies,1.25,0.60
+15,Tea Loaf,Bakery,Breads,4.00,1.85
+16,Honey Toast,Bakery,Breads,4.00,1.85
+17,Cinnamon Sugar Toast,Bakery,Breads,2.00,0.75
+18,Plain Toast,Bakery,Breads,1.50,0.65
+19,Avocado Toast,Bakery,Breads ,6.50,1.55
+20,Banana Bread,Bakery,Breads,3.50,1.25
+21,Coffee Cake,Bakery,Breads,3.50,1.35
+22,Coffee Cake (Vegan),Bakery,Breads,3.50,1.55
+23,Cinnamon Toast,Bakery,Breads,2.50,1.05
+24,Chocolate Brownie,Bakery,Brownies ,5.50,0.05
+25,Chocolate Brownie (Gluten-Free),Bakery,Brownies,7.50,0.10
+26,Chocolate Brownie with Gold,Bakery,Brownies,30.00,1.00
+27,Blackberry Pie (Slice),Bakery,Pies,4.00,1.00
+28,Chocolate Poptarts,Bakery,Sandwiches,2.00,1.00
+29,Blueberry Poptarts,Bakery,Sandwiches,2.00,1.00
+30,Strawberry Poptarts,Bakery,Sandwiches,2.00,1.00
+31,Brewed Coffee (Black),Drinks,Coffee,1.25,0.65
+32,Brewed Coffee (With Cream),Drinks,Coffee,1.50,0.85
+33,Brewed Coffee (With Cream and Sugar),Drinks,Coffee,2.00,1.05
+34,Americano,Drinks,Coffee,3.75,1.10
+35,Espresso,Drinks,Coffee,3.75,1.15
+36,Cappuccino,Drinks,Coffee,2.50,1.05
+37,Latte,Drinks,Coffee,3.00,1.10
+38,Unicorn Frappe,Drinks,Coffee,8.00,2.75
+39,White Chocolate Mocha,Drinks,Coffee,6.00,2.45
+40,Green Tea (Hot),Drinks,Tea,2.00,1.25
+41,Green Tea (Iced),Drinks,Tea,2.00,1.25
+42,Teriyaki Chicken and Chicken Katsu Combo,Entrees,Hawaiian,9.99,3.50
+43,Black Tea (Hot),Drinks,Tea,2.00,1.25
+44,Black Tea (Iced),Drinks,Tea,2.00,1.25
+45,Milk Tea (Hot),Drinks,Tea,2.50,1.35
+46,Milk Tea (Iced),Drinks,Tea,2.50,1.35
+47,Apple Cider,Drinks,Other,3.00,1.25
+48,Hot Cocoa,Drinks,Other,3.00,0.75
+49,Iced Water,Drinks,Other,1.00,0.35
+50,Iced Tea,Drinks,Other,3.00,1.25
+51,Unsweetened Iced Tea,Drinks,Other,3.00,0.25
+52,Pink Drink,Drinks,Other,5.45,1.23
+53,GIF-and-Jelly Sandwich,Entrees,Sandwiches,4.00,4.00
+54,JIF-and-Jelly Sandwich,Entrees,Sandwiches,4.00,4.00
+55,Caesar Salad,Salad,Salad,5.50,2.50
+56,Greek Salad,Salad,Salad,7.00,2.55
+57,Kale Salad,Salad,Salad,10.00,5.00
+58,House Salad,Salad,Salad,5.50,2.25
+59,Bubble Tea,Drinks,Tea,4.00,5.50
