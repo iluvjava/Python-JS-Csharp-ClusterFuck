@@ -47,28 +47,22 @@ Algorithm:
                 Then we collapse it into [... 1, -1 ...], if there is at least 1 appearance of -1 the -1 will be
                 presented, else, only the 1 will be presented.
 
-            Array Collapse Algorithm:
-                prepare a new empty queue named: q
-                prepare an integer to count the number of -1: n
-                for element: e in the array:
-                    if e is 1 or -1:
-                        if it's -1, then increment 1
-                        if the last element in q is 1, then discard the element.
-                        else, put the element in it.
-                    if the element next to e is not -1 or 1:
-                        add -1 to q if there is mor than one -1 encountered in the cluster.
-                        if there is exactly one -1:
-                            if the last element in q is -1 then does nothing
-                            else put the -1 into q.
+            Array Collapse Algorithm: (High Level)
+                Find a cluster of -1 or 1 in the array. Replace it with the following rules:
+                    1. If -1 appears at least 1 time, then it's replaced with a -1.
+                    2. else, it's replaced with a 1.
+
+        Sorry that is not the correct approach after looking through the discussion
 ========================================================================================================================
 """
-
+from typing import List
 
 def max_product(nums: list) -> int:
     if nums is None or len(nums) == 0:
         return None
     if len(nums) == 1:
         return nums[0]
+    nums = array_collapse(nums)
     memo = [[None for i in range(len(nums))] for j in range(len(nums))]
     maxproduct = nums[0]
     for i in range(len(nums)):
@@ -83,8 +77,55 @@ def max_product(nums: list) -> int:
             j += 1
     return maxproduct
 
+def array_collapse(arr: List[int])-> list:
+    """
+    It takes in an array of integer and it collapse it using the following rules:
+        1. If -1 appears at least 1 time, then it's replaced with a -1.
+        2. else, it's replaced with a 1.
+    The original array will not be modified.
+    Solution is from my friend, not me.
+    :param arr:
+        An array of integers.
+    :return:
+        A array of integers.
+    """
+    res = []
+    for I in arr:
+        if len(res) != 0 and res[-1] in [-1, 1] and I in [-1, 1]:
+            if len(res) >= 2 and (res[-1] + res[-2] == 0):
+                continue
+            if I != res[-1]:
+                res.append(I)
+        else:
+            res.append(I)
+    return res
+
 
 if __name__ == "__main__":
-    arr = [2, 3, -2, 4]
-    print("Testing on array: " + str(arr))
-    print(max_product(arr))
+    # arr = [2, 3, -2, 4]
+    # print("Testing on array: " + str(arr))
+    # print(max_product(arr))
+    #
+    # arr = [-4, -3]
+    # print("Testing on array: " + str(arr))
+    # print(max_product(arr))
+
+    arr = [0, 0, 0, 1, 1, 1, 0, 0, 0]
+    print(f"Testong on array_collapsing on: {arr} ")
+    print(array_collapse(arr))
+
+    arr = [0, 0, 0, 1, 1, 1, -1, 0, 0, 0]
+    print(f"Testong on array_collapsing on: {arr} ")
+    print(array_collapse(arr))
+
+    arr = [0, 1, -1, 1, -1, -1, 0]
+    print(f"Testong on array_collapsing on: {arr} ")
+    print(array_collapse(arr))
+
+    arr = [0, -1]
+    print(f"Testong on array_collapsing on: {arr} ")
+    print(array_collapse(arr))
+
+    arr = [-4, -3]
+    print(f"Testong on array_collapsing on: {arr} ")
+    print(array_collapse(arr))
