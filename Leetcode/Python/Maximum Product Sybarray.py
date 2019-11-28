@@ -19,6 +19,8 @@ Brain Storming:
 
     What if there is a zero in the array?
         Don't divide by zero, don't initialize the intermediate data structure with 0 element.
+
+    Note: Not all of the brainstorming ideas are useful.
 ========================================================================================================================
 Algorithm:
 ========================================================================================================================
@@ -62,19 +64,27 @@ Given:
     new added element, prove the it gives max_{-1} and min_{-1} as maximum and minimum for the continuous sub-array
     for the whole array.
 
-    if max(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2}) outputs arr[-1]*max_{-2} or arr[-1]*min_{-2}
+    if  max(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2}) outputs arr[-1]*max_{-2} or arr[-1]*min_{-2}
          or
-       min(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2}) outputs arr[-1]*max_{-2} or arr[-1]*min_{-2}
+        min(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2}) outputs arr[-1]*max_{-2} or arr[-1]*min_{-2}
     then
-        max(arr[-1]*max_{-2} or arr[-1]*min_{-2}) > max_{2}
+        max(arr[-1]*max_{-2}, arr[-1]*min_{-2}) > max_{2}
             and
-        min(arr[-1]*max_{-2} or arr[-1]*min_{-2}) < min_{2}
+        min(arr[-1]*max_{-2}, arr[-1]*min_{-2}) < min_{2}
             and
         arr[-1] is in included will be included into the sub-array!
+        notice that the above equation can be simplified as:
+            |max(arr[-1]*max_{-2}, arr[-1]*min_{-2})| > max(|max_{-2}|, |min_{-2}|) where |.| denotes the absolute
+            value.
+    We have showed the that invariants are kept under this case.
 
+    else if arr[-1] is returned by any of the max or min function
+    then
+        |arr[-1]| > max(|min_{-2}|, |max_{-2}|)
+        by including |arr[-1]| into our continuous sub-array, we have shown that the invariant is kept for
+        the new array.
 
-
-
+    QDE: or least I think I did.
 """
 
 from typing import List
