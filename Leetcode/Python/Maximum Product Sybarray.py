@@ -2,7 +2,7 @@
 ========================================================================================================================
 LeetCode problem: https://leetcode.com/problems/maximum-product-subarray/
     Given an array of integers.
-    Find the matrix product of a continuous sub array.
+    Find the maximum product of a continuous sub array.
 
 Related Topics: Dynamic Programming.
 
@@ -84,7 +84,7 @@ Given:
         by including |arr[-1]| into our continuous sub-array, we have shown that the invariant is kept for
         the new array.
 
-    QDE: or least I think I did.
+    QDE: or least I think I did, oh yeah, base case is trivial.
 """
 
 from typing import List
