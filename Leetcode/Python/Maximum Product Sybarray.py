@@ -2,7 +2,7 @@
 ========================================================================================================================
 LeetCode problem: https://leetcode.com/problems/maximum-product-subarray/
     Given an array of integers.
-    Find the matrix product of a continous sub array.
+    Find the matrix product of a continuous sub array.
 
 Related Topics: Dynamic Programming.
 
@@ -22,110 +22,80 @@ Brain Storming:
 ========================================================================================================================
 Algorithm:
 ========================================================================================================================
-    for(int i = 0; i < arr.Length, i++)
-        for(int j = i; j < arr.Length, j++)
-        {
-            i == j =>
-                Initial the value inside a 2d array.
-                Register the maximum product
-                continue for loop
-            else i != j
-                Take the value from 2d array.
-                multiply by arr[j]
-                Register the maximum product
-                store the value back
-        }
+    observation:
+        *  By the hypothesis that the array only consists of integers, we know that the absolute value of the
+        product of the array is only going to increase as the length of the sub-array increases.
 
-        It's not fast enough! How can we speed it up?
-            Array Collapse:
-                if there are a lot of 1 or -1, we collapse them in the original array, which won't change the
-                result of the maximum product.
+    Assume that we know the maximum and minimum value of the product of continuous sub-array, and we want to append
+    one more element: "e" to the array "arr" and we want to exam how we have changed the maximum and minimum product of
+    the continuous sub-array of that new array.
 
-                Assume [... 1, -1, 1, -1, 1, 1, ...] where a cluster of 1 or -1 appeared in the middle of the array
-                somewhere.
+    Assume that there exists a sub-array in arr[:-2] such that the product of all its element is the maximum compare
+    to all other sub-array in arr[:-2], denoted as Max_{-2}.
 
-                Then we collapse it into [... 1, -1 ...], if there is at least 1 appearance of -1 the -1 will be
-                presented, else, only the 1 will be presented.
+    Assume that there exists a syb-array in arr[:-2] such that the product of all its element is the minimum compare to
+    all other sub-array in arr[:-2], denoted that as Min_{-2}.
 
-            Array Collapse Algorithm: (High Level)
-                Find a cluster of -1 or 1 in the array. Replace it with the following rules:
-                    1. If -1 appears at least 1 time, then it's replaced with a -1.
-                    2. else, it's replaced with a 1.
-
-        Sorry that is not the correct approach after looking through the discussion
+    What are the relation between the last element arr[-1] and all the above maximum and minimum?
+        1. arr[-1] <= min_{-2} <= max_{-2}
+              & if arr[-1]*min_{-2} <= min_{-2} then min_{-1} = arr[-1]*min_{-2}
+        2. min_{-2} <= arr[-1] <= max_{-2}
+            & if arr[-1]*min_{-2} <= min_{-2} then min_{-1} = arr[-1]*min_{-2}
+            & if arr[-1]*max_{-2} >= max_{-2} then max_{-1} = arr[-2]*max_{-2}
+        3. min_{-2} <= max{-2} <= arr[-1]
+            => max_{-1} = arr[-1] |-> This will be the new sub-array max prod.
+    Why are we keeping track of max_{-1} and min_{-1}?
+        there are 3 possibility for arr[-1] they are:
+            1. arr[-1] >= 1
+            2. arr[-1] <= -1
+            3. arr[-1] == 0
+        hence, by including arr[-1] into the product, it either makes the arr[-1]*min_{-1} >= max{-1}*arr[-1],
+        or max_{-1}*arr[-1] <= min_{-1}*arr[-1],
 ========================================================================================================================
+New Algorithm Analysis:
+========================================================================================================================
+Given:
+    max_{-1}, min_{-1} = max(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2}),
+                         min(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2})
+
+    Given max_{-2}, min{-2} as the maximum and minimum for the continuous product of sub-array, and arr[-1] as the
+    new added element, prove the it gives max_{-1} and min_{-1} as maximum and minimum for the continuous sub-array
+    for the whole array.
+
+    if max(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2}) outputs arr[-1]*max_{-2} or arr[-1]*min_{-2}
+         or
+       min(arr[-1], arr[-1]*max_{-2}, arr[-1]*min_{-2}) outputs arr[-1]*max_{-2} or arr[-1]*min_{-2}
+    then
+        max(arr[-1]*max_{-2} or arr[-1]*min_{-2}) > max_{2}
+            and
+        min(arr[-1]*max_{-2} or arr[-1]*min_{-2}) < min_{2}
+            and
+        arr[-1] is in included will be included into the sub-array!
+
+
+
+
 """
+
 from typing import List
 
-def max_product(nums: list) -> int:
-    if nums is None or len(nums) == 0:
-        return None
-    if len(nums) == 1:
-        return nums[0]
-    nums = array_collapse(nums)
-    memo = [[None for i in range(len(nums))] for j in range(len(nums))]
-    maxproduct = nums[0]
-    for i in range(len(nums)):
-        j = i
-        while j < len(nums):
-            if j == i:
-                memo[i][j] = nums[j]
-                maxproduct = max(nums[i], maxproduct)
-            else:
-                memo[i][j] = memo[i][j - 1]*nums[j]
-                maxproduct = max(memo[i][j], maxproduct)
-            j += 1
-    return maxproduct
 
-def array_collapse(arr: List[int])-> list:
-    """
-    It takes in an array of integer and it collapse it using the following rules:
-        1. If -1 appears at least 1 time, then it's replaced with a -1.
-        2. else, it's replaced with a 1.
-    The original array will not be modified.
-    Solution is from my friend, not me.
-    :param arr:
-        An array of integers.
-    :return:
-        A array of integers.
-    """
-    res = []
-    for I in arr:
-        if len(res) != 0 and res[-1] in [-1, 1] and I in [-1, 1]:
-            if len(res) >= 2 and (res[-1] + res[-2] == 0):
-                continue
-            if I != res[-1]:
-                res.append(I)
-        else:
-            res.append(I)
-    return res
+def max_product(nums: List[int]) -> int:
+    if nums is None or len(nums) <= 0:
+        return None if len(nums) == 0 else nums[0]
+    max_ = min_ = RunningProd = nums[0]
+    for I in nums[1:]:
+        max_, min_ = max(I, I * min_, I * max_), min(I, I * min_, I * max_)
+        RunningProd = max(RunningProd, max_)
+    return RunningProd
 
 
 if __name__ == "__main__":
-    # arr = [2, 3, -2, 4]
-    # print("Testing on array: " + str(arr))
-    # print(max_product(arr))
-    #
-    # arr = [-4, -3]
-    # print("Testing on array: " + str(arr))
-    # print(max_product(arr))
-
-    arr = [0, 0, 0, 1, 1, 1, 0, 0, 0]
-    print(f"Testong on array_collapsing on: {arr} ")
-    print(array_collapse(arr))
-
-    arr = [0, 0, 0, 1, 1, 1, -1, 0, 0, 0]
-    print(f"Testong on array_collapsing on: {arr} ")
-    print(array_collapse(arr))
-
-    arr = [0, 1, -1, 1, -1, -1, 0]
-    print(f"Testong on array_collapsing on: {arr} ")
-    print(array_collapse(arr))
-
-    arr = [0, -1]
-    print(f"Testong on array_collapsing on: {arr} ")
-    print(array_collapse(arr))
+    arr = [2, 3, -2, 4]
+    print("Testing on array: " + str(arr))
+    print(max_product(arr))
 
     arr = [-4, -3]
-    print(f"Testong on array_collapsing on: {arr} ")
-    print(array_collapse(arr))
+    print("Testing on array: " + str(arr))
+    print(max_product(arr))
+
